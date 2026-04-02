@@ -352,7 +352,7 @@
               <div class="switch-row">
                 <div class="switch-copy">
                   <strong>Show first-year promo math</strong>
-                  <span>Includes payroll promo and core-plan free months when selected.</span>
+                  <span>Includes payroll and core-plan free months based on the promo selectors above.</span>
                 </div>
                 <input id="showPromoMath" type="checkbox" checked />
               </div>
@@ -379,13 +379,34 @@
                   <option value="aio">All-in-One - $120 / $96 annual</option>
                 </select>
                 <div class="muted" id="planNote">AI scheduling, PTO controls, departments.</div>
-                <div style="margin-top:10px">
-                  <span class="muted" style="font-weight:800">Core plan promo</span>
-                  <div class="seg" id="coreSeg" style="margin-top:6px">
-                    <button type="button" data-val="0" class="active">No promo</button>
-                    <button type="button" data-val="1">1 mo free</button>
-                    <button type="button" data-val="2">2 mo free</button>
-                  </div>
+              </div>
+            </div>
+            <div style="margin-top:14px">
+              <div class="muted" style="font-weight:800;margin-bottom:6px">Payroll</div>
+              <div class="seg" id="payrollSeg">
+                <button type="button" data-val="none">No payroll</button>
+                <button type="button" data-val="standard" class="active">Standard ($39 + $6/ee)</button>
+                <button type="button" data-val="nextday">Next Day ($49 + $9/ee)</button>
+              </div>
+            </div>
+            <div class="row-2" style="margin-top:12px;align-items:start">
+              <div>
+                <span class="muted" style="font-weight:800">Payroll promo</span>
+                <div class="muted">Applies only when payroll is selected.</div>
+                <div class="seg" id="payrollPromoSeg" style="margin-top:6px;display:flex;flex-wrap:wrap">
+                  <button type="button" data-val="0" class="active">No promo</button>
+                  <button type="button" data-val="1">1 mo free</button>
+                  <button type="button" data-val="2">2 mo free</button>
+                  <button type="button" data-val="3">3 mo free</button>
+                </div>
+              </div>
+              <div>
+                <span class="muted" style="font-weight:800">Core plan promo</span>
+                <div class="muted">Applies to Essentials, Plus, and All-in-One.</div>
+                <div class="seg" id="coreSeg" style="margin-top:6px;display:flex;flex-wrap:wrap">
+                  <button type="button" data-val="0" class="active">No promo</button>
+                  <button type="button" data-val="1">1 mo free</button>
+                  <button type="button" data-val="2">2 mo free</button>
                 </div>
               </div>
             </div>
@@ -393,19 +414,6 @@
 
           <section class="card">
             <h2 class="card-title">Add-ons and usage</h2>
-            <div style="margin-bottom:14px">
-              <div class="muted" style="font-weight:800;margin-bottom:6px">Payroll</div>
-              <div class="seg" id="payrollSeg">
-                <button type="button" data-val="none">No payroll</button>
-                <button type="button" data-val="standard" class="active">Standard ($39 + $6/ee)</button>
-                <button type="button" data-val="nextday">Next Day ($49 + $9/ee)</button>
-              </div>
-              <label style="display:flex;gap:8px;align-items:center;margin-top:10px">
-                <input type="checkbox" id="payrollPromo" checked />
-                <span class="muted">Apply 6-month payroll promo to first-year totals</span>
-              </label>
-            </div>
-
             <div class="addons-grid">
               <label class="addon-box">
                 <span>Tip Manager <span class="muted">($25 / loc / mo)</span></span>
@@ -590,7 +598,7 @@
     let bg = 0;
     let boosts = 0;
     let ha = 0;
-    let payrollPromo = true;
+    let payrollPromoMonths = 0;
     let showBreakdown = true;
     let showPromoMath = true;
     let preparedFor = '';
@@ -685,9 +693,12 @@
       const usageMonthly = bgMonthly + boostsMonthly + hiringMonthly;
       const totalMonthly = recurringMonthly + usageMonthly;
       const totalAnnual = totalMonthly * 12;
-      const payrollPromoSavings = (payroll !== 'none' && payrollPromo) ? payrollMonthly * 6 : 0;
-      const corePromoSavings = (plan !== 'basic') ? planMonthly * corePromo : 0;
+      const hasPayrollPromo = payroll !== 'none' && payrollPromoMonths > 0;
+      const hasCorePromo = plan !== 'basic' && corePromo > 0;
+      const payrollPromoSavings = hasPayrollPromo ? payrollMonthly * payrollPromoMonths : 0;
+      const corePromoSavings = hasCorePromo ? planMonthly * corePromo : 0;
       const firstYearWithPromos = totalAnnual - payrollPromoSavings - corePromoSavings;
+      const hasAnyPromo = hasPayrollPromo || hasCorePromo;
 
       const features = [];
       features.push(display.planName + ' plan for ' + loc + ' location' + (loc === 1 ? '' : 's'));
@@ -710,6 +721,7 @@
       return {
         loc, emp, planPerLoc, planMonthly, tipMonthly, taskMonthly, payrollMonthly, bgMonthly, boostsMonthly, hiringMonthly,
         recurringMonthly, usageMonthly, totalMonthly, totalAnnual, payrollPromoSavings, corePromoSavings, firstYearWithPromos,
+        payrollPromoMonths, hasPayrollPromo, hasCorePromo, hasAnyPromo,
         payrollLabel: payroll === 'nextday' ? 'Payroll (Next Day)' : 'Payroll',
         payrollRateText: payroll === 'nextday' ? '$49 base + $9 x ' + emp : '$39 base + $6 x ' + emp,
         features,
@@ -745,7 +757,7 @@
           <div class="summary-mini">
             <div class="mini-row"><span>Recurring subtotal</span><span>${currency(calc.recurringMonthly)}</span></div>
             <div class="mini-row"><span>Usage subtotal</span><span>${currency(calc.usageMonthly)}</span></div>
-            ${showPromoMath && ((payroll !== 'none' && payrollPromo) || corePromo > 0) ? `<div class="mini-row"><span>First year with promos</span><span>${currency(calc.firstYearWithPromos)}</span></div>` : ''}
+            ${showPromoMath && calc.hasAnyPromo ? `<div class="mini-row"><span>First year with promos</span><span>${currency(calc.firstYearWithPromos)}</span></div>` : ''}
           </div>
 
           <div class="summary-mode">${showBreakdown ? 'Customer-facing outputs currently include the full line-item breakdown.' : 'Customer-facing outputs are currently summary only.'}</div>
@@ -767,7 +779,7 @@
       $('#useSub').textContent = currency(calc.usageMonthly);
       $('#usageRow').hidden = calc.usageMonthly <= 0;
       $('#total').textContent = currency(calc.totalMonthly);
-      const showFirstYear = showPromoMath && (((payroll !== 'none' && payrollPromo) || corePromo > 0));
+      const showFirstYear = showPromoMath && calc.hasAnyPromo;
       $('#fyRow').hidden = !showFirstYear;
       $('#firstYear').textContent = currency(calc.firstYearWithPromos);
     }
@@ -789,7 +801,7 @@
       $('#printRecurring').textContent = currency(calc.recurringMonthly);
       $('#printUsage').textContent = currency(calc.usageMonthly);
       $('#printAnnual').textContent = currency(calc.totalAnnual);
-      const promoVisible = showPromoMath && (((payroll !== 'none' && payrollPromo) || corePromo > 0));
+      const promoVisible = showPromoMath && calc.hasAnyPromo;
       $('#printPromoLine').style.display = promoVisible ? '' : 'none';
       $('#printFirstYear').textContent = currency(calc.firstYearWithPromos);
       $('#printMonthlyCopy').textContent = showBreakdown
@@ -798,8 +810,8 @@
       $('#printMonthlyCopy').style.display = $('#printMonthlyCopy').textContent ? '' : 'none';
 
       const promoPieces = [];
-      if (showPromoMath && payroll !== 'none' && payrollPromo) promoPieces.push('Payroll promo savings: ' + currency(calc.payrollPromoSavings));
-      if (showPromoMath && corePromo > 0) promoPieces.push('Core plan free months: ' + currency(calc.corePromoSavings));
+      if (showPromoMath && calc.hasPayrollPromo) promoPieces.push('Payroll promo (' + calc.payrollPromoMonths + ' mo free): ' + currency(calc.payrollPromoSavings));
+      if (showPromoMath && calc.hasCorePromo) promoPieces.push('Core plan promo (' + corePromo + ' mo free): ' + currency(calc.corePromoSavings));
       const noteText = promoPieces.length ? promoPieces.join(' | ') : '';
       $('#printNoteBox').textContent = noteText;
       $('#printNoteBox').style.display = noteText ? '' : 'none';
@@ -851,7 +863,7 @@
       lines.push('');
       lines.push('Total: ' + currency(calc.totalMonthly) + '/mo');
       lines.push('Annualized: ' + currency(calc.totalAnnual) + '/yr');
-      if (showPromoMath && (((payroll !== 'none' && payrollPromo) || corePromo > 0))) {
+      if (showPromoMath && calc.hasAnyPromo) {
         lines.push('First year with promos: ' + currency(calc.firstYearWithPromos));
       }
       return lines.join('\n');
@@ -868,7 +880,7 @@
       if (ha) rows.push(['Usage', 'Hiring Assistant', String(ha), currency(calc.hiringMonthly)]);
       rows.push(['', 'Recurring subtotal', '', currency(calc.recurringMonthly)]);
       rows.push(['', 'Total / month', '', currency(calc.totalMonthly)]);
-      if (showPromoMath && (((payroll !== 'none' && payrollPromo) || corePromo > 0))) rows.push(['', 'First year with promos', '', currency(calc.firstYearWithPromos)]);
+      if (showPromoMath && calc.hasAnyPromo) rows.push(['', 'First year with promos', '', currency(calc.firstYearWithPromos)]);
       return buildCSV(rows);
     }
 
@@ -881,7 +893,7 @@
       bg = Math.max(0, num($('#bg').value));
       boosts = Math.max(0, num($('#boosts').value));
       ha = Math.max(0, num($('#ha').value));
-      payrollPromo = $('#payrollPromo').checked;
+      
       showBreakdown = $('#showBreakdown').checked;
       showPromoMath = $('#showPromoMath').checked;
       preparedFor = $('#preparedFor').value;
@@ -909,8 +921,14 @@
         activateSeg('#payrollSeg', payroll);
         render();
       });
+      $('#payrollPromoSeg').addEventListener('click', (e) => {
+        if (e.target.tagName !== 'BUTTON') return;
+        payrollPromoMonths = Number(e.target.dataset.val);
+        activateSeg('#payrollPromoSeg', payrollPromoMonths);
+        render();
+      });
 
-      ['loc','emp','plan','tip','task','bg','boosts','ha','payrollPromo','showBreakdown','showPromoMath','preparedFor','businessName','preparedBy','quoteDate'].forEach(id => {
+      ['loc','emp','plan','tip','task','bg','boosts','ha','showBreakdown','showPromoMath','preparedFor','businessName','preparedBy','quoteDate'].forEach(id => {
         const el = $('#' + id);
         const evt = (el.type === 'checkbox' || el.tagName === 'SELECT' || el.type === 'date') ? 'change' : 'input';
         el.addEventListener(evt, () => {
@@ -957,6 +975,7 @@
     function init(){
       $('#quoteDate').value = todayISO;
       activateSeg('#billingSeg', 'monthly');
+      activateSeg('#payrollPromoSeg', 0);
       activateSeg('#coreSeg', 0);
       activateSeg('#payrollSeg', 'standard');
       syncStateFromInputs();
