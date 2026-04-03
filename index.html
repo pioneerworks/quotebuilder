@@ -105,6 +105,17 @@
     .switch-copy strong{font-size:14px}
     .switch-copy span{font-size:12px;color:#64748B}
 
+    .setup-grid{display:grid;grid-template-columns:1.3fr 1fr 1fr;gap:12px;align-items:stretch}
+    .setup-panel{border:1px solid var(--border);border-radius:16px;padding:14px;background:#FCFBFF;display:grid;gap:10px;align-content:start;min-height:100%}
+    .setup-heading{display:grid;gap:2px}
+    .setup-panel .seg{display:flex;flex-wrap:wrap;width:100%;box-shadow:none}
+    .setup-panel .seg button{flex:1 1 132px;text-align:center}
+    .ein-box{margin-top:12px;border:1px solid var(--border);border-radius:16px;padding:14px;background:var(--blondie);display:grid;gap:12px}
+    .ein-row{display:flex;align-items:flex-start;justify-content:space-between;gap:14px;flex-wrap:wrap}
+    .checkbox-inline{display:inline-flex;align-items:center;gap:8px;font-size:14px;font-weight:700;color:var(--deep);cursor:pointer}
+    .checkbox-inline input{margin:0}
+    .ein-qty{max-width:240px}
+
     .addons-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
     .addon-box{display:flex;align-items:center;justify-content:space-between;gap:12px;border:1px solid var(--border);border-radius:14px;padding:12px;background:#fff}
     .addon-box span{font-size:14px}
@@ -232,10 +243,11 @@
       .summary-card{position:static}
       .row{grid-template-columns:repeat(2,minmax(0,1fr))}
       .col-span-2{grid-column:span 2}
-      .row-3,.row-2,.addons-grid{grid-template-columns:1fr 1fr}
+      .row-3,.row-2,.addons-grid,.setup-grid{grid-template-columns:1fr 1fr}
+      .setup-grid{grid-template-columns:1fr}
     }
     @media (max-width:640px){
-      .row,.row-3,.row-2,.addons-grid{grid-template-columns:1fr}
+      .row,.row-3,.row-2,.addons-grid,.setup-grid{grid-template-columns:1fr}
       .col-span-2{grid-column:span 1}
       .quote-meta,.quote-main,.quote-feature-list{grid-template-columns:1fr}
       .brand-row,.quote-title-row{flex-direction:column}
@@ -381,33 +393,57 @@
                 <div class="muted" id="planNote">AI scheduling, PTO controls, departments.</div>
               </div>
             </div>
-            <div style="margin-top:14px">
-              <div class="muted" style="font-weight:800;margin-bottom:6px">Payroll</div>
-              <div class="seg" id="payrollSeg">
-                <button type="button" data-val="none">No payroll</button>
-                <button type="button" data-val="standard" class="active">Standard ($39 + $6/ee)</button>
-                <button type="button" data-val="nextday">Next Day ($49 + $9/ee)</button>
+            <div class="setup-grid" style="margin-top:14px">
+              <div class="setup-panel">
+                <div class="setup-heading">
+                  <span class="muted" style="font-weight:800">Payroll</span>
+                  <div class="muted">Choose the payroll package for this quote.</div>
+                </div>
+                <div class="seg" id="payrollSeg">
+                  <button type="button" data-val="none">No payroll</button>
+                  <button type="button" data-val="standard" class="active">Standard ($39 + $6/ee)</button>
+                  <button type="button" data-val="nextday">Next Day ($49 + $9/ee)</button>
+                </div>
               </div>
-            </div>
-            <div class="row-2" style="margin-top:12px;align-items:start">
-              <div>
-                <span class="muted" style="font-weight:800">Payroll promo</span>
-                <div class="muted">Applies only when payroll is selected.</div>
-                <div class="seg" id="payrollPromoSeg" style="margin-top:6px;display:flex;flex-wrap:wrap">
+              <div class="setup-panel">
+                <div class="setup-heading">
+                  <span class="muted" style="font-weight:800">Payroll promo</span>
+                  <div class="muted">Applies only when payroll is selected.</div>
+                </div>
+                <div class="seg" id="payrollPromoSeg">
                   <button type="button" data-val="0" class="active">No promo</button>
                   <button type="button" data-val="1">1 mo free</button>
                   <button type="button" data-val="2">2 mo free</button>
                   <button type="button" data-val="3">3 mo free</button>
                 </div>
               </div>
-              <div>
-                <span class="muted" style="font-weight:800">Core plan promo</span>
-                <div class="muted">Applies to Essentials, Plus, and All-in-One.</div>
-                <div class="seg" id="coreSeg" style="margin-top:6px;display:flex;flex-wrap:wrap">
+              <div class="setup-panel">
+                <div class="setup-heading">
+                  <span class="muted" style="font-weight:800">Core plan promo</span>
+                  <div class="muted">Applies to Essentials, Plus, and All-in-One.</div>
+                </div>
+                <div class="seg" id="coreSeg">
                   <button type="button" data-val="0" class="active">No promo</button>
                   <button type="button" data-val="1">1 mo free</button>
                   <button type="button" data-val="2">2 mo free</button>
                 </div>
+              </div>
+            </div>
+            <div class="ein-box" id="einSection" hidden>
+              <div class="ein-row">
+                <div class="setup-heading">
+                  <span class="muted" style="font-weight:800">Payroll billing setup</span>
+                  <div class="muted">Use this when payroll needs to be billed across separate EINs.</div>
+                </div>
+                <label class="checkbox-inline" for="separateEins">
+                  <input type="checkbox" id="separateEins" />
+                  <span>Are there separate EINs?</span>
+                </label>
+              </div>
+              <div class="field ein-qty" id="einQtyWrap" hidden>
+                <label for="einCount">How many separate EINs?</label>
+                <input type="number" min="2" id="einCount" value="2" />
+                <div class="muted" id="einHelp">Payroll base fees will be billed once per EIN.</div>
               </div>
             </div>
           </section>
@@ -474,7 +510,7 @@
             </tfoot>
           </table>
         </div>
-        <p class="notes">Plan pricing is per location per month. Payroll options: Standard ($39 base + $6/employee/mo) or Next Day ($49 base + $9/employee/mo). Prices are USD and taxes or third-party fees are not included.</p>
+        <p class="notes">Plan pricing is per location per month. Payroll options: Standard ($39 base + $6/employee/mo) or Next Day ($49 base + $9/employee/mo). When separate EINs are selected, payroll base fees are billed once per EIN. Prices are USD and taxes or third-party fees are not included.</p>
       </section>
     </div>
   </main>
@@ -553,7 +589,7 @@
       <section class="quote-summary-only" id="printSummaryOnly" hidden></section>
 
       <footer class="quote-footer">
-        <div><strong>Notes:</strong> Plan pricing is per location per month. Payroll pricing shown as base fee plus per-employee fee. Taxes and third-party fees are not included unless explicitly stated.</div>
+        <div><strong>Notes:</strong> Plan pricing is per location per month. Payroll pricing is shown as a base fee plus a per-employee fee, with base fees billed once per EIN when separate EINs are selected. Taxes and third-party fees are not included unless explicitly stated.</div>
         <div id="printFooterMeta"></div>
       </footer>
     </div>
@@ -599,6 +635,8 @@
     let boosts = 0;
     let ha = 0;
     let payrollPromoMonths = 0;
+    let separateEins = false;
+    let einCount = 2;
     let showBreakdown = true;
     let showPromoMath = true;
     let preparedFor = '';
@@ -630,6 +668,29 @@
 
     function activateSeg(selector, value){
       $$(selector + ' button').forEach(btn => btn.classList.toggle('active', btn.dataset.val === String(value)));
+    }
+
+    function renderEinUi(){
+      const section = $('#einSection');
+      const checkbox = $('#separateEins');
+      const qtyWrap = $('#einQtyWrap');
+      const qtyInput = $('#einCount');
+      const help = $('#einHelp');
+      const showSection = locations > 1;
+      section.hidden = !showSection;
+      if (!showSection){
+        separateEins = false;
+        checkbox.checked = false;
+        qtyWrap.hidden = true;
+        return;
+      }
+      checkbox.checked = separateEins;
+      qtyInput.max = String(Math.max(2, locations));
+      qtyInput.value = String(separateEins ? einCount : Math.min(Math.max(2, Number(qtyInput.value) || 2), Math.max(2, locations)));
+      qtyWrap.hidden = !separateEins;
+      help.textContent = separateEins
+        ? 'Payroll base fees will be billed once per EIN (' + einCount + ' total).'
+        : 'Payroll base fees will be billed once per EIN if separate EINs are selected.';
     }
 
     async function copyToClipboard(text){
@@ -685,7 +746,10 @@
       const taskMonthly = task ? 13 * loc : 0;
       const payrollBase = payroll === 'none' ? 0 : (payroll === 'nextday' ? 49 : 39);
       const payrollRate = payroll === 'none' ? 0 : (payroll === 'nextday' ? 9 : 6);
-      const payrollMonthly = payroll === 'none' ? 0 : (payrollBase + payrollRate * emp);
+      const payrollEinCount = payroll === 'none' ? 0 : (separateEins && loc > 1 ? Math.min(loc, Math.max(2, Number(einCount) || 2)) : 1);
+      const payrollBaseMonthly = payrollBase * payrollEinCount;
+      const payrollEmployeeMonthly = payrollRate * emp;
+      const payrollMonthly = payroll === 'none' ? 0 : payrollBaseMonthly + payrollEmployeeMonthly;
       const bgMonthly = 30 * bg;
       const boostsMonthly = 79 * boosts;
       const hiringMonthly = 30 * ha;
@@ -699,10 +763,30 @@
       const corePromoSavings = hasCorePromo ? planMonthly * corePromo : 0;
       const firstYearWithPromos = totalAnnual - payrollPromoSavings - corePromoSavings;
       const hasAnyPromo = hasPayrollPromo || hasCorePromo;
+      const hasSeparatePayrollEins = payrollEinCount > 1;
+
+      const payrollName = payroll === 'nextday' ? 'Payroll (Next Day)' : 'Payroll';
+      const payrollLabel = hasSeparatePayrollEins ? payrollName + ' - ' + payrollEinCount + ' EINs' : payrollName;
+      const payrollRateText = payroll === 'none'
+        ? ''
+        : (payroll === 'nextday'
+          ? (hasSeparatePayrollEins ? '$49 base x ' + payrollEinCount + ' EINs + $9 x ' + emp : '$49 base + $9 x ' + emp)
+          : (hasSeparatePayrollEins ? '$39 base x ' + payrollEinCount + ' EINs + $6 x ' + emp : '$39 base + $6 x ' + emp));
+      const payrollTableRate = payroll === 'none'
+        ? ''
+        : (payroll === 'nextday'
+          ? (hasSeparatePayrollEins ? '$49 base x ' + payrollEinCount + ' EINs + $9/ee' : '$49 base + $9/ee')
+          : (hasSeparatePayrollEins ? '$39 base x ' + payrollEinCount + ' EINs + $6/ee' : '$39 base + $6/ee'));
 
       const features = [];
       features.push(display.planName + ' plan for ' + loc + ' location' + (loc === 1 ? '' : 's'));
-      if (payroll !== 'none') features.push((payroll === 'nextday' ? 'Next Day payroll' : 'Payroll') + ' for ' + emp + ' employee' + (emp === 1 ? '' : 's'));
+      if (payroll !== 'none') {
+        features.push(
+          (payroll === 'nextday' ? 'Next Day payroll' : 'Payroll') +
+          ' for ' + emp + ' employee' + (emp === 1 ? '' : 's') +
+          (hasSeparatePayrollEins ? ' across ' + payrollEinCount + ' EINs' : '')
+        );
+      }
       if (tip) features.push('Tip Manager');
       if (task) features.push('Task Manager');
       if (bg) features.push(bg + ' background check' + (bg === 1 ? '' : 's') + ' / month');
@@ -711,7 +795,7 @@
 
       const rows = [];
       rows.push({label: display.planName + ' plan', qty: loc, rate: currency(planPerLoc) + ' / loc', amount: planMonthly});
-      if (payroll !== 'none') rows.push({label: payroll === 'nextday' ? 'Payroll (Next Day)' : 'Payroll', qty: emp, rate: payroll === 'nextday' ? '$49 base + $9/ee' : '$39 base + $6/ee', amount: payrollMonthly});
+      if (payroll !== 'none') rows.push({label: payrollLabel, qty: emp, rate: payrollTableRate, amount: payrollMonthly});
       if (tip) rows.push({label:'Tip Manager', qty:loc, rate:'$25 / loc', amount:tipMonthly});
       if (task) rows.push({label:'Task Manager', qty:loc, rate:'$13 / loc', amount:taskMonthly});
       if (bg) rows.push({label:'Background checks', qty:bg, rate:'$30 / check', amount:bgMonthly});
@@ -719,11 +803,11 @@
       if (ha) rows.push({label:'Hiring Assistant', qty:ha, rate:'$30 / post', amount:hiringMonthly});
 
       return {
-        loc, emp, planPerLoc, planMonthly, tipMonthly, taskMonthly, payrollMonthly, bgMonthly, boostsMonthly, hiringMonthly,
+        loc, emp, planPerLoc, planMonthly, tipMonthly, taskMonthly, payrollMonthly, payrollBaseMonthly, payrollEmployeeMonthly,
+        payrollEinCount, hasSeparatePayrollEins, bgMonthly, boostsMonthly, hiringMonthly,
         recurringMonthly, usageMonthly, totalMonthly, totalAnnual, payrollPromoSavings, corePromoSavings, firstYearWithPromos,
         payrollPromoMonths, hasPayrollPromo, hasCorePromo, hasAnyPromo,
-        payrollLabel: payroll === 'nextday' ? 'Payroll (Next Day)' : 'Payroll',
-        payrollRateText: payroll === 'nextday' ? '$49 base + $9 x ' + emp : '$39 base + $6 x ' + emp,
+        payrollLabel, payrollRateText,
         features,
         rows
       };
@@ -744,6 +828,7 @@
             <div class="summary-line"><span>Billing</span><strong>${display.billingName}</strong></div>
             <div class="summary-line"><span>Locations</span><strong>${calc.loc}</strong></div>
             <div class="summary-line"><span>Employees</span><strong>${calc.emp}</strong></div>
+            ${calc.hasSeparatePayrollEins ? `<div class="summary-line"><span>Payroll EINs</span><strong>${calc.payrollEinCount}</strong></div>` : ''}
           </div>
 
           <div class="summary-total">
@@ -833,6 +918,7 @@
     }
 
     function render(){
+      renderEinUi();
       const calc = compute();
       $('#planNote').textContent = PLANS[plan].n;
       renderSummary(calc);
@@ -854,6 +940,7 @@
       lines.push('Plan: ' + display.planName + ' (' + display.billingName.toLowerCase() + ' pricing)');
       lines.push('Locations: ' + calc.loc);
       lines.push('Employees: ' + calc.emp);
+      if (calc.hasSeparatePayrollEins) lines.push('Payroll EINs: ' + calc.payrollEinCount);
       lines.push('Recurring subtotal: ' + currency(calc.recurringMonthly) + '/mo');
       if (showBreakdown){
         lines.push('');
@@ -893,6 +980,12 @@
       bg = Math.max(0, num($('#bg').value));
       boosts = Math.max(0, num($('#boosts').value));
       ha = Math.max(0, num($('#ha').value));
+      separateEins = locations > 1 && $('#separateEins').checked;
+      if (separateEins){
+        einCount = Math.min(locations, Math.max(2, num($('#einCount').value) || 2));
+      } else {
+        einCount = 1;
+      }
       
       showBreakdown = $('#showBreakdown').checked;
       showPromoMath = $('#showPromoMath').checked;
@@ -928,7 +1021,7 @@
         render();
       });
 
-      ['loc','emp','plan','tip','task','bg','boosts','ha','showBreakdown','showPromoMath','preparedFor','businessName','preparedBy','quoteDate'].forEach(id => {
+      ['loc','emp','plan','tip','task','bg','boosts','ha','separateEins','einCount','showBreakdown','showPromoMath','preparedFor','businessName','preparedBy','quoteDate'].forEach(id => {
         const el = $('#' + id);
         const evt = (el.type === 'checkbox' || el.tagName === 'SELECT' || el.type === 'date') ? 'change' : 'input';
         el.addEventListener(evt, () => {
