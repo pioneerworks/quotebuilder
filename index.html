@@ -116,6 +116,14 @@
     .checkbox-inline input{margin:0}
     .ein-qty{max-width:240px}
 
+    .readonly-field{background:#F8FAFC;color:#475569}
+    .mix-plan-box{margin-top:12px;border:1px solid var(--border);border-radius:16px;padding:14px;background:#FAF7FF;display:grid;gap:12px}
+    .mix-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+    .addon-card{border:1px solid var(--border);border-radius:16px;padding:14px;background:#fff;display:grid;gap:12px}
+    .addon-top{display:flex;align-items:center;justify-content:space-between;gap:12px}
+    .addon-qty-row{display:grid;grid-template-columns:1fr;gap:10px}
+    .addon-qty-row input[disabled]{background:#F8FAFC;color:#94A3B8}
+
     .addons-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
     .addon-box{display:flex;align-items:center;justify-content:space-between;gap:12px;border:1px solid var(--border);border-radius:14px;padding:12px;background:#fff}
     .addon-box span{font-size:14px}
@@ -244,10 +252,12 @@
       .row{grid-template-columns:repeat(2,minmax(0,1fr))}
       .col-span-2{grid-column:span 2}
       .row-3,.row-2,.addons-grid,.setup-grid{grid-template-columns:1fr 1fr}
+      .mix-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
       .setup-grid{grid-template-columns:1fr}
     }
     @media (max-width:640px){
       .row,.row-3,.row-2,.addons-grid,.setup-grid{grid-template-columns:1fr}
+      .mix-grid{grid-template-columns:1fr}
       .col-span-2{grid-column:span 1}
       .quote-meta,.quote-main,.quote-feature-list{grid-template-columns:1fr}
       .brand-row,.quote-title-row{flex-direction:column}
@@ -377,6 +387,7 @@
               <div class="field">
                 <label for="loc">Locations</label>
                 <input type="number" min="1" id="loc" value="1" />
+                <div class="muted" id="locHelp" style="display:none"></div>
               </div>
               <div class="field">
                 <label for="emp">Employees</label>
@@ -391,6 +402,37 @@
                   <option value="aio">All-in-One - $120 / $96 annual</option>
                 </select>
                 <div class="muted" id="planNote">AI scheduling, PTO controls, departments.</div>
+              </div>
+            </div>
+            <div class="switch-row" style="margin-top:14px">
+              <div class="switch-copy">
+                <strong>Mix location plans</strong>
+                <span>Use this when different locations need different core plans on the same quote.</span>
+              </div>
+              <input id="mixPlans" type="checkbox" />
+            </div>
+            <div class="mix-plan-box" id="mixPlanBox" hidden>
+              <div class="setup-heading">
+                <span class="muted" style="font-weight:800">Plan mix</span>
+                <div class="muted">Enter how many locations should be quoted on each plan. Locations will total automatically.</div>
+              </div>
+              <div class="mix-grid">
+                <div class="field">
+                  <label for="mix_basic">Basic locations</label>
+                  <input type="number" min="0" id="mix_basic" placeholder="0" />
+                </div>
+                <div class="field">
+                  <label for="mix_essentials">Essentials locations</label>
+                  <input type="number" min="0" id="mix_essentials" placeholder="0" />
+                </div>
+                <div class="field">
+                  <label for="mix_plus">Plus locations</label>
+                  <input type="number" min="0" id="mix_plus" placeholder="0" />
+                </div>
+                <div class="field">
+                  <label for="mix_aio">All-in-One locations</label>
+                  <input type="number" min="0" id="mix_aio" placeholder="0" />
+                </div>
               </div>
             </div>
             <div class="setup-grid" style="margin-top:14px">
@@ -451,14 +493,34 @@
           <section class="card">
             <h2 class="card-title">Add-ons and usage</h2>
             <div class="addons-grid">
-              <label class="addon-box">
-                <span>Tip Manager <span class="muted">($25 / loc / mo)</span></span>
-                <input type="checkbox" id="tip" />
-              </label>
-              <label class="addon-box">
-                <span>Task Manager <span class="muted">($13 / loc / mo)</span></span>
-                <input type="checkbox" id="task" />
-              </label>
+              <div class="addon-card">
+                <div class="addon-top">
+                  <label class="checkbox-inline" for="tip">
+                    <input type="checkbox" id="tip" />
+                    <span>Tip Manager <span class="muted">($25 / loc / mo)</span></span>
+                  </label>
+                </div>
+                <div class="addon-qty-row">
+                  <div class="field">
+                    <label for="tipQty">Tip Manager locations</label>
+                    <input type="number" min="1" id="tipQty" value="1" disabled />
+                  </div>
+                </div>
+              </div>
+              <div class="addon-card">
+                <div class="addon-top">
+                  <label class="checkbox-inline" for="task">
+                    <input type="checkbox" id="task" />
+                    <span>Task Manager <span class="muted">($13 / loc / mo)</span></span>
+                  </label>
+                </div>
+                <div class="addon-qty-row">
+                  <div class="field">
+                    <label for="taskQty">Task Manager locations</label>
+                    <input type="number" min="1" id="taskQty" value="1" disabled />
+                  </div>
+                </div>
+              </div>
             </div>
 
             <div class="row-3" style="margin-top:14px">
@@ -510,7 +572,7 @@
             </tfoot>
           </table>
         </div>
-        <p class="notes" id="builderFinePrint">Plan pricing is per location per month. Payroll options: Standard ($39 base + $6/employee/mo) or Next Day ($49 base + $9/employee/mo). When separate EINs are selected, payroll base fees are billed once per EIN. Prices are USD and taxes or third-party fees are not included.</p>
+        <p class="notes" id="builderNotes"></p>
       </section>
     </div>
   </main>
@@ -589,7 +651,7 @@
       <section class="quote-summary-only" id="printSummaryOnly" hidden></section>
 
       <footer class="quote-footer">
-        <div><strong>Notes:</strong> <span id="printFinePrint">Plan pricing is per location per month. Payroll options: Standard ($39 base + $6/employee/mo) or Next Day ($49 base + $9/employee/mo). When separate EINs are selected, payroll base fees are billed once per EIN. Prices are USD and taxes or third-party fees are not included.</span></div>
+        <div><strong>Notes:</strong> <span id="printFooterNotes"></span></div>
         <div id="printFooterMeta"></div>
       </footer>
     </div>
@@ -600,7 +662,19 @@
     const $ = (s) => document.querySelector(s);
     const $$ = (s) => Array.from(document.querySelectorAll(s));
     const currency = (n) => Number(n || 0).toLocaleString(undefined, {style:'currency', currency:'USD'});
-    const num = (n) => Number(n || 0);
+    const safeNumber = (value) => {
+      if (value === '' || value === null || value === undefined) return 0;
+      const parsed = Number(value);
+      return Number.isFinite(parsed) ? parsed : 0;
+    };
+    const clamp = (value, min, max) => Math.min(max, Math.max(min, value));
+    const plural = (count) => Number(count) === 1 ? '' : 's';
+    const joinNatural = (items) => {
+      if (!items.length) return '';
+      if (items.length === 1) return items[0];
+      if (items.length === 2) return items[0] + ' and ' + items[1];
+      return items.slice(0, -1).join(', ') + ', and ' + items[items.length - 1];
+    };
 
     const PLANS = {
       basic:{m:0,a:0,n:'For 1 location, up to 10 employees.'},
@@ -608,6 +682,8 @@
       plus:{m:70,a:56,n:'AI scheduling, PTO controls, departments.'},
       aio:{m:120,a:96,n:'Onboarding, labor cost, HR and compliance.'}
     };
+    const PLAN_ORDER = ['basic','essentials','plus','aio'];
+    const PLAN_NAMES = {basic:'Basic', essentials:'Essentials', plus:'Plus', aio:'All-in-One'};
 
     const formatDate = (value) => {
       if (!value) return new Date().toLocaleDateString(undefined,{year:'numeric',month:'long',day:'numeric'});
@@ -629,8 +705,12 @@
     let employees = 10;
     let corePromo = 0;
     let payroll = 'standard';
+    let mixPlans = false;
+    let planMix = {basic:0, essentials:0, plus:1, aio:0};
     let tip = false;
     let task = false;
+    let tipQty = 1;
+    let taskQty = 1;
     let bg = 0;
     let boosts = 0;
     let ha = 0;
@@ -646,12 +726,34 @@
 
     const display = {
       get planName(){
-        return {basic:'Basic', essentials:'Essentials', plus:'Plus', aio:'All-in-One'}[plan];
+        return mixPlans ? 'Mixed plans' : PLAN_NAMES[plan];
       },
       get billingName(){
         return annual ? 'Annual' : 'Monthly';
       }
     };
+
+    function planRate(key){
+      return annual ? PLANS[key].a : PLANS[key].m;
+    }
+
+    function getPlanMixTotal(){
+      return PLAN_ORDER.reduce((sum, key) => sum + Math.max(0, Math.floor(safeNumber(planMix[key]))), 0);
+    }
+
+    function getMixPlansFromCurrentSelection(){
+      const next = {basic:0, essentials:0, plus:0, aio:0};
+      next[plan] = Math.max(1, Math.floor(safeNumber(locations)) || 1);
+      return next;
+    }
+
+    function readInt(id, currentValue, min, max){
+      const el = $('#' + id);
+      if (!el) return currentValue;
+      const raw = el.value.trim();
+      if (raw === '') return currentValue;
+      return clamp(Math.floor(safeNumber(raw)), min, max);
+    }
 
     function setStatus(message, kind){
       const el = $('#status');
@@ -668,29 +770,6 @@
 
     function activateSeg(selector, value){
       $$(selector + ' button').forEach(btn => btn.classList.toggle('active', btn.dataset.val === String(value)));
-    }
-
-    function renderEinUi(){
-      const section = $('#einSection');
-      const checkbox = $('#separateEins');
-      const qtyWrap = $('#einQtyWrap');
-      const qtyInput = $('#einCount');
-      const help = $('#einHelp');
-      const showSection = locations > 1;
-      section.hidden = !showSection;
-      if (!showSection){
-        separateEins = false;
-        checkbox.checked = false;
-        qtyWrap.hidden = true;
-        return;
-      }
-      checkbox.checked = separateEins;
-      qtyInput.max = String(Math.max(2, locations));
-      qtyInput.value = String(separateEins ? einCount : Math.min(Math.max(2, Number(qtyInput.value) || 2), Math.max(2, locations)));
-      qtyWrap.hidden = !separateEins;
-      help.textContent = separateEins
-        ? 'Payroll base fees will be billed once per EIN (' + einCount + ' total).'
-        : 'Payroll base fees will be billed once per EIN if separate EINs are selected.';
     }
 
     async function copyToClipboard(text){
@@ -737,94 +816,244 @@
       };
     }
 
+    function getFinePrint(hasPayroll){
+      if (!hasPayroll){
+        return 'Plan pricing is per location per month. Prices are USD and taxes or third-party fees are not included.';
+      }
+      return 'Plan pricing is per location per month. Payroll options: Standard ($39 base + $6/employee/mo) or Next Day ($49 base + $9/employee/mo). When separate EINs are selected, payroll base fees are billed once per EIN. Prices are USD and taxes or third-party fees are not included.';
+    }
+
     function compute(){
-      const loc = Math.max(1, Number(locations) || 1);
-      const emp = Math.max(0, Number(employees) || 0);
-      const planPerLoc = annual ? PLANS[plan].a : PLANS[plan].m;
-      const planMonthly = planPerLoc * loc;
-      const tipMonthly = tip ? 25 * loc : 0;
-      const taskMonthly = task ? 13 * loc : 0;
-      const payrollBase = payroll === 'none' ? 0 : (payroll === 'nextday' ? 49 : 39);
-      const payrollRate = payroll === 'none' ? 0 : (payroll === 'nextday' ? 9 : 6);
-      const payrollEinCount = payroll === 'none' ? 0 : (separateEins && loc > 1 ? Math.min(loc, Math.max(2, Number(einCount) || 2)) : 1);
+      const emp = Math.max(0, Math.floor(safeNumber(employees)) || 0);
+      const singleLoc = Math.max(1, Math.floor(safeNumber(locations)) || 1);
+      const mixCounts = {};
+      PLAN_ORDER.forEach(key => {
+        mixCounts[key] = Math.max(0, Math.floor(safeNumber(planMix[key])) || 0);
+      });
+      const mixedLocationTotal = PLAN_ORDER.reduce((sum, key) => sum + mixCounts[key], 0);
+      const loc = mixPlans ? mixedLocationTotal : singleLoc;
+
+      const selectedPlanLines = [];
+      if (mixPlans){
+        PLAN_ORDER.forEach(key => {
+          const qty = mixCounts[key];
+          if (qty > 0){
+            const rate = planRate(key);
+            selectedPlanLines.push({key, label: PLAN_NAMES[key], qty, rate, amount: qty * rate});
+          }
+        });
+      } else {
+        const rate = planRate(plan);
+        selectedPlanLines.push({key: plan, label: PLAN_NAMES[plan], qty: singleLoc, rate, amount: singleLoc * rate});
+      }
+
+      const planRows = selectedPlanLines.map(line => ({
+        category: 'Plan',
+        label: line.label + ' plan',
+        qty: line.qty,
+        rate: currency(line.rate) + ' / loc',
+        amount: line.amount
+      }));
+      const planMonthly = selectedPlanLines.reduce((sum, line) => sum + line.amount, 0);
+      const eligibleCoreMonthly = selectedPlanLines.reduce((sum, line) => sum + (line.key === 'basic' ? 0 : line.amount), 0);
+      const planMixCompact = selectedPlanLines.map(line => line.qty + ' ' + line.label).join(', ');
+      const planMixSentence = selectedPlanLines.length
+        ? joinNatural(selectedPlanLines.map(line => line.qty + ' ' + line.label + ' location' + plural(line.qty)))
+        : 'No locations selected yet.';
+      const planSummaryLabel = mixPlans ? 'Mixed plans' : PLAN_NAMES[plan];
+      const planSummaryCopy = mixPlans
+        ? (selectedPlanLines.length ? 'Plan mix: ' + planMixSentence + '.' : 'Choose how many locations should be on each plan.')
+        : PLANS[plan].n;
+
+      const tipUnits = tip ? (loc > 0 ? Math.min(Math.max(1, Math.floor(safeNumber(tipQty)) || 1), loc) : 0) : 0;
+      const taskUnits = task ? (loc > 0 ? Math.min(Math.max(1, Math.floor(safeNumber(taskQty)) || 1), loc) : 0) : 0;
+      const tipMonthly = tip ? 25 * tipUnits : 0;
+      const taskMonthly = task ? 13 * taskUnits : 0;
+
+      const payrollEnabled = payroll !== 'none';
+      const payrollBase = payrollEnabled ? (payroll === 'nextday' ? 49 : 39) : 0;
+      const payrollRate = payrollEnabled ? (payroll === 'nextday' ? 9 : 6) : 0;
+      const payrollEinCount = payrollEnabled
+        ? (separateEins && loc > 1 ? Math.min(Math.max(2, Math.floor(safeNumber(einCount)) || 2), loc) : 1)
+        : 0;
       const payrollBaseMonthly = payrollBase * payrollEinCount;
       const payrollEmployeeMonthly = payrollRate * emp;
-      const payrollMonthly = payroll === 'none' ? 0 : payrollBaseMonthly + payrollEmployeeMonthly;
-      const bgMonthly = 30 * bg;
-      const boostsMonthly = 79 * boosts;
-      const hiringMonthly = 30 * ha;
+      const payrollMonthly = payrollEnabled ? payrollBaseMonthly + payrollEmployeeMonthly : 0;
+
+      const bgQty = Math.max(0, Math.floor(safeNumber(bg)) || 0);
+      const boostQty = Math.max(0, Math.floor(safeNumber(boosts)) || 0);
+      const haQty = Math.max(0, Math.floor(safeNumber(ha)) || 0);
+      const bgMonthly = 30 * bgQty;
+      const boostsMonthly = 79 * boostQty;
+      const hiringMonthly = 30 * haQty;
+
       const recurringMonthly = planMonthly + tipMonthly + taskMonthly + payrollMonthly;
       const usageMonthly = bgMonthly + boostsMonthly + hiringMonthly;
       const totalMonthly = recurringMonthly + usageMonthly;
       const totalAnnual = totalMonthly * 12;
-      const hasPayrollPromo = payroll !== 'none' && payrollPromoMonths > 0;
-      const hasCorePromo = plan !== 'basic' && corePromo > 0;
+      const hasPayrollPromo = payrollEnabled && payrollPromoMonths > 0;
+      const hasCorePromo = eligibleCoreMonthly > 0 && corePromo > 0;
       const payrollPromoSavings = hasPayrollPromo ? payrollMonthly * payrollPromoMonths : 0;
-      const corePromoSavings = hasCorePromo ? planMonthly * corePromo : 0;
+      const corePromoSavings = hasCorePromo ? eligibleCoreMonthly * corePromo : 0;
       const firstYearWithPromos = totalAnnual - payrollPromoSavings - corePromoSavings;
       const hasAnyPromo = hasPayrollPromo || hasCorePromo;
       const hasSeparatePayrollEins = payrollEinCount > 1;
 
       const payrollName = payroll === 'nextday' ? 'Payroll (Next Day)' : 'Payroll';
       const payrollLabel = hasSeparatePayrollEins ? payrollName + ' - ' + payrollEinCount + ' EINs' : payrollName;
-      const payrollRateText = payroll === 'none'
-        ? ''
-        : (payroll === 'nextday'
+      const payrollRateText = payrollEnabled
+        ? (payroll === 'nextday'
           ? (hasSeparatePayrollEins ? '$49 base x ' + payrollEinCount + ' EINs + $9 x ' + emp : '$49 base + $9 x ' + emp)
-          : (hasSeparatePayrollEins ? '$39 base x ' + payrollEinCount + ' EINs + $6 x ' + emp : '$39 base + $6 x ' + emp));
-      const payrollTableRate = payroll === 'none'
-        ? ''
-        : (payroll === 'nextday'
+          : (hasSeparatePayrollEins ? '$39 base x ' + payrollEinCount + ' EINs + $6 x ' + emp : '$39 base + $6 x ' + emp))
+        : '';
+      const payrollTableRate = payrollEnabled
+        ? (payroll === 'nextday'
           ? (hasSeparatePayrollEins ? '$49 base x ' + payrollEinCount + ' EINs + $9/ee' : '$49 base + $9/ee')
-          : (hasSeparatePayrollEins ? '$39 base x ' + payrollEinCount + ' EINs + $6/ee' : '$39 base + $6/ee'));
+          : (hasSeparatePayrollEins ? '$39 base x ' + payrollEinCount + ' EINs + $6/ee' : '$39 base + $6/ee'))
+        : '';
 
       const features = [];
-      features.push(display.planName + ' plan for ' + loc + ' location' + (loc === 1 ? '' : 's'));
-      if (payroll !== 'none') {
-        features.push(
-          (payroll === 'nextday' ? 'Next Day payroll' : 'Payroll') +
-          ' for ' + emp + ' employee' + (emp === 1 ? '' : 's') +
-          (hasSeparatePayrollEins ? ' across ' + payrollEinCount + ' EINs' : '')
-        );
+      if (selectedPlanLines.length){
+        selectedPlanLines.forEach(line => features.push(line.qty + ' ' + line.label + ' location' + plural(line.qty)));
+      } else {
+        features.push('Choose the locations and plans for this quote.');
       }
-      if (tip) features.push('Tip Manager');
-      if (task) features.push('Task Manager');
-      if (bg) features.push(bg + ' background check' + (bg === 1 ? '' : 's') + ' / month');
-      if (boosts) features.push(boosts + ' job post boost' + (boosts === 1 ? '' : 's') + ' / month');
-      if (ha) features.push(ha + ' Hiring Assistant post' + (ha === 1 ? '' : 's') + ' / month');
+      if (payrollEnabled) features.push((payroll === 'nextday' ? 'Next Day payroll' : 'Payroll') + ' for ' + emp + ' employee' + plural(emp) + (hasSeparatePayrollEins ? ' across ' + payrollEinCount + ' EINs' : ''));
+      if (tip && tipUnits > 0) features.push('Tip Manager for ' + tipUnits + ' location' + plural(tipUnits));
+      if (task && taskUnits > 0) features.push('Task Manager for ' + taskUnits + ' location' + plural(taskUnits));
+      if (bgQty) features.push(bgQty + ' background check' + plural(bgQty) + ' / month');
+      if (boostQty) features.push(boostQty + ' job post boost' + plural(boostQty) + ' / month');
+      if (haQty) features.push(haQty + ' Hiring Assistant post' + plural(haQty) + ' / month');
 
-      const rows = [];
-      rows.push({label: display.planName + ' plan', qty: loc, rate: currency(planPerLoc) + ' / loc', amount: planMonthly});
-      if (payroll !== 'none') rows.push({label: payrollLabel, qty: emp, rate: payrollTableRate, amount: payrollMonthly});
-      if (tip) rows.push({label:'Tip Manager', qty:loc, rate:'$25 / loc', amount:tipMonthly});
-      if (task) rows.push({label:'Task Manager', qty:loc, rate:'$13 / loc', amount:taskMonthly});
-      if (bg) rows.push({label:'Background checks', qty:bg, rate:'$30 / check', amount:bgMonthly});
-      if (boosts) rows.push({label:'Job post boosts', qty:boosts, rate:'$79 / post', amount:boostsMonthly});
-      if (ha) rows.push({label:'Hiring Assistant', qty:ha, rate:'$30 / post', amount:hiringMonthly});
+      const rows = [...planRows];
+      if (payrollEnabled) rows.push({category:'Payroll', label: payrollLabel, qty: emp, rate: payrollTableRate, amount: payrollMonthly});
+      if (tip && tipUnits > 0) rows.push({category:'Recurring Add-on', label:'Tip Manager', qty: tipUnits, rate:'$25 / loc', amount: tipMonthly});
+      if (task && taskUnits > 0) rows.push({category:'Recurring Add-on', label:'Task Manager', qty: taskUnits, rate:'$13 / loc', amount: taskMonthly});
+      if (bgQty) rows.push({category:'Usage', label:'Background checks', qty: bgQty, rate:'$30 / check', amount: bgMonthly});
+      if (boostQty) rows.push({category:'Usage', label:'Job post boosts', qty: boostQty, rate:'$79 / post', amount: boostsMonthly});
+      if (haQty) rows.push({category:'Usage', label:'Hiring Assistant', qty: haQty, rate:'$30 / post', amount: hiringMonthly});
 
       return {
-        loc, emp, planPerLoc, planMonthly, tipMonthly, taskMonthly, payrollMonthly, payrollBaseMonthly, payrollEmployeeMonthly,
-        payrollEinCount, hasSeparatePayrollEins, bgMonthly, boostsMonthly, hiringMonthly,
-        recurringMonthly, usageMonthly, totalMonthly, totalAnnual, payrollPromoSavings, corePromoSavings, firstYearWithPromos,
-        payrollPromoMonths, hasPayrollPromo, hasCorePromo, hasAnyPromo,
-        payrollLabel, payrollRateText,
+        loc,
+        emp,
+        selectedPlanLines,
+        planSummaryLabel,
+        planSummaryCopy,
+        planMixCompact,
+        planMonthly,
+        tipQty: tipUnits,
+        taskQty: taskUnits,
+        tipMonthly,
+        taskMonthly,
+        payrollMonthly,
+        payrollEinCount,
+        hasSeparatePayrollEins,
+        bgMonthly,
+        boostsMonthly,
+        hiringMonthly,
+        recurringMonthly,
+        usageMonthly,
+        totalMonthly,
+        totalAnnual,
+        payrollPromoSavings,
+        corePromoSavings,
+        firstYearWithPromos,
+        payrollPromoMonths,
+        hasPayrollPromo,
+        hasCorePromo,
+        hasAnyPromo,
+        hasPayroll: payrollEnabled,
+        payrollLabel,
+        payrollRateText,
         features,
         rows
       };
     }
 
+    function renderPlanUi(calc){
+      const locInput = $('#loc');
+      const locHelp = $('#locHelp');
+      $('#mixPlans').checked = mixPlans;
+      $('#mixPlanBox').hidden = !mixPlans;
+      $('#plan').disabled = mixPlans;
+      locInput.readOnly = mixPlans;
+      locInput.classList.toggle('readonly-field', mixPlans);
+      if (mixPlans){
+        locInput.value = calc.loc ? String(calc.loc) : '';
+        locHelp.textContent = 'Locations are calculated from the plan mix below.';
+        locHelp.style.display = 'block';
+      } else if (locHelp) {
+        locHelp.style.display = 'none';
+        if (document.activeElement !== locInput && locInput.value.trim() === ''){
+          locInput.value = String(locations);
+        }
+      }
+      PLAN_ORDER.forEach(key => {
+        const input = $('#mix_' + key);
+        if (input && document.activeElement !== input){
+          input.value = planMix[key] ? String(planMix[key]) : '';
+        }
+      });
+      $('#plan').value = plan;
+      $('#planNote').textContent = mixPlans
+        ? (calc.selectedPlanLines.length ? 'Plan mix: ' + calc.planMixCompact + '.' : 'Choose how many locations should be on each plan.')
+        : PLANS[plan].n;
+    }
+
+    function renderAddonUi(calc){
+      const maxQty = Math.max(1, calc.loc || 1);
+      const tipInput = $('#tipQty');
+      const taskInput = $('#taskQty');
+      tipInput.disabled = !tip || calc.loc === 0;
+      taskInput.disabled = !task || calc.loc === 0;
+      tipInput.max = String(maxQty);
+      taskInput.max = String(maxQty);
+      if (document.activeElement !== tipInput) tipInput.value = String(Math.max(1, calc.tipQty || 1));
+      if (document.activeElement !== taskInput) taskInput.value = String(Math.max(1, calc.taskQty || 1));
+    }
+
+    function renderEinUi(calc){
+      const section = $('#einSection');
+      const checkbox = $('#separateEins');
+      const qtyWrap = $('#einQtyWrap');
+      const qtyInput = $('#einCount');
+      const help = $('#einHelp');
+      const showSection = calc.hasPayroll && calc.loc > 1;
+      section.hidden = !showSection;
+      if (!showSection){
+        checkbox.checked = false;
+        qtyWrap.hidden = true;
+        return;
+      }
+      checkbox.checked = separateEins;
+      qtyWrap.hidden = !separateEins;
+      qtyInput.max = String(Math.max(2, calc.loc));
+      if (document.activeElement !== qtyInput) qtyInput.value = String(Math.max(2, calc.payrollEinCount || 2));
+      help.textContent = separateEins
+        ? 'Payroll base fees will be billed once per EIN (' + calc.payrollEinCount + ' total).'
+        : 'Payroll base fees will be billed once per EIN if separate EINs are selected.';
+    }
+
+    function renderNotes(calc){
+      const text = getFinePrint(calc.hasPayroll);
+      $('#builderNotes').textContent = text;
+      $('#printFooterNotes').textContent = text;
+    }
+
     function renderSummary(calc){
       const badges = [];
       badges.push(display.billingName + ' pricing');
-      if (payroll !== 'none') badges.push(calc.payrollLabel);
-      if (tip) badges.push('Tip Manager');
-      if (task) badges.push('Task Manager');
+      if (mixPlans && calc.selectedPlanLines.length) badges.push('Mixed plans');
+      if (calc.hasPayroll) badges.push(calc.payrollLabel);
+      if (tip) badges.push('Tip Manager - ' + calc.tipQty + ' loc');
+      if (task) badges.push('Task Manager - ' + calc.taskQty + ' loc');
       if (bg || boosts || ha) badges.push('Usage-based items');
 
       $('#summary').innerHTML = `
         <div class="summary-grid">
           <div class="summary-top">
-            <div class="summary-line"><span>Plan</span><strong>${display.planName}</strong></div>
+            <div class="summary-line"><span>Plan</span><strong>${calc.planSummaryLabel}</strong></div>
+            ${mixPlans && calc.selectedPlanLines.length ? `<div class="summary-line"><span>Plan mix</span><strong>${calc.planMixCompact}</strong></div>` : ''}
             <div class="summary-line"><span>Billing</span><strong>${display.billingName}</strong></div>
             <div class="summary-line"><span>Locations</span><strong>${calc.loc}</strong></div>
             <div class="summary-line"><span>Employees</span><strong>${calc.emp}</strong></div>
@@ -850,13 +1079,6 @@
       `;
     }
 
-    function getFinePrint(calc){
-      if (payroll === 'none') {
-        return 'Plan pricing is per location per month. Prices are USD and taxes or third-party fees are not included.';
-      }
-      return 'Plan pricing is per location per month. Payroll options: Standard ($39 base + $6/employee/mo) or Next Day ($49 base + $9/employee/mo). When separate EINs are selected, payroll base fees are billed once per EIN. Prices are USD and taxes or third-party fees are not included.';
-    }
-
     function renderBreakdown(calc){
       const card = $('#breakdownCard');
       card.hidden = !showBreakdown;
@@ -874,7 +1096,6 @@
       const showFirstYear = showPromoMath && calc.hasAnyPromo;
       $('#fyRow').hidden = !showFirstYear;
       $('#firstYear').textContent = currency(calc.firstYearWithPromos);
-      $('#builderFinePrint').textContent = getFinePrint(calc);
     }
 
     function renderPrint(calc){
@@ -886,8 +1107,8 @@
         {k:'Quote date', v:meta.quoteDate}
       ];
       $('#printMeta').innerHTML = metaItems.map(item => `<div class="meta-card"><div class="k">${item.k}</div><div class="v">${item.v}</div></div>`).join('');
-      $('#printPlanName').textContent = display.planName;
-      $('#printPlanCopy').textContent = PLANS[plan].n;
+      $('#printPlanName').textContent = calc.planSummaryLabel;
+      $('#printPlanCopy').textContent = calc.planSummaryCopy;
       $('#printBilling').textContent = display.billingName + (annual ? ' plan rate' : '');
       $('#printFeatures').innerHTML = calc.features.map(feature => `<div class="quote-feature"><span class="feature-dot"></span><span>${feature}</span></div>`).join('');
       $('#printMonthlyTotal').textContent = currency(calc.totalMonthly);
@@ -897,9 +1118,7 @@
       const promoVisible = showPromoMath && calc.hasAnyPromo;
       $('#printPromoLine').style.display = promoVisible ? '' : 'none';
       $('#printFirstYear').textContent = currency(calc.firstYearWithPromos);
-      $('#printMonthlyCopy').textContent = showBreakdown
-        ? 'Includes selected plans, add-ons, and any usage-based items shown below.'
-        : '';
+      $('#printMonthlyCopy').textContent = showBreakdown ? 'Includes selected plans, add-ons, and any usage-based items shown below.' : '';
       $('#printMonthlyCopy').style.display = $('#printMonthlyCopy').textContent ? '' : 'none';
 
       const promoPieces = [];
@@ -922,14 +1141,15 @@
       $('#printUsageFoot').style.display = calc.usageMonthly > 0 ? '' : 'none';
       $('#printBreakdownSection').style.display = showBreakdown ? '' : 'none';
       $('#printSummaryOnly').style.display = 'none';
-      $('#printFinePrint').textContent = getFinePrint(calc);
       $('#printFooterMeta').textContent = 'Billing: ' + display.billingName + '. Generated by ' + meta.preparedBy + ' for ' + meta.preparedFor + '.';
     }
 
     function render(){
-      renderEinUi();
       const calc = compute();
-      $('#planNote').textContent = PLANS[plan].n;
+      renderPlanUi(calc);
+      renderAddonUi(calc);
+      renderEinUi(calc);
+      renderNotes(calc);
       renderSummary(calc);
       renderBreakdown(calc);
       renderPrint(calc);
@@ -946,7 +1166,8 @@
       lines.push('Prepared by: ' + meta.preparedBy);
       lines.push('Quote date: ' + meta.quoteDate);
       lines.push('');
-      lines.push('Plan: ' + display.planName + ' (' + display.billingName.toLowerCase() + ' pricing)');
+      lines.push('Plan: ' + calc.planSummaryLabel + ' (' + display.billingName.toLowerCase() + ' pricing)');
+      if (mixPlans && calc.selectedPlanLines.length) lines.push('Plan mix: ' + calc.planMixCompact);
       lines.push('Locations: ' + calc.loc);
       lines.push('Employees: ' + calc.emp);
       if (calc.hasSeparatePayrollEins) lines.push('Payroll EINs: ' + calc.payrollEinCount);
@@ -959,43 +1180,38 @@
       lines.push('');
       lines.push('Total: ' + currency(calc.totalMonthly) + '/mo');
       lines.push('Annualized: ' + currency(calc.totalAnnual) + '/yr');
-      if (showPromoMath && calc.hasAnyPromo) {
-        lines.push('First year with promos: ' + currency(calc.firstYearWithPromos));
-      }
+      if (showPromoMath && calc.hasAnyPromo) lines.push('First year with promos: ' + currency(calc.firstYearWithPromos));
       return lines.join('\n');
     }
 
     function quoteCSV(calc){
       const rows = [['Category','Item','Qty','Amount/mo']];
-      rows.push(['Plan', display.planName, String(calc.loc), currency(calc.planMonthly)]);
-      if (payroll !== 'none') rows.push(['Plan', calc.payrollLabel, String(calc.emp), currency(calc.payrollMonthly)]);
-      if (tip) rows.push(['Recurring Add-on', 'Tip Manager', String(calc.loc), currency(calc.tipMonthly)]);
-      if (task) rows.push(['Recurring Add-on', 'Task Manager', String(calc.loc), currency(calc.taskMonthly)]);
-      if (bg) rows.push(['Usage', 'Background checks', String(bg), currency(calc.bgMonthly)]);
-      if (boosts) rows.push(['Usage', 'Job post boosts', String(boosts), currency(calc.boostsMonthly)]);
-      if (ha) rows.push(['Usage', 'Hiring Assistant', String(ha), currency(calc.hiringMonthly)]);
+      calc.rows.forEach(row => rows.push([row.category, row.label, String(row.qty), currency(row.amount)]));
       rows.push(['', 'Recurring subtotal', '', currency(calc.recurringMonthly)]);
+      if (calc.usageMonthly > 0) rows.push(['', 'Usage subtotal', '', currency(calc.usageMonthly)]);
       rows.push(['', 'Total / month', '', currency(calc.totalMonthly)]);
       if (showPromoMath && calc.hasAnyPromo) rows.push(['', 'First year with promos', '', currency(calc.firstYearWithPromos)]);
       return buildCSV(rows);
     }
 
     function syncStateFromInputs(){
-      locations = Math.max(1, num($('#loc').value));
-      employees = Math.max(0, num($('#emp').value));
+      const nextMixPlans = $('#mixPlans').checked;
+      if (!nextMixPlans) locations = readInt('loc', locations, 1, 99999);
+      mixPlans = nextMixPlans;
+      employees = readInt('emp', employees, 0, 999999);
       plan = $('#plan').value;
+      PLAN_ORDER.forEach(key => {
+        planMix[key] = readInt('mix_' + key, planMix[key], 0, 99999);
+      });
       tip = $('#tip').checked;
       task = $('#task').checked;
-      bg = Math.max(0, num($('#bg').value));
-      boosts = Math.max(0, num($('#boosts').value));
-      ha = Math.max(0, num($('#ha').value));
-      separateEins = locations > 1 && $('#separateEins').checked;
-      if (separateEins){
-        einCount = Math.min(locations, Math.max(2, num($('#einCount').value) || 2));
-      } else {
-        einCount = 1;
-      }
-      
+      tipQty = readInt('tipQty', tipQty, 1, 99999);
+      taskQty = readInt('taskQty', taskQty, 1, 99999);
+      bg = readInt('bg', bg, 0, 999999);
+      boosts = readInt('boosts', boosts, 0, 999999);
+      ha = readInt('ha', ha, 0, 999999);
+      separateEins = $('#separateEins').checked;
+      einCount = readInt('einCount', einCount, 2, 99999);
       showBreakdown = $('#showBreakdown').checked;
       showPromoMath = $('#showPromoMath').checked;
       preparedFor = $('#preparedFor').value;
@@ -1005,6 +1221,11 @@
     }
 
     function bindInputs(){
+      const handleInput = () => {
+        syncStateFromInputs();
+        render();
+      };
+
       $('#billingSeg').addEventListener('click', (e) => {
         if (e.target.tagName !== 'BUTTON') return;
         annual = e.target.dataset.val === 'annual';
@@ -1029,14 +1250,41 @@
         activateSeg('#payrollPromoSeg', payrollPromoMonths);
         render();
       });
+      $('#mixPlans').addEventListener('change', () => {
+        const turningOn = $('#mixPlans').checked;
+        if (turningOn && !mixPlans){
+          planMix = getMixPlansFromCurrentSelection();
+        }
+        if (!turningOn && mixPlans){
+          const total = getPlanMixTotal();
+          if (total > 0) locations = total;
+          const firstSelected = PLAN_ORDER.find(key => planMix[key] > 0);
+          if (firstSelected) plan = firstSelected;
+        }
+        syncStateFromInputs();
+        render();
+      });
+      $('#tip').addEventListener('change', () => {
+        if ($('#tip').checked && !safeNumber($('#tipQty').value)) $('#tipQty').value = '1';
+        syncStateFromInputs();
+        render();
+      });
+      $('#task').addEventListener('change', () => {
+        if ($('#task').checked && !safeNumber($('#taskQty').value)) $('#taskQty').value = '1';
+        syncStateFromInputs();
+        render();
+      });
 
-      ['loc','emp','plan','tip','task','bg','boosts','ha','separateEins','einCount','showBreakdown','showPromoMath','preparedFor','businessName','preparedBy','quoteDate'].forEach(id => {
+      ['plan','separateEins','showBreakdown','showPromoMath','quoteDate'].forEach(id => {
+        $('#' + id).addEventListener('change', handleInput);
+      });
+      ['loc','emp','mix_basic','mix_essentials','mix_plus','mix_aio','tipQty','taskQty','bg','boosts','ha','einCount'].forEach(id => {
         const el = $('#' + id);
-        const evt = (el.type === 'checkbox' || el.tagName === 'SELECT' || el.type === 'date') ? 'change' : 'input';
-        el.addEventListener(evt, () => {
-          syncStateFromInputs();
-          render();
-        });
+        el.addEventListener('input', handleInput);
+        el.addEventListener('change', handleInput);
+      });
+      ['preparedFor','businessName','preparedBy'].forEach(id => {
+        $('#' + id).addEventListener('input', handleInput);
       });
 
       $('#copyQuote').addEventListener('click', async () => {
@@ -1087,6 +1335,7 @@
 
     init();
   })();
-  </script>
+</script>
+
 </body>
 </html>
