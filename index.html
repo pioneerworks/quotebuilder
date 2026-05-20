@@ -131,7 +131,7 @@
 
     .time-card[hidden],.breakdown-card[hidden],.mix-plan-fields[hidden],.single-plan-fields[hidden],.addon-qty[hidden],.time-body[hidden],.ein-box[hidden]{display:none !important}
     .time-body{display:grid;gap:14px;margin-top:14px}
-    .metrics-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:12px}
+    .metrics-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
     .metric-card{border:1px solid var(--border);border-radius:16px;padding:18px 20px;background:#FCFBFF;display:grid;gap:8px;align-content:start;min-height:160px}
     .metric-label{font-size:12px;color:#64748B;font-weight:700}
     .metric-value{font-size:clamp(16px,1.8vw,22px);line-height:1.12;font-weight:800;overflow-wrap:anywhere;word-break:break-word;hyphens:auto;max-width:100%}
@@ -236,6 +236,7 @@
     .quote-metric{border:1px solid #E7E3EE;border-radius:16px;padding:12px;background:#FCFBFF}
     .quote-metric .k{font-size:11px;color:#64748B;font-weight:800;text-transform:uppercase;letter-spacing:.06em}
     .quote-metric .v{margin-top:6px;font-size:16px;font-weight:800;line-height:1.15;overflow-wrap:anywhere;word-break:break-word;hyphens:auto}
+    .quote-metric .sub{margin-top:6px;font-size:11px;color:#64748B;line-height:1.35}
     .quote-roi-card{border:1px solid #E7E3EE;border-radius:18px;padding:16px;background:#fff}
     .quote-roi-card h4{margin:0 0 8px;font-size:15px;font-weight:800}
     .quote-stat-stack{display:grid;gap:8px}
@@ -249,6 +250,7 @@
     .quote-footer strong{color:var(--deep)}
 
     @media (max-width:1080px){
+      .metrics-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
       .quote-metrics{grid-template-columns:repeat(3,minmax(0,1fr))}
     }
     @media (max-width:980px){
@@ -261,6 +263,7 @@
       .plan-mix-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
     }
     @media (max-width:640px){
+      .metrics-grid{grid-template-columns:1fr}
       .row,.row-3,.row-2,.addons-grid,.setup-grid,.roi-grid,.quote-roi-grid,.quote-metrics,.plan-mix-grid{grid-template-columns:1fr}
       .col-span-2{grid-column:span 1}
       .quote-meta,.quote-main,.quote-feature-list{grid-template-columns:1fr}
@@ -309,6 +312,7 @@
       .quote-metric{padding:8px;border-radius:12px}
       .quote-metric .k{font-size:8px}
       .quote-metric .v{font-size:14px;margin-top:4px}
+      .quote-metric .sub{margin-top:4px;font-size:8.8px;line-height:1.3;color:#64748B}
       .quote-roi-card{padding:10px;border-radius:12px}
       .quote-roi-card h4{font-size:12px;margin-bottom:6px}
       .quote-roi-line,.quote-stat{font-size:10px}
@@ -1372,13 +1376,30 @@
 
       $('#printTimeSection').style.display = state.showTimeTheft ? '' : 'none';
       if (state.showTimeTheft) {
+        const combinedUpliftPct = (timeCalc.combinedRate * 100).toFixed(2) + '%';
         const metrics = [
-          {k:'Daily theft / employee', v:currency(timeCalc.dailyTimeTheftPerEmployee)},
-          {k:'Daily theft / team', v:currency(timeCalc.dailyTimeTheftTeam)},
-          {k:'Weekly theft / team', v:currency(timeCalc.weeklyTimeTheftTeam)},
-          {k:'Annual theft + taxes', v:currency(timeCalc.annualTimeTheftTeam)}
+          {
+            k:'Daily theft / employee',
+            v:currency(timeCalc.dailyTimeTheftPerEmployee),
+            sub:currency(timeCalc.rate) + ' x ' + numberFormat(timeCalc.hoursPerDay) + ' hrs/day = ' + currency(timeCalc.dailyBasePerEmployee) + ', then x ' + combinedUpliftPct
+          },
+          {
+            k:'Daily theft / team',
+            v:currency(timeCalc.dailyTimeTheftTeam),
+            sub:numberFormat(timeCalc.ee) + ' employees x ' + currency(timeCalc.rate) + '/hr x ' + numberFormat(timeCalc.hoursPerDay) + ' hrs/day, then x ' + combinedUpliftPct
+          },
+          {
+            k:'Weekly theft / team',
+            v:currency(timeCalc.weeklyTimeTheftTeam),
+            sub:numberFormat(timeCalc.ee) + ' employees x ' + currency(timeCalc.rate) + '/hr x ' + numberFormat(timeCalc.avgHoursPerWeek) + ' hrs/week, then x ' + combinedUpliftPct
+          },
+          {
+            k:'Annual theft + taxes',
+            v:currency(timeCalc.annualTimeTheftTeam),
+            sub:numberFormat(timeCalc.ee) + ' employees x ' + currency(timeCalc.rate) + '/hr x ' + numberFormat(timeCalc.avgHoursPerWeek * 52) + ' hrs/year, then x ' + combinedUpliftPct
+          }
         ];
-        $('#printTimeMetrics').innerHTML = metrics.map(item => '<div class="quote-metric"><div class="k">' + item.k + '</div><div class="v">' + item.v + '</div></div>').join('');
+        $('#printTimeMetrics').innerHTML = metrics.map(item => '<div class="quote-metric"><div class="k">' + item.k + '</div><div class="v">' + item.v + '</div><div class="sub">' + item.sub + '</div></div>').join('');
         const roiLines = [
           {label:timeCalc.selectedRow.label + ' / month', value:currency(calc.totalMonthly)},
           {label:timeCalc.selectedRow.label + ' / year', value:currency(calc.totalAnnual)},
