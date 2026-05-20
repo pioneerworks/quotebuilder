@@ -59,9 +59,8 @@
     .eyebrow{font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:rgba(255,255,255,.72)}
     .brand-name{font-size:18px;font-weight:800;color:var(--white)}
     .hero h1{margin:0;font-family:"Anton",Impact,Haettenschweiler,"Arial Narrow Bold",sans-serif;font-size:clamp(2rem,4vw,3.1rem);letter-spacing:.02em;line-height:.95;text-transform:uppercase;font-weight:400}
-    .hero p{margin:0;max-width:700px;color:rgba(255,255,255,.84)}
+    .hero p{margin:0;max-width:720px;color:rgba(255,255,255,.84)}
     .hero-accent{display:inline-flex;align-items:center;gap:10px}
-    .hero-accent svg{width:26px;height:26px;fill:var(--neon);flex:none}
     .hero-stats{display:flex;gap:12px;flex-wrap:wrap;margin-top:16px;position:relative;z-index:1}
     .stat-pill{border:1px solid rgba(255,255,255,.18);background:rgba(255,255,255,.06);border-radius:999px;padding:8px 12px;font-size:13px;color:rgba(255,255,255,.92)}
 
@@ -71,7 +70,6 @@
     .seg button.active{background:var(--purple);color:#fff;box-shadow:0 3px 10px rgba(126,61,212,.28)}
     .btn{border:0;border-radius:14px;background:var(--purple);color:#fff;padding:10px 14px;font-weight:700;cursor:pointer;box-shadow:0 1px 2px rgba(0,0,0,.08)}
     .btn.secondary{background:var(--deep)}
-    .btn.ghost{background:#fff;color:var(--deep);border:1px solid var(--border)}
 
     .status{min-height:20px;text-align:center;font-size:13px;color:#64748B}
     .status.ok{color:var(--success)}
@@ -97,6 +95,7 @@
       color:var(--deep);
       background:#fff;
     }
+    input[readonly]{background:#F8FAFC;color:#475569}
     textarea{min-height:84px;resize:vertical}
     input[type="checkbox"]{width:auto;margin:0}
     .switch-row{display:flex;align-items:center;justify-content:space-between;gap:12px;border:1px solid var(--border);border-radius:14px;padding:12px 14px;background:var(--blondie)}
@@ -110,24 +109,49 @@
     .setup-heading{display:grid;gap:2px}
     .setup-panel .seg{display:flex;flex-wrap:wrap;width:100%;box-shadow:none}
     .setup-panel .seg button{flex:1 1 132px;text-align:center}
+
+    .single-plan-fields,.mix-plan-fields{display:grid;gap:12px}
+    .plan-mix-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+    .plan-mix-card{border:1px solid var(--border);border-radius:16px;padding:14px;background:#FCFBFF;display:grid;gap:8px}
+    .plan-mix-total,.plan-summary{padding:12px 14px;border-radius:14px;background:var(--blondie);font-size:13px}
+    .plan-summary strong,.plan-mix-total strong{display:block;font-size:14px;color:var(--deep);margin-bottom:2px}
+
     .ein-box{margin-top:12px;border:1px solid var(--border);border-radius:16px;padding:14px;background:var(--blondie);display:grid;gap:12px}
     .ein-row{display:flex;align-items:flex-start;justify-content:space-between;gap:14px;flex-wrap:wrap}
     .checkbox-inline{display:inline-flex;align-items:center;gap:8px;font-size:14px;font-weight:700;color:var(--deep);cursor:pointer}
     .checkbox-inline input{margin:0}
-    .ein-qty{max-width:240px}
-
-    .readonly-field{background:#F8FAFC;color:#475569}
-    .mix-plan-box{margin-top:12px;border:1px solid var(--border);border-radius:16px;padding:14px;background:#FAF7FF;display:grid;gap:12px}
-    .mix-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
-    .addon-card{border:1px solid var(--border);border-radius:16px;padding:14px;background:#fff;display:grid;gap:12px}
-    .addon-top{display:flex;align-items:center;justify-content:space-between;gap:12px}
-    .addon-qty-row{display:grid;grid-template-columns:1fr;gap:10px}
-    .addon-qty-row input[disabled]{background:#F8FAFC;color:#94A3B8}
+    .ein-qty{max-width:260px}
 
     .addons-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
-    .addon-box{display:flex;align-items:center;justify-content:space-between;gap:12px;border:1px solid var(--border);border-radius:14px;padding:12px;background:#fff}
-    .addon-box span{font-size:14px}
+    .addon-box{display:grid;gap:10px;border:1px solid var(--border);border-radius:14px;padding:14px;background:#fff}
+    .addon-top{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
+    .addon-top span{font-size:14px}
+    .addon-qty{max-width:220px}
     .muted{color:#64748B;font-size:12px}
+
+    .time-card[hidden],.breakdown-card[hidden],.mix-plan-fields[hidden],.single-plan-fields[hidden],.addon-qty[hidden],.time-body[hidden],.ein-box[hidden]{display:none !important}
+    .time-body{display:grid;gap:14px;margin-top:14px}
+    .metrics-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:12px}
+    .metric-card{border:1px solid var(--border);border-radius:16px;padding:18px 20px;background:#FCFBFF;display:grid;gap:8px;align-content:start;min-height:160px}
+    .metric-label{font-size:12px;color:#64748B;font-weight:700}
+    .metric-value{font-size:clamp(16px,1.8vw,22px);line-height:1.12;font-weight:800;overflow-wrap:anywhere;word-break:break-word;hyphens:auto;max-width:100%}
+    .metric-sub{font-size:12px;color:#64748B;line-height:1.35}
+    .roi-grid{display:grid;grid-template-columns:1.15fr .85fr;gap:14px}
+    .roi-panel{border:1px solid var(--border);border-radius:18px;padding:16px;background:#fff}
+    .roi-panel h3{margin:0 0 10px;font-size:16px;font-weight:800}
+    .roi-table-wrap{overflow:auto;border:1px solid var(--border);border-radius:16px}
+    .roi-table{width:100%;border-collapse:separate;border-spacing:0;background:#fff}
+    .roi-table thead th{background:#F8FAFC;color:#64748B;font-size:12px;font-weight:800;text-align:right;padding:10px;border-bottom:1px solid var(--border)}
+    .roi-table thead th:first-child{text-align:left}
+    .roi-table tbody td{padding:10px;border-bottom:1px solid #EEF2F7;font-size:13px}
+    .roi-table tbody tr:last-child td{border-bottom:0}
+    .roi-table tbody td:first-child{font-weight:700}
+    .stat-boxes{display:grid;gap:10px}
+    .stat-box{border-radius:16px;padding:14px;background:var(--blondie);font-size:13px;color:var(--deep)}
+    .stat-box strong{display:block;margin-bottom:4px;font-size:12px;text-transform:uppercase;letter-spacing:.06em}
+    .roi-note{font-size:12px;color:#64748B;margin-top:10px}
+    .positive{color:var(--success)}
+    .negative{color:var(--danger)}
 
     .summary-card{
       background:linear-gradient(180deg,#fff 0%, #faf7ff 100%);
@@ -150,7 +174,6 @@
     .mini-row span:last-child{font-weight:700}
     .summary-mode{padding:12px;border-radius:14px;background:var(--blondie);font-size:13px}
 
-    .breakdown-card[hidden]{display:none !important}
     .table-wrap{overflow:auto;border:1px solid var(--border);border-radius:16px}
     table{width:100%;border-collapse:separate;border-spacing:0;background:#fff}
     thead th{background:#F8FAFC;color:#64748B;font-size:12px;font-weight:800;text-align:right;padding:12px 10px;border-bottom:1px solid var(--border)}
@@ -164,42 +187,10 @@
     .notes{font-size:12px;color:#64748B;margin:12px 2px 0}
 
     .print-only{display:none}
-
-    #printQuote{
-      display:none;
-      background:#fff;
-      color:var(--deep);
-      padding:0;
-    }
-    .quote-page{
-      max-width:8.5in;
-      margin:0 auto;
-      padding:.35in;
-      display:grid;
-      gap:18px;
-      color:var(--deep);
-      -webkit-print-color-adjust:exact;
-      print-color-adjust:exact;
-    }
-    .quote-header{
-      background:var(--deep);
-      color:#fff;
-      border-radius:26px;
-      padding:26px 28px 24px;
-      position:relative;
-      overflow:hidden;
-    }
-    .quote-header::after{
-      content:"";
-      position:absolute;
-      right:-20px;
-      bottom:-28px;
-      width:220px;
-      height:140px;
-      background:rgba(126,61,212,.24);
-      clip-path:polygon(32% 0, 86% 0, 58% 48%, 100% 48%, 26% 100%, 44% 56%, 0 56%);
-      transform:rotate(18deg);
-    }
+    #printQuote{display:none;background:#fff;color:var(--deep);padding:0}
+    .quote-page{max-width:8.5in;margin:0 auto;padding:.35in;display:grid;gap:16px;color:var(--deep);-webkit-print-color-adjust:exact;print-color-adjust:exact}
+    .quote-header{background:var(--deep);color:#fff;border-radius:26px;padding:26px 28px 24px;position:relative;overflow:hidden}
+    .quote-header::after{content:"";position:absolute;right:-20px;bottom:-28px;width:220px;height:140px;background:rgba(126,61,212,.24);clip-path:polygon(32% 0, 86% 0, 58% 48%, 100% 48%, 26% 100%, 44% 56%, 0 56%);transform:rotate(18deg)}
     .quote-brand{font-size:18px;font-weight:800;letter-spacing:.01em;margin-bottom:10px}
     .quote-title-row{display:flex;align-items:flex-start;justify-content:space-between;gap:20px}
     .quote-title-wrap{display:grid;gap:8px;position:relative;z-index:1}
@@ -240,24 +231,37 @@
     .quote-breakdown tbody td:first-child{font-weight:700}
     .quote-breakdown tfoot tr:last-child td{border-bottom:0}
 
-    .quote-summary-only{border:1px dashed rgba(126,61,212,.34);border-radius:18px;padding:16px;background:#FAF7FF;font-size:14px}
-    .quote-summary-only strong{display:block;margin-bottom:6px}
+    .quote-roi-grid{display:grid;grid-template-columns:1.05fr .95fr;gap:14px}
+    .quote-metrics{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px}
+    .quote-metric{border:1px solid #E7E3EE;border-radius:16px;padding:12px;background:#FCFBFF}
+    .quote-metric .k{font-size:11px;color:#64748B;font-weight:800;text-transform:uppercase;letter-spacing:.06em}
+    .quote-metric .v{margin-top:6px;font-size:16px;font-weight:800;line-height:1.15;overflow-wrap:anywhere;word-break:break-word;hyphens:auto}
+    .quote-roi-card{border:1px solid #E7E3EE;border-radius:18px;padding:16px;background:#fff}
+    .quote-roi-card h4{margin:0 0 8px;font-size:15px;font-weight:800}
+    .quote-stat-stack{display:grid;gap:8px}
+    .quote-stat{border-radius:14px;padding:12px;background:var(--blondie);font-size:12px}
+    .quote-stat strong{display:block;font-size:11px;text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px}
+    .quote-roi-lines{display:grid;gap:8px}
+    .quote-roi-line{display:flex;justify-content:space-between;gap:10px;font-size:13px}
+    .quote-roi-line span:last-child{font-weight:800}
 
     .quote-footer{display:grid;gap:10px;border-top:1px solid #E7E3EE;padding-top:14px;font-size:12px;color:#64748B}
     .quote-footer strong{color:var(--deep)}
 
+    @media (max-width:1080px){
+      .quote-metrics{grid-template-columns:repeat(3,minmax(0,1fr))}
+    }
     @media (max-width:980px){
       .grid-cols{grid-template-columns:1fr}
       .summary-card{position:static}
       .row{grid-template-columns:repeat(2,minmax(0,1fr))}
       .col-span-2{grid-column:span 2}
-      .row-3,.row-2,.addons-grid,.setup-grid{grid-template-columns:1fr 1fr}
-      .mix-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+      .row-3,.row-2,.addons-grid,.setup-grid,.roi-grid,.quote-roi-grid{grid-template-columns:1fr 1fr}
       .setup-grid{grid-template-columns:1fr}
+      .plan-mix-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
     }
     @media (max-width:640px){
-      .row,.row-3,.row-2,.addons-grid,.setup-grid{grid-template-columns:1fr}
-      .mix-grid{grid-template-columns:1fr}
+      .row,.row-3,.row-2,.addons-grid,.setup-grid,.roi-grid,.quote-roi-grid,.quote-metrics,.plan-mix-grid{grid-template-columns:1fr}
       .col-span-2{grid-column:span 1}
       .quote-meta,.quote-main,.quote-feature-list{grid-template-columns:1fr}
       .brand-row,.quote-title-row{flex-direction:column}
@@ -300,9 +304,17 @@
       .quote-breakdown h3{font-size:15px;margin-bottom:6px}
       .quote-breakdown thead th{padding:6px 7px;font-size:10px}
       .quote-breakdown tbody td,.quote-breakdown tfoot td{padding:6px 7px;font-size:10px}
-      .quote-summary-only{padding:10px;font-size:11px;border-radius:12px}
+      .quote-roi-grid{gap:8px}
+      .quote-metrics{gap:6px}
+      .quote-metric{padding:8px;border-radius:12px}
+      .quote-metric .k{font-size:8px}
+      .quote-metric .v{font-size:14px;margin-top:4px}
+      .quote-roi-card{padding:10px;border-radius:12px}
+      .quote-roi-card h4{font-size:12px;margin-bottom:6px}
+      .quote-roi-line,.quote-stat{font-size:10px}
+      .quote-stat{padding:8px;border-radius:10px}
       .quote-footer{gap:4px;padding-top:8px;font-size:9.5px}
-      .quote-header,.meta-card,.quote-panel,.quote-breakdown,.investment-card,.accent-note,.quote-summary-only{break-inside:avoid;page-break-inside:avoid}
+      .quote-header,.meta-card,.quote-panel,.quote-breakdown,.investment-card,.accent-note,.quote-roi-card,.quote-metric{break-inside:avoid;page-break-inside:avoid}
     }
   </style>
 </head>
@@ -316,7 +328,7 @@
             <div class="hero-accent">
               <h1>Pricing quote.</h1>
             </div>
-            <p>Build a customer-ready quote, decide whether to show the full pricing breakdown, and export a branded PDF that feels polished instead of raw.</p>
+            <p>Build a customer-ready quote, control how much detail shows up in the PDF, and add a time theft ROI section when you want to show the value more clearly.</p>
           </div>
           <div class="brand-lockup" style="text-align:right;align-items:end">
             <div class="brand-name">Homebase</div>
@@ -324,9 +336,9 @@
           </div>
         </div>
         <div class="hero-stats">
+          <div class="stat-pill">Mixed plan support</div>
           <div class="stat-pill">Branded PDF layout</div>
-          <div class="stat-pill">Seller-controlled detail level</div>
-          <div class="stat-pill">Copy quote + CSV</div>
+          <div class="stat-pill">Time theft ROI option</div>
         </div>
       </section>
 
@@ -374,7 +386,7 @@
               <div class="switch-row">
                 <div class="switch-copy">
                   <strong>Show first-year promo math</strong>
-                  <span>Includes payroll and core-plan free months based on the promo selectors above.</span>
+                  <span>Includes payroll and core-plan free months based on the promo selectors below.</span>
                 </div>
                 <input id="showPromoMath" type="checkbox" checked />
               </div>
@@ -383,58 +395,73 @@
 
           <section class="card">
             <h2 class="card-title">Plan and team</h2>
-            <div class="row">
-              <div class="field">
-                <label for="loc">Locations</label>
-                <input type="number" min="1" id="loc" value="1" />
-                <div class="muted" id="locHelp" style="display:none"></div>
-              </div>
-              <div class="field">
-                <label for="emp">Employees</label>
-                <input type="number" min="0" id="emp" value="10" />
-              </div>
-              <div class="field col-span-2">
-                <label for="plan">Plan</label>
-                <select id="plan">
-                  <option value="basic">Basic - $0 / loc / mo</option>
-                  <option value="essentials">Essentials - $30 / $24 annual</option>
-                  <option value="plus" selected>Plus - $70 / $56 annual</option>
-                  <option value="aio">All-in-One - $120 / $96 annual</option>
-                </select>
-                <div class="muted" id="planNote">AI scheduling, PTO controls, departments.</div>
-              </div>
-            </div>
-            <div class="switch-row" style="margin-top:14px">
+            <div class="switch-row" style="margin-bottom:14px">
               <div class="switch-copy">
                 <strong>Mix location plans</strong>
-                <span>Use this when different locations need different core plans on the same quote.</span>
+                <span>Use this when the quote needs more than one core plan.</span>
               </div>
               <input id="mixPlans" type="checkbox" />
             </div>
-            <div class="mix-plan-box" id="mixPlanBox" hidden>
-              <div class="setup-heading">
-                <span class="muted" style="font-weight:800">Plan mix</span>
-                <div class="muted">Enter how many locations should be quoted on each plan. Locations will total automatically.</div>
-              </div>
-              <div class="mix-grid">
+
+            <div class="single-plan-fields" id="singlePlanFields">
+              <div class="row">
                 <div class="field">
-                  <label for="mix_basic">Basic locations</label>
-                  <input type="number" min="0" id="mix_basic" placeholder="0" />
+                  <label for="loc">Locations</label>
+                  <input type="number" min="1" id="loc" value="1" />
                 </div>
                 <div class="field">
-                  <label for="mix_essentials">Essentials locations</label>
-                  <input type="number" min="0" id="mix_essentials" placeholder="0" />
+                  <label for="emp">Employees</label>
+                  <input type="number" min="0" id="emp" value="10" />
                 </div>
-                <div class="field">
-                  <label for="mix_plus">Plus locations</label>
-                  <input type="number" min="0" id="mix_plus" placeholder="0" />
-                </div>
-                <div class="field">
-                  <label for="mix_aio">All-in-One locations</label>
-                  <input type="number" min="0" id="mix_aio" placeholder="0" />
+                <div class="field col-span-2">
+                  <label for="plan">Plan</label>
+                  <select id="plan">
+                    <option value="basic">Basic - $0 / loc / mo</option>
+                    <option value="essentials">Essentials - $30 / $24 annual</option>
+                    <option value="plus" selected>Plus - $70 / $56 annual</option>
+                    <option value="aio">All-in-One - $120 / $96 annual</option>
+                  </select>
+                  <div class="muted" id="planNote">AI scheduling, PTO controls, departments.</div>
                 </div>
               </div>
             </div>
+
+            <div class="mix-plan-fields" id="mixPlanFields" hidden>
+              <div class="row-2">
+                <div class="field">
+                  <label for="empMixed">Employees</label>
+                  <input type="number" min="0" id="empMixed" value="10" />
+                </div>
+                <div class="plan-mix-total" id="mixPlanTotalBox">
+                  <strong>Total locations</strong>
+                  <span id="mixPlanTotal">1 location total</span>
+                </div>
+              </div>
+              <div class="plan-mix-grid">
+                <div class="plan-mix-card field">
+                  <label for="mix_basic">Basic locations</label>
+                  <input type="number" min="0" id="mix_basic" value="0" />
+                  <div class="muted">$0 monthly / $0 annual</div>
+                </div>
+                <div class="plan-mix-card field">
+                  <label for="mix_essentials">Essentials locations</label>
+                  <input type="number" min="0" id="mix_essentials" value="0" />
+                  <div class="muted">$30 monthly / $24 annual</div>
+                </div>
+                <div class="plan-mix-card field">
+                  <label for="mix_plus">Plus locations</label>
+                  <input type="number" min="0" id="mix_plus" value="1" />
+                  <div class="muted">$70 monthly / $56 annual</div>
+                </div>
+                <div class="plan-mix-card field">
+                  <label for="mix_aio">All-in-One locations</label>
+                  <input type="number" min="0" id="mix_aio" value="0" />
+                  <div class="muted">$120 monthly / $96 annual</div>
+                </div>
+              </div>
+              <div class="plan-summary" id="mixPlanSummary"></div>
+            </div>
+
             <div class="setup-grid" style="margin-top:14px">
               <div class="setup-panel">
                 <div class="setup-heading">
@@ -471,6 +498,7 @@
                 </div>
               </div>
             </div>
+
             <div class="ein-box" id="einSection" hidden>
               <div class="ein-row">
                 <div class="setup-heading">
@@ -493,34 +521,28 @@
           <section class="card">
             <h2 class="card-title">Add-ons and usage</h2>
             <div class="addons-grid">
-              <div class="addon-card">
+              <label class="addon-box">
                 <div class="addon-top">
-                  <label class="checkbox-inline" for="tip">
-                    <input type="checkbox" id="tip" />
-                    <span>Tip Manager <span class="muted">($25 / loc / mo)</span></span>
-                  </label>
+                  <span>Tip Manager <span class="muted">($25 / loc / mo)</span></span>
+                  <input type="checkbox" id="tip" />
                 </div>
-                <div class="addon-qty-row">
-                  <div class="field">
-                    <label for="tipQty">Tip Manager locations</label>
-                    <input type="number" min="1" id="tipQty" value="1" disabled />
-                  </div>
+                <div class="field addon-qty" id="tipQtyWrap" hidden>
+                  <label for="tipQty">Tip Manager locations</label>
+                  <input type="number" min="1" id="tipQty" value="1" />
+                  <div class="muted" id="tipQtyHelp">Choose how many locations get Tip Manager.</div>
                 </div>
-              </div>
-              <div class="addon-card">
+              </label>
+              <label class="addon-box">
                 <div class="addon-top">
-                  <label class="checkbox-inline" for="task">
-                    <input type="checkbox" id="task" />
-                    <span>Task Manager <span class="muted">($13 / loc / mo)</span></span>
-                  </label>
+                  <span>Task Manager <span class="muted">($13 / loc / mo)</span></span>
+                  <input type="checkbox" id="task" />
                 </div>
-                <div class="addon-qty-row">
-                  <div class="field">
-                    <label for="taskQty">Task Manager locations</label>
-                    <input type="number" min="1" id="taskQty" value="1" disabled />
-                  </div>
+                <div class="field addon-qty" id="taskQtyWrap" hidden>
+                  <label for="taskQty">Task Manager locations</label>
+                  <input type="number" min="1" id="taskQty" value="1" />
+                  <div class="muted" id="taskQtyHelp">Choose how many locations get Task Manager.</div>
                 </div>
-              </div>
+              </label>
             </div>
 
             <div class="row-3" style="margin-top:14px">
@@ -535,6 +557,55 @@
               <div class="field">
                 <label for="ha">Hiring Assistant (qty/mo)</label>
                 <input type="number" min="0" id="ha" value="0" />
+              </div>
+            </div>
+          </section>
+
+          <section class="card time-card" id="timeCard">
+            <div class="switch-row">
+              <div class="switch-copy">
+                <strong>Show time theft ROI section</strong>
+                <span>Add a customer-facing ROI section that shows the estimated cost of time theft and the value of the selected quote.</span>
+              </div>
+              <input id="showTimeTheft" type="checkbox" />
+            </div>
+
+            <div class="time-body" id="timeBody" hidden>
+              <div class="row-2">
+                <div class="field">
+                  <label for="ttEmployees">Employees for time theft math</label>
+                  <input type="number" min="0" id="ttEmployees" value="10" />
+                </div>
+                <div class="field">
+                  <label for="ttHourlyRate">Average hourly rate</label>
+                  <input type="number" min="0" step="0.01" id="ttHourlyRate" value="15" />
+                </div>
+              </div>
+
+              <div class="metrics-grid" id="timeMetrics"></div>
+
+              <div class="roi-grid">
+                <div class="roi-panel">
+                  <h3>How Homebase can help</h3>
+                  <div class="roi-table-wrap">
+                    <table class="roi-table">
+                      <thead>
+                        <tr>
+                          <th>Option</th>
+                          <th class="right">Monthly</th>
+                          <th class="right">Annually</th>
+                          <th class="right">Potential annual savings</th>
+                        </tr>
+                      </thead>
+                      <tbody id="roiTableBody"></tbody>
+                    </table>
+                  </div>
+                  <div class="roi-note" id="roiNote"></div>
+                </div>
+                <div class="roi-panel">
+                  <h3>Time theft context</h3>
+                  <div class="stat-boxes" id="timeStats"></div>
+                </div>
               </div>
             </div>
           </section>
@@ -596,7 +667,7 @@
 
       <section class="quote-main">
         <div class="quote-panel">
-          <h3>What’s included</h3>
+          <h3>What's included</h3>
           <div class="quote-plan-row">
             <div>
               <div class="quote-plan-name" id="printPlanName">Plus</div>
@@ -628,6 +699,23 @@
         </div>
       </section>
 
+      <section class="quote-breakdown" id="printTimeSection" style="display:none">
+        <h3>Estimated cost of time theft</h3>
+        <div class="quote-roi-grid">
+          <div>
+            <div class="quote-metrics" id="printTimeMetrics"></div>
+            <div class="quote-roi-card" style="margin-top:12px">
+              <h4>ROI with your selected quote</h4>
+              <div class="quote-roi-lines" id="printRoiLines"></div>
+            </div>
+          </div>
+          <div class="quote-roi-card">
+            <h4>Time theft context</h4>
+            <div class="quote-stat-stack" id="printTimeStats"></div>
+          </div>
+        </div>
+      </section>
+
       <section class="quote-breakdown" id="printBreakdownSection">
         <h3>Detailed breakdown</h3>
         <table>
@@ -648,10 +736,8 @@
         </table>
       </section>
 
-      <section class="quote-summary-only" id="printSummaryOnly" hidden></section>
-
       <footer class="quote-footer">
-        <div><strong>Notes:</strong> <span id="printFooterNotes"></span></div>
+        <div id="printFooterNotes"></div>
         <div id="printFooterMeta"></div>
       </footer>
     </div>
@@ -662,19 +748,7 @@
     const $ = (s) => document.querySelector(s);
     const $$ = (s) => Array.from(document.querySelectorAll(s));
     const currency = (n) => Number(n || 0).toLocaleString(undefined, {style:'currency', currency:'USD'});
-    const safeNumber = (value) => {
-      if (value === '' || value === null || value === undefined) return 0;
-      const parsed = Number(value);
-      return Number.isFinite(parsed) ? parsed : 0;
-    };
-    const clamp = (value, min, max) => Math.min(max, Math.max(min, value));
-    const plural = (count) => Number(count) === 1 ? '' : 's';
-    const joinNatural = (items) => {
-      if (!items.length) return '';
-      if (items.length === 1) return items[0];
-      if (items.length === 2) return items[0] + ' and ' + items[1];
-      return items.slice(0, -1).join(', ') + ', and ' + items[items.length - 1];
-    };
+    const numberFormat = (n) => Number(n || 0).toLocaleString();
 
     const PLANS = {
       basic:{m:0,a:0,n:'For 1 location, up to 10 employees.'},
@@ -682,14 +756,11 @@
       plus:{m:70,a:56,n:'AI scheduling, PTO controls, departments.'},
       aio:{m:120,a:96,n:'Onboarding, labor cost, HR and compliance.'}
     };
-    const PLAN_ORDER = ['basic','essentials','plus','aio'];
-    const PLAN_NAMES = {basic:'Basic', essentials:'Essentials', plus:'Plus', aio:'All-in-One'};
-
-    const formatDate = (value) => {
-      if (!value) return new Date().toLocaleDateString(undefined,{year:'numeric',month:'long',day:'numeric'});
-      const date = new Date(value + 'T12:00:00');
-      if (Number.isNaN(date.getTime())) return value;
-      return date.toLocaleDateString(undefined,{year:'numeric',month:'long',day:'numeric'});
+    const PLAN_LABELS = {
+      basic:'Basic',
+      essentials:'Essentials',
+      plus:'Plus',
+      aio:'All-in-One'
     };
 
     const todayISO = (() => {
@@ -699,60 +770,59 @@
       return d.getFullYear() + '-' + month + '-' + day;
     })();
 
-    let annual = false;
-    let plan = 'plus';
-    let locations = 1;
-    let employees = 10;
-    let corePromo = 0;
-    let payroll = 'standard';
-    let mixPlans = false;
-    let planMix = {basic:0, essentials:0, plus:1, aio:0};
-    let tip = false;
-    let task = false;
-    let tipQty = 1;
-    let taskQty = 1;
-    let bg = 0;
-    let boosts = 0;
-    let ha = 0;
-    let payrollPromoMonths = 0;
-    let separateEins = false;
-    let einCount = 2;
-    let showBreakdown = true;
-    let showPromoMath = true;
-    let preparedFor = '';
-    let businessName = '';
-    let preparedBy = '';
-    let quoteDate = todayISO;
-
-    const display = {
-      get planName(){
-        return mixPlans ? 'Mixed plans' : PLAN_NAMES[plan];
-      },
-      get billingName(){
-        return annual ? 'Annual' : 'Monthly';
-      }
+    const state = {
+      annual:false,
+      locations:1,
+      employees:10,
+      plan:'plus',
+      mixPlans:false,
+      mix:{basic:0, essentials:0, plus:1, aio:0},
+      corePromo:0,
+      payroll:'standard',
+      payrollPromoMonths:0,
+      separateEins:false,
+      einCount:2,
+      tip:false,
+      tipQty:1,
+      task:false,
+      taskQty:1,
+      bg:0,
+      boosts:0,
+      ha:0,
+      showBreakdown:true,
+      showPromoMath:true,
+      showTimeTheft:false,
+      ttEmployees:10,
+      ttHourlyRate:15,
+      ttEmployeesTouched:false,
+      preparedFor:'',
+      businessName:'',
+      preparedBy:'',
+      quoteDate:todayISO
     };
 
-    function planRate(key){
-      return annual ? PLANS[key].a : PLANS[key].m;
+    function getIntInput(id, fallback, min){
+      const value = $('#' + id).value;
+      if (value === '') return fallback;
+      const parsed = parseInt(value, 10);
+      if (!Number.isFinite(parsed)) return fallback;
+      return typeof min === 'number' ? Math.max(min, parsed) : parsed;
     }
 
-    function getPlanMixTotal(){
-      return PLAN_ORDER.reduce((sum, key) => sum + Math.max(0, Math.floor(safeNumber(planMix[key]))), 0);
+    function getFloatInput(id, fallback, min){
+      const value = $('#' + id).value;
+      if (value === '') return fallback;
+      const parsed = parseFloat(value);
+      if (!Number.isFinite(parsed)) return fallback;
+      return typeof min === 'number' ? Math.max(min, parsed) : parsed;
     }
 
-    function getMixPlansFromCurrentSelection(){
-      const next = {basic:0, essentials:0, plus:0, aio:0};
-      next[plan] = Math.max(1, Math.floor(safeNumber(locations)) || 1);
-      return next;
+    function planMixTotal(){
+      return ['basic','essentials','plus','aio'].reduce((sum, key) => sum + Math.max(0, Number(state.mix[key]) || 0), 0);
     }
 
-    function readInt(id, currentValue, min, max){
-      const el = $('#' + id);
-      if (!el) return currentValue;
-      const raw = el.value.trim();
-      if (raw === '') return currentValue;
-      return clamp(Math.floor(safeNumber(raw)), min, max);
+    function currentLocationTotal(){
+      return state.mixPlans ? Math.max(1, planMixTotal() || 1) : Math.max(1, Number(state.locations) || 1);
     }
 
     function setStatus(message, kind){
@@ -770,6 +840,556 @@
 
     function activateSeg(selector, value){
       $$(selector + ' button').forEach(btn => btn.classList.toggle('active', btn.dataset.val === String(value)));
+    }
+
+    function formatDate(value){
+      if (!value) return new Date().toLocaleDateString(undefined,{year:'numeric',month:'long',day:'numeric'});
+      const date = new Date(value + 'T12:00:00');
+      if (Number.isNaN(date.getTime())) return value;
+      return date.toLocaleDateString(undefined,{year:'numeric',month:'long',day:'numeric'});
+    }
+
+    function plural(n, singular, pluralWord){
+      return n === 1 ? singular : (pluralWord || singular + 's');
+    }
+
+    function mixSummaryParts(includeBasic){
+      const order = ['basic','essentials','plus','aio'];
+      return order.filter(key => includeBasic || key !== 'basic').filter(key => state.mix[key] > 0).map(key => state.mix[key] + ' ' + PLAN_LABELS[key]);
+    }
+
+    function applySinglePlanToMix(){
+      const total = Math.max(1, state.locations || 1);
+      state.mix = {basic:0, essentials:0, plus:0, aio:0};
+      state.mix[state.plan] = total;
+      $('#mix_basic').value = String(state.mix.basic);
+      $('#mix_essentials').value = String(state.mix.essentials);
+      $('#mix_plus').value = String(state.mix.plus);
+      $('#mix_aio').value = String(state.mix.aio);
+    }
+
+    function syncStateFromInputs(){
+      const singleEmployeeSource = !state.mixPlans ? 'emp' : 'empMixed';
+      state.locations = getIntInput('loc', state.locations || 1, 1);
+      state.employees = getIntInput(singleEmployeeSource, state.employees || 0, 0);
+      state.plan = $('#plan').value;
+      state.mixPlans = $('#mixPlans').checked;
+      state.mix.basic = getIntInput('mix_basic', state.mix.basic || 0, 0);
+      state.mix.essentials = getIntInput('mix_essentials', state.mix.essentials || 0, 0);
+      state.mix.plus = getIntInput('mix_plus', state.mix.plus || 0, 0);
+      state.mix.aio = getIntInput('mix_aio', state.mix.aio || 0, 0);
+      state.tip = $('#tip').checked;
+      state.task = $('#task').checked;
+      state.tipQty = getIntInput('tipQty', state.tipQty || 1, 1);
+      state.taskQty = getIntInput('taskQty', state.taskQty || 1, 1);
+      state.bg = getIntInput('bg', state.bg || 0, 0);
+      state.boosts = getIntInput('boosts', state.boosts || 0, 0);
+      state.ha = getIntInput('ha', state.ha || 0, 0);
+      state.showBreakdown = $('#showBreakdown').checked;
+      state.showPromoMath = $('#showPromoMath').checked;
+      state.showTimeTheft = $('#showTimeTheft').checked;
+      state.preparedFor = $('#preparedFor').value;
+      state.businessName = $('#businessName').value;
+      state.preparedBy = $('#preparedBy').value;
+      state.quoteDate = $('#quoteDate').value || todayISO;
+
+      const locTotal = currentLocationTotal();
+      state.separateEins = state.payroll !== 'none' && locTotal > 1 && $('#separateEins').checked;
+      state.einCount = getIntInput('einCount', state.einCount || 2, 2);
+
+      if (!state.ttEmployeesTouched){
+        state.ttEmployees = state.employees;
+        $('#ttEmployees').value = String(state.ttEmployees);
+      }
+      state.ttEmployees = getIntInput('ttEmployees', state.ttEmployees || state.employees || 0, 0);
+      state.ttHourlyRate = getFloatInput('ttHourlyRate', state.ttHourlyRate || 0, 0);
+
+      if (state.mixPlans) {
+        $('#emp').value = String(state.employees);
+      } else {
+        $('#empMixed').value = String(state.employees);
+      }
+    }
+
+    function getMeta(){
+      return {
+        preparedFor: state.preparedFor.trim() || 'Not specified',
+        businessName: state.businessName.trim() || 'Not specified',
+        preparedBy: state.preparedBy.trim() || 'Homebase seller',
+        quoteDate: formatDate(state.quoteDate)
+      };
+    }
+
+    function compute(){
+      const rates = {
+        basic: state.annual ? PLANS.basic.a : PLANS.basic.m,
+        essentials: state.annual ? PLANS.essentials.a : PLANS.essentials.m,
+        plus: state.annual ? PLANS.plus.a : PLANS.plus.m,
+        aio: state.annual ? PLANS.aio.a : PLANS.aio.m
+      };
+
+      const loc = currentLocationTotal();
+      const mixCounts = state.mixPlans
+        ? {
+            basic: Math.max(0, Number(state.mix.basic) || 0),
+            essentials: Math.max(0, Number(state.mix.essentials) || 0),
+            plus: Math.max(0, Number(state.mix.plus) || 0),
+            aio: Math.max(0, Number(state.mix.aio) || 0)
+          }
+        : {
+            basic: state.plan === 'basic' ? loc : 0,
+            essentials: state.plan === 'essentials' ? loc : 0,
+            plus: state.plan === 'plus' ? loc : 0,
+            aio: state.plan === 'aio' ? loc : 0
+          };
+
+      const planRows = [];
+      let planMonthly = 0;
+      let eligibleCoreMonthly = 0;
+      Object.keys(mixCounts).forEach(key => {
+        const qty = mixCounts[key];
+        if (!qty) return;
+        const amount = rates[key] * qty;
+        planMonthly += amount;
+        if (key !== 'basic') eligibleCoreMonthly += amount;
+        planRows.push({label: PLAN_LABELS[key] + ' plan', qty, rate: currency(rates[key]) + ' / loc', amount});
+      });
+
+      const locTotal = loc;
+      const emp = Math.max(0, Number(state.employees) || 0);
+      const tipQty = state.tip ? Math.min(locTotal, Math.max(1, Number(state.tipQty) || 1)) : 0;
+      const taskQty = state.task ? Math.min(locTotal, Math.max(1, Number(state.taskQty) || 1)) : 0;
+      const tipMonthly = state.tip ? 25 * tipQty : 0;
+      const taskMonthly = state.task ? 13 * taskQty : 0;
+
+      const payrollBase = state.payroll === 'none' ? 0 : (state.payroll === 'nextday' ? 49 : 39);
+      const payrollRate = state.payroll === 'none' ? 0 : (state.payroll === 'nextday' ? 9 : 6);
+      const payrollEinCount = state.payroll === 'none' ? 0 : (state.separateEins && locTotal > 1 ? Math.min(locTotal, Math.max(2, Number(state.einCount) || 2)) : 1);
+      const payrollBaseMonthly = payrollBase * payrollEinCount;
+      const payrollEmployeeMonthly = payrollRate * emp;
+      const payrollMonthly = state.payroll === 'none' ? 0 : payrollBaseMonthly + payrollEmployeeMonthly;
+
+      const bgMonthly = 30 * state.bg;
+      const boostsMonthly = 79 * state.boosts;
+      const hiringMonthly = 30 * state.ha;
+      const recurringMonthly = planMonthly + tipMonthly + taskMonthly + payrollMonthly;
+      const usageMonthly = bgMonthly + boostsMonthly + hiringMonthly;
+      const totalMonthly = recurringMonthly + usageMonthly;
+      const totalAnnual = totalMonthly * 12;
+      const hasPayrollPromo = state.payroll !== 'none' && state.payrollPromoMonths > 0;
+      const hasCorePromo = eligibleCoreMonthly > 0 && state.corePromo > 0;
+      const payrollPromoSavings = hasPayrollPromo ? payrollMonthly * state.payrollPromoMonths : 0;
+      const corePromoSavings = hasCorePromo ? eligibleCoreMonthly * state.corePromo : 0;
+      const firstYearWithPromos = totalAnnual - payrollPromoSavings - corePromoSavings;
+      const hasAnyPromo = hasPayrollPromo || hasCorePromo;
+      const hasSeparatePayrollEins = payrollEinCount > 1;
+
+      const payrollName = state.payroll === 'nextday' ? 'Payroll (Next Day)' : 'Payroll';
+      const payrollLabel = hasSeparatePayrollEins ? payrollName + ' - ' + payrollEinCount + ' EINs' : payrollName;
+      const payrollRateText = state.payroll === 'none'
+        ? ''
+        : (state.payroll === 'nextday'
+          ? (hasSeparatePayrollEins ? '$49 base x ' + payrollEinCount + ' EINs + $9 x ' + emp : '$49 base + $9 x ' + emp)
+          : (hasSeparatePayrollEins ? '$39 base x ' + payrollEinCount + ' EINs + $6 x ' + emp : '$39 base + $6 x ' + emp));
+      const payrollTableRate = state.payroll === 'none'
+        ? ''
+        : (state.payroll === 'nextday'
+          ? (hasSeparatePayrollEins ? '$49 base x ' + payrollEinCount + ' EINs + $9/ee' : '$49 base + $9/ee')
+          : (hasSeparatePayrollEins ? '$39 base x ' + payrollEinCount + ' EINs + $6/ee' : '$39 base + $6/ee'));
+
+      const features = [];
+      if (state.mixPlans) {
+        mixSummaryParts(true).forEach(part => features.push(part + ' location' + (part.startsWith('1 ') ? '' : 's')));
+      } else {
+        features.push(PLAN_LABELS[state.plan] + ' plan for ' + locTotal + ' location' + plural(locTotal, '')); 
+      }
+      if (state.payroll !== 'none') {
+        features.push((state.payroll === 'nextday' ? 'Next Day payroll' : 'Payroll') + ' for ' + emp + ' employee' + plural(emp, '') + (hasSeparatePayrollEins ? ' across ' + payrollEinCount + ' EINs' : ''));
+      }
+      if (state.tip) features.push('Tip Manager for ' + tipQty + ' location' + plural(tipQty, ''));
+      if (state.task) features.push('Task Manager for ' + taskQty + ' location' + plural(taskQty, ''));
+      if (state.bg) features.push(numberFormat(state.bg) + ' background check' + plural(state.bg, ''));
+      if (state.boosts) features.push(numberFormat(state.boosts) + ' job post boost' + plural(state.boosts, ''));
+      if (state.ha) features.push(numberFormat(state.ha) + ' Hiring Assistant post' + plural(state.ha, ''));
+
+      const rows = planRows.slice();
+      if (state.payroll !== 'none') rows.push({label: payrollLabel, qty: emp, rate: payrollTableRate, amount: payrollMonthly});
+      if (state.tip) rows.push({label:'Tip Manager', qty:tipQty, rate:'$25 / loc', amount:tipMonthly});
+      if (state.task) rows.push({label:'Task Manager', qty:taskQty, rate:'$13 / loc', amount:taskMonthly});
+      if (state.bg) rows.push({label:'Background checks', qty:state.bg, rate:'$30 / check', amount:bgMonthly});
+      if (state.boosts) rows.push({label:'Job post boosts', qty:state.boosts, rate:'$79 / post', amount:boostsMonthly});
+      if (state.ha) rows.push({label:'Hiring Assistant', qty:state.ha, rate:'$30 / post', amount:hiringMonthly});
+
+      const planName = state.mixPlans ? 'Mixed plans' : PLAN_LABELS[state.plan];
+      const planHeadline = state.mixPlans ? mixSummaryParts(true).join(' + ') : PLAN_LABELS[state.plan];
+      const planCopy = state.mixPlans ? mixSummaryParts(true).join(', ') + '.' : PLANS[state.plan].n;
+
+      return {
+        loc:locTotal,
+        emp,
+        rates,
+        mixCounts,
+        planMonthly,
+        eligibleCoreMonthly,
+        planRows,
+        tipQty,
+        taskQty,
+        tipMonthly,
+        taskMonthly,
+        payrollMonthly,
+        payrollBaseMonthly,
+        payrollEmployeeMonthly,
+        payrollEinCount,
+        hasSeparatePayrollEins,
+        bgMonthly,
+        boostsMonthly,
+        hiringMonthly,
+        recurringMonthly,
+        usageMonthly,
+        totalMonthly,
+        totalAnnual,
+        payrollPromoSavings,
+        corePromoSavings,
+        firstYearWithPromos,
+        hasPayrollPromo,
+        hasCorePromo,
+        hasAnyPromo,
+        payrollLabel,
+        payrollRateText,
+        features,
+        rows,
+        planName,
+        planHeadline,
+        planCopy,
+        planSingleRate: state.mixPlans ? null : rates[state.plan]
+      };
+    }
+
+    function computeTimeTheft(calc){
+      const ee = Math.max(0, Number(state.ttEmployees) || 0);
+      const rate = Math.max(0, Number(state.ttHourlyRate) || 0);
+
+      const avgHoursPerWeek = 32;
+      const weeksPerYear = 52;
+      const workDaysPerWeek = 5;
+      const hoursPerDay = avgHoursPerWeek / workDaysPerWeek;
+
+      const dailyBasePerEmployee = rate * hoursPerDay;
+      const weeklyBasePerEmployee = rate * avgHoursPerWeek;
+      const annualBasePerEmployee = rate * avgHoursPerWeek * weeksPerYear;
+
+      const teamDailyWages = dailyBasePerEmployee * ee;
+      const teamWeeklyWages = weeklyBasePerEmployee * ee;
+      const teamAnnualWages = annualBasePerEmployee * ee;
+
+      const ssRate = 0.062;
+      const medicareRate = 0.0145;
+      const payrollTaxRate = ssRate + medicareRate;
+      const theftRate = 0.07;
+      const combinedRate = theftRate + payrollTaxRate;
+
+      const dailyTimeTheftPerEmployee = dailyBasePerEmployee * combinedRate;
+      const dailyTimeTheftTeam = teamDailyWages * combinedRate;
+      const weeklyTimeTheftTeam = teamWeeklyWages * combinedRate;
+      const annualTimeTheftTeam = teamAnnualWages * combinedRate;
+
+      const timeTheftMonthly = annualTimeTheftTeam / 12;
+      const netAnnualSavings = annualTimeTheftTeam - calc.totalAnnual;
+      const netMonthlyImpact = timeTheftMonthly - calc.totalMonthly;
+
+      const selectedPlanParts = [];
+      if (state.mixPlans) {
+        ['essentials','plus','aio','basic'].forEach(key => {
+          if (calc.mixCounts[key] > 0) selectedPlanParts.push(PLAN_LABELS[key]);
+        });
+      } else {
+        selectedPlanParts.push(PLAN_LABELS[state.plan]);
+      }
+      if (state.payroll !== 'none') selectedPlanParts.push(state.payroll === 'nextday' ? 'Next Day payroll' : 'Payroll');
+
+      const selectedRow = {
+        label: selectedPlanParts.join(' + ') || 'Selected quote',
+        monthly: calc.totalMonthly,
+        annual: calc.totalAnnual,
+        savings: netAnnualSavings
+      };
+      const rows = [selectedRow];
+
+      const stats = [
+        {
+          title:'ASE estimate',
+          text:'The American Society of Employers estimates that 20% of every dollar earned by a U.S. company is lost to time theft.'
+        },
+        {
+          title:'Rate used',
+          text:'This model uses a single 14.65% rate: 7% estimated time theft plus 6.2% Social Security and 1.45% Medicare.'
+        },
+        {
+          title:'Your estimate',
+          text:'Using ' + numberFormat(ee) + ' employees at ' + currency(rate) + '/hr and a 32-hour average workweek, estimated annual team time theft plus taxes is ' + currency(annualTimeTheftTeam) + '.'
+        }
+      ];
+
+      return {
+        ee,
+        rate,
+        avgHoursPerWeek,
+        hoursPerDay,
+        theftRate,
+        ssRate,
+        medicareRate,
+        payrollTaxRate,
+        combinedRate,
+        dailyBasePerEmployee,
+        weeklyBasePerEmployee,
+        annualBasePerEmployee,
+        teamDailyWages,
+        teamWeeklyWages,
+        teamAnnualWages,
+        dailyTimeTheftPerEmployee,
+        dailyTimeTheftTeam,
+        weeklyTimeTheftTeam,
+        annualTimeTheftTeam,
+        timeTheftAnnual: annualTimeTheftTeam,
+        timeTheftMonthly,
+        netAnnualSavings,
+        netMonthlyImpact,
+        rows,
+        selectedRow,
+        stats
+      };
+    }
+
+    function summaryBadges(calc){
+      const badges = [state.annual ? 'Annual pricing' : 'Monthly pricing'];
+      if (state.mixPlans) badges.push('Mixed core plans');
+      if (state.payroll !== 'none') badges.push(calc.payrollLabel);
+      if (state.tip) badges.push('Tip Manager');
+      if (state.task) badges.push('Task Manager');
+      if (state.showTimeTheft) badges.push('Time theft ROI');
+      if (state.bg || state.boosts || state.ha) badges.push('Usage-based items');
+      return badges;
+    }
+
+    function buildFinePrint(){
+      if (state.payroll === 'none') {
+        return 'Plan pricing is per location per month. Prices are USD and taxes or third-party fees are not included.';
+      }
+      return 'Plan pricing is per location per month. Payroll options: Standard ($39 base + $6/employee/mo) or Next Day ($49 base + $9/employee/mo). When separate EINs are selected, payroll base fees are billed once per EIN. Prices are USD and taxes or third-party fees are not included.';
+    }
+
+    function renderPlanUi(){
+      $('#singlePlanFields').hidden = state.mixPlans;
+      $('#mixPlanFields').hidden = !state.mixPlans;
+      $('#planNote').textContent = PLANS[state.plan].n;
+      const total = planMixTotal();
+      $('#mixPlanTotal').textContent = numberFormat(Math.max(1, total || 1)) + ' location' + plural(Math.max(1, total || 1), '');
+      const parts = mixSummaryParts(true);
+      $('#mixPlanSummary').innerHTML = parts.length
+        ? '<strong>Current plan mix</strong><span>' + parts.join(', ') + '</span>'
+        : '<strong>Current plan mix</strong><span>Add at least one location to a core plan.</span>';
+    }
+
+    function renderEinUi(calc){
+      const section = $('#einSection');
+      const qtyWrap = $('#einQtyWrap');
+      const checkbox = $('#separateEins');
+      const qtyInput = $('#einCount');
+      const help = $('#einHelp');
+      const showSection = state.payroll !== 'none' && calc.loc > 1;
+      section.hidden = !showSection;
+      if (!showSection){
+        state.separateEins = false;
+        checkbox.checked = false;
+        qtyWrap.hidden = true;
+        return;
+      }
+      checkbox.checked = state.separateEins;
+      qtyInput.max = String(Math.max(2, calc.loc));
+      if (state.separateEins && document.activeElement !== qtyInput) {
+        qtyInput.value = String(Math.min(calc.loc, Math.max(2, state.einCount)));
+      }
+      qtyWrap.hidden = !state.separateEins;
+      help.textContent = state.separateEins
+        ? 'Payroll base fees will be billed once per EIN (' + calc.payrollEinCount + ' total).'
+        : 'Payroll base fees will be billed once per EIN if separate EINs are selected.';
+    }
+
+    function renderAddonUi(calc){
+      $('#tipQtyWrap').hidden = !state.tip;
+      $('#taskQtyWrap').hidden = !state.task;
+      $('#tipQty').max = String(calc.loc);
+      $('#taskQty').max = String(calc.loc);
+      if (state.tip) {
+        if (document.activeElement !== $('#tipQty')) $('#tipQty').value = String(calc.tipQty);
+        $('#tipQtyHelp').textContent = 'Choose how many of the ' + calc.loc + ' location' + plural(calc.loc, '') + ' get Tip Manager.';
+      }
+      if (state.task) {
+        if (document.activeElement !== $('#taskQty')) $('#taskQty').value = String(calc.taskQty);
+        $('#taskQtyHelp').textContent = 'Choose how many of the ' + calc.loc + ' location' + plural(calc.loc, '') + ' get Task Manager.';
+      }
+    }
+
+    function renderSummary(calc, timeCalc){
+      const badges = summaryBadges(calc);
+      const planLine = state.mixPlans ? calc.planHeadline : calc.planName;
+      $('#summary').innerHTML = [
+        '<div class="summary-grid">',
+          '<div class="summary-top">',
+            '<div class="summary-line"><span>Plan</span><strong>' + planLine + '</strong></div>',
+            '<div class="summary-line"><span>Billing</span><strong>' + (state.annual ? 'Annual' : 'Monthly') + '</strong></div>',
+            '<div class="summary-line"><span>Locations</span><strong>' + numberFormat(calc.loc) + '</strong></div>',
+            '<div class="summary-line"><span>Employees</span><strong>' + numberFormat(calc.emp) + '</strong></div>',
+            (calc.hasSeparatePayrollEins ? '<div class="summary-line"><span>Payroll EINs</span><strong>' + numberFormat(calc.payrollEinCount) + '</strong></div>' : ''),
+          '</div>',
+          '<div class="summary-total">',
+            '<div class="label">Total / month</div>',
+            '<div class="amount">' + currency(calc.totalMonthly) + '</div>',
+            '<div class="sub">Annualized: ' + currency(calc.totalAnnual) + '</div>',
+          '</div>',
+          '<div class="summary-badges">' + badges.map(b => '<span class="badge">' + b + '</span>').join('') + '</div>',
+          '<div class="summary-mini">',
+            '<div class="mini-row"><span>Recurring subtotal</span><span>' + currency(calc.recurringMonthly) + '</span></div>',
+            '<div class="mini-row"><span>Usage subtotal</span><span>' + currency(calc.usageMonthly) + '</span></div>',
+            (state.showPromoMath && calc.hasAnyPromo ? '<div class="mini-row"><span>First year with promos</span><span>' + currency(calc.firstYearWithPromos) + '</span></div>' : ''),
+            (state.showTimeTheft ? '<div class="mini-row"><span>Time theft estimate</span><span>' + currency(timeCalc.timeTheftAnnual) + '/yr</span></div>' : ''),
+            (state.showTimeTheft ? '<div class="mini-row"><span>Potential annual savings</span><span class="' + (timeCalc.netAnnualSavings >= 0 ? 'positive' : 'negative') + '">' + currency(timeCalc.netAnnualSavings) + '</span></div>' : ''),
+          '</div>',
+          '<div class="summary-mode">' + (state.showBreakdown ? 'Customer-facing outputs currently include the full line-item breakdown.' : 'Customer-facing outputs are currently summary only.') + (state.showTimeTheft ? ' The time theft ROI section is also on.' : '') + '</div>',
+        '</div>'
+      ].join('');
+    }
+
+    function renderBreakdown(calc){
+      const card = $('#breakdownCard');
+      card.hidden = !state.showBreakdown;
+      const tbody = $('#breakdownTable tbody');
+      tbody.innerHTML = '';
+      calc.rows.forEach(row => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = '<td>' + row.label + '</td><td class="right">' + numberFormat(row.qty) + '</td><td class="right">' + row.rate + '</td><td class="right">' + currency(row.amount) + '</td>';
+        tbody.appendChild(tr);
+      });
+      $('#recSub').textContent = currency(calc.recurringMonthly);
+      $('#useSub').textContent = currency(calc.usageMonthly);
+      $('#usageRow').hidden = calc.usageMonthly <= 0;
+      $('#total').textContent = currency(calc.totalMonthly);
+      $('#fyRow').hidden = !(state.showPromoMath && calc.hasAnyPromo);
+      $('#firstYear').textContent = currency(calc.firstYearWithPromos);
+      $('#builderNotes').textContent = buildFinePrint();
+    }
+
+    function roiClass(value){
+      return value >= 0 ? 'positive' : 'negative';
+    }
+
+    function renderTimeTheft(calc, timeCalc){
+      $('#timeBody').hidden = !state.showTimeTheft;
+      if (!state.showTimeTheft) return;
+
+      const combinedUpliftPct = (timeCalc.combinedRate * 100).toFixed(2) + '%';
+      const metrics = [
+        {
+          label:'Daily time theft per employee',
+          value:currency(timeCalc.dailyTimeTheftPerEmployee),
+          sub:currency(timeCalc.rate) + ' x ' + numberFormat(timeCalc.hoursPerDay) + ' hrs/day = ' + currency(timeCalc.dailyBasePerEmployee) + ', then x ' + combinedUpliftPct
+        },
+        {
+          label:'Daily time theft for full team',
+          value:currency(timeCalc.dailyTimeTheftTeam),
+          sub:numberFormat(timeCalc.ee) + ' employees x ' + currency(timeCalc.rate) + '/hr x ' + numberFormat(timeCalc.hoursPerDay) + ' hrs/day, then x ' + combinedUpliftPct
+        },
+        {
+          label:'Weekly time theft for full team',
+          value:currency(timeCalc.weeklyTimeTheftTeam),
+          sub:numberFormat(timeCalc.ee) + ' employees x ' + currency(timeCalc.rate) + '/hr x ' + numberFormat(timeCalc.avgHoursPerWeek) + ' hrs/week, then x ' + combinedUpliftPct
+        },
+        {
+          label:'Annual team time theft + all taxes',
+          value:currency(timeCalc.annualTimeTheftTeam),
+          sub:numberFormat(timeCalc.ee) + ' employees x ' + currency(timeCalc.rate) + '/hr x ' + numberFormat(timeCalc.avgHoursPerWeek * 52) + ' hrs/year, then x ' + combinedUpliftPct
+        }
+      ];
+      $('#timeMetrics').innerHTML = metrics.map(card => (
+        '<div class="metric-card"><div class="metric-label">' + card.label + '</div><div class="metric-value">' + card.value + '</div><div class="metric-sub">' + card.sub + '</div></div>'
+      )).join('');
+
+      const roiRows = timeCalc.rows;
+      $('#roiTableBody').innerHTML = roiRows.map(row => (
+        '<tr>' +
+          '<td>' + row.label + '</td>' +
+          '<td class="right">' + currency(row.monthly) + '</td>' +
+          '<td class="right">' + currency(row.annual) + '</td>' +
+          '<td class="right ' + roiClass(row.savings) + '">' + currency(row.savings) + '</td>' +
+        '</tr>'
+      )).join('');
+
+      const note = 'This model uses a 32-hour average workweek, 52 weeks per year, and a single 14.65% rate on wages: 7% estimated time theft plus 7.65% employer payroll taxes made up of 6.2% Social Security and 1.45% Medicare. Potential annual savings are measured against the full selected quote, including core plans, add-ons, usage items, and payroll when selected.';
+      $('#roiNote').textContent = note;
+      $('#timeStats').innerHTML = timeCalc.stats.map(stat => '<div class="stat-box"><strong>' + stat.title + '</strong><span>' + stat.text + '</span></div>').join('');
+    }
+
+    function renderPrint(calc, timeCalc){
+      const meta = getMeta();
+      const metaItems = [
+        {k:'Prepared for', v:meta.preparedFor},
+        {k:'Business', v:meta.businessName},
+        {k:'Prepared by', v:meta.preparedBy},
+        {k:'Quote date', v:meta.quoteDate}
+      ];
+      $('#printMeta').innerHTML = metaItems.map(item => '<div class="meta-card"><div class="k">' + item.k + '</div><div class="v">' + item.v + '</div></div>').join('');
+      $('#printPlanName').textContent = calc.planHeadline;
+      $('#printPlanCopy').textContent = calc.planCopy;
+      $('#printBilling').textContent = state.annual ? 'Annual plan rate' : 'Monthly';
+      $('#printFeatures').innerHTML = calc.features.map(feature => '<div class="quote-feature"><span class="feature-dot"></span><span>' + feature + '</span></div>').join('');
+      $('#printMonthlyTotal').textContent = currency(calc.totalMonthly);
+      $('#printRecurring').textContent = currency(calc.recurringMonthly);
+      $('#printUsage').textContent = currency(calc.usageMonthly);
+      $('#printAnnual').textContent = currency(calc.totalAnnual);
+      $('#printPromoLine').style.display = (state.showPromoMath && calc.hasAnyPromo) ? '' : 'none';
+      $('#printFirstYear').textContent = currency(calc.firstYearWithPromos);
+      $('#printMonthlyCopy').textContent = state.showBreakdown ? 'Includes selected plans, add-ons, and any usage-based items shown below.' : '';
+      $('#printMonthlyCopy').style.display = $('#printMonthlyCopy').textContent ? '' : 'none';
+
+      const promoPieces = [];
+      if (state.showPromoMath && calc.hasPayrollPromo) promoPieces.push('Payroll promo (' + state.payrollPromoMonths + ' mo free): ' + currency(calc.payrollPromoSavings));
+      if (state.showPromoMath && calc.hasCorePromo) promoPieces.push('Core plan promo (' + state.corePromo + ' mo free): ' + currency(calc.corePromoSavings));
+      $('#printNoteBox').textContent = promoPieces.join(' | ');
+      $('#printNoteBox').style.display = promoPieces.length ? '' : 'none';
+
+      const body = $('#printBreakdownBody');
+      body.innerHTML = '';
+      calc.rows.forEach(row => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = '<td>' + row.label + '</td><td class="right">' + numberFormat(row.qty) + '</td><td class="right">' + row.rate + '</td><td class="right">' + currency(row.amount) + '</td>';
+        body.appendChild(tr);
+      });
+      $('#printBreakdownRecurring').textContent = currency(calc.recurringMonthly);
+      $('#printBreakdownUsage').textContent = currency(calc.usageMonthly);
+      $('#printBreakdownTotal').textContent = currency(calc.totalMonthly);
+      $('#printUsageFoot').style.display = calc.usageMonthly > 0 ? '' : 'none';
+      $('#printBreakdownSection').style.display = state.showBreakdown ? '' : 'none';
+
+      $('#printTimeSection').style.display = state.showTimeTheft ? '' : 'none';
+      if (state.showTimeTheft) {
+        const metrics = [
+          {k:'Daily theft / employee', v:currency(timeCalc.dailyTimeTheftPerEmployee)},
+          {k:'Daily theft / team', v:currency(timeCalc.dailyTimeTheftTeam)},
+          {k:'Weekly theft / team', v:currency(timeCalc.weeklyTimeTheftTeam)},
+          {k:'Annual theft + taxes', v:currency(timeCalc.annualTimeTheftTeam)}
+        ];
+        $('#printTimeMetrics').innerHTML = metrics.map(item => '<div class="quote-metric"><div class="k">' + item.k + '</div><div class="v">' + item.v + '</div></div>').join('');
+        const roiLines = [
+          {label:timeCalc.selectedRow.label + ' / month', value:currency(calc.totalMonthly)},
+          {label:timeCalc.selectedRow.label + ' / year', value:currency(calc.totalAnnual)},
+          {label:'Potential annual savings', value:currency(timeCalc.netAnnualSavings), cls:roiClass(timeCalc.netAnnualSavings)}
+        ];
+        $('#printRoiLines').innerHTML = roiLines.map(line => '<div class="quote-roi-line"><span>' + line.label + '</span><span class="' + (line.cls || '') + '">' + line.value + '</span></div>').join('');
+        $('#printTimeStats').innerHTML = timeCalc.stats.map(stat => '<div class="quote-stat"><strong>' + stat.title + '</strong><span>' + stat.text + '</span></div>').join('');
+      }
+
+      $('#printFooterNotes').innerHTML = '<strong>Notes:</strong> ' + buildFinePrint();
+      $('#printFooterMeta').textContent = 'Billing: ' + (state.annual ? 'Annual' : 'Monthly') + '. Generated by ' + meta.preparedBy + ' for ' + meta.preparedFor + '.';
     }
 
     async function copyToClipboard(text){
@@ -807,356 +1427,7 @@
       return rows.map(row => row.map(cell => '"' + String(cell).replace(/"/g,'""') + '"').join(',')).join('\n');
     }
 
-    function getMeta(){
-      return {
-        preparedFor: preparedFor.trim() || 'Not specified',
-        businessName: businessName.trim() || 'Not specified',
-        preparedBy: preparedBy.trim() || 'Homebase seller',
-        quoteDate: formatDate(quoteDate)
-      };
-    }
-
-    function getFinePrint(hasPayroll){
-      if (!hasPayroll){
-        return 'Plan pricing is per location per month. Prices are USD and taxes or third-party fees are not included.';
-      }
-      return 'Plan pricing is per location per month. Payroll options: Standard ($39 base + $6/employee/mo) or Next Day ($49 base + $9/employee/mo). When separate EINs are selected, payroll base fees are billed once per EIN. Prices are USD and taxes or third-party fees are not included.';
-    }
-
-    function compute(){
-      const emp = Math.max(0, Math.floor(safeNumber(employees)) || 0);
-      const singleLoc = Math.max(1, Math.floor(safeNumber(locations)) || 1);
-      const mixCounts = {};
-      PLAN_ORDER.forEach(key => {
-        mixCounts[key] = Math.max(0, Math.floor(safeNumber(planMix[key])) || 0);
-      });
-      const mixedLocationTotal = PLAN_ORDER.reduce((sum, key) => sum + mixCounts[key], 0);
-      const loc = mixPlans ? mixedLocationTotal : singleLoc;
-
-      const selectedPlanLines = [];
-      if (mixPlans){
-        PLAN_ORDER.forEach(key => {
-          const qty = mixCounts[key];
-          if (qty > 0){
-            const rate = planRate(key);
-            selectedPlanLines.push({key, label: PLAN_NAMES[key], qty, rate, amount: qty * rate});
-          }
-        });
-      } else {
-        const rate = planRate(plan);
-        selectedPlanLines.push({key: plan, label: PLAN_NAMES[plan], qty: singleLoc, rate, amount: singleLoc * rate});
-      }
-
-      const planRows = selectedPlanLines.map(line => ({
-        category: 'Plan',
-        label: line.label + ' plan',
-        qty: line.qty,
-        rate: currency(line.rate) + ' / loc',
-        amount: line.amount
-      }));
-      const planMonthly = selectedPlanLines.reduce((sum, line) => sum + line.amount, 0);
-      const eligibleCoreMonthly = selectedPlanLines.reduce((sum, line) => sum + (line.key === 'basic' ? 0 : line.amount), 0);
-      const planMixCompact = selectedPlanLines.map(line => line.qty + ' ' + line.label).join(', ');
-      const planMixSentence = selectedPlanLines.length
-        ? joinNatural(selectedPlanLines.map(line => line.qty + ' ' + line.label + ' location' + plural(line.qty)))
-        : 'No locations selected yet.';
-      const planSummaryLabel = mixPlans ? 'Mixed plans' : PLAN_NAMES[plan];
-      const planSummaryCopy = mixPlans
-        ? (selectedPlanLines.length ? 'Plan mix: ' + planMixSentence + '.' : 'Choose how many locations should be on each plan.')
-        : PLANS[plan].n;
-
-      const tipUnits = tip ? (loc > 0 ? Math.min(Math.max(1, Math.floor(safeNumber(tipQty)) || 1), loc) : 0) : 0;
-      const taskUnits = task ? (loc > 0 ? Math.min(Math.max(1, Math.floor(safeNumber(taskQty)) || 1), loc) : 0) : 0;
-      const tipMonthly = tip ? 25 * tipUnits : 0;
-      const taskMonthly = task ? 13 * taskUnits : 0;
-
-      const payrollEnabled = payroll !== 'none';
-      const payrollBase = payrollEnabled ? (payroll === 'nextday' ? 49 : 39) : 0;
-      const payrollRate = payrollEnabled ? (payroll === 'nextday' ? 9 : 6) : 0;
-      const payrollEinCount = payrollEnabled
-        ? (separateEins && loc > 1 ? Math.min(Math.max(2, Math.floor(safeNumber(einCount)) || 2), loc) : 1)
-        : 0;
-      const payrollBaseMonthly = payrollBase * payrollEinCount;
-      const payrollEmployeeMonthly = payrollRate * emp;
-      const payrollMonthly = payrollEnabled ? payrollBaseMonthly + payrollEmployeeMonthly : 0;
-
-      const bgQty = Math.max(0, Math.floor(safeNumber(bg)) || 0);
-      const boostQty = Math.max(0, Math.floor(safeNumber(boosts)) || 0);
-      const haQty = Math.max(0, Math.floor(safeNumber(ha)) || 0);
-      const bgMonthly = 30 * bgQty;
-      const boostsMonthly = 79 * boostQty;
-      const hiringMonthly = 30 * haQty;
-
-      const recurringMonthly = planMonthly + tipMonthly + taskMonthly + payrollMonthly;
-      const usageMonthly = bgMonthly + boostsMonthly + hiringMonthly;
-      const totalMonthly = recurringMonthly + usageMonthly;
-      const totalAnnual = totalMonthly * 12;
-      const hasPayrollPromo = payrollEnabled && payrollPromoMonths > 0;
-      const hasCorePromo = eligibleCoreMonthly > 0 && corePromo > 0;
-      const payrollPromoSavings = hasPayrollPromo ? payrollMonthly * payrollPromoMonths : 0;
-      const corePromoSavings = hasCorePromo ? eligibleCoreMonthly * corePromo : 0;
-      const firstYearWithPromos = totalAnnual - payrollPromoSavings - corePromoSavings;
-      const hasAnyPromo = hasPayrollPromo || hasCorePromo;
-      const hasSeparatePayrollEins = payrollEinCount > 1;
-
-      const payrollName = payroll === 'nextday' ? 'Payroll (Next Day)' : 'Payroll';
-      const payrollLabel = hasSeparatePayrollEins ? payrollName + ' - ' + payrollEinCount + ' EINs' : payrollName;
-      const payrollRateText = payrollEnabled
-        ? (payroll === 'nextday'
-          ? (hasSeparatePayrollEins ? '$49 base x ' + payrollEinCount + ' EINs + $9 x ' + emp : '$49 base + $9 x ' + emp)
-          : (hasSeparatePayrollEins ? '$39 base x ' + payrollEinCount + ' EINs + $6 x ' + emp : '$39 base + $6 x ' + emp))
-        : '';
-      const payrollTableRate = payrollEnabled
-        ? (payroll === 'nextday'
-          ? (hasSeparatePayrollEins ? '$49 base x ' + payrollEinCount + ' EINs + $9/ee' : '$49 base + $9/ee')
-          : (hasSeparatePayrollEins ? '$39 base x ' + payrollEinCount + ' EINs + $6/ee' : '$39 base + $6/ee'))
-        : '';
-
-      const features = [];
-      if (selectedPlanLines.length){
-        selectedPlanLines.forEach(line => features.push(line.qty + ' ' + line.label + ' location' + plural(line.qty)));
-      } else {
-        features.push('Choose the locations and plans for this quote.');
-      }
-      if (payrollEnabled) features.push((payroll === 'nextday' ? 'Next Day payroll' : 'Payroll') + ' for ' + emp + ' employee' + plural(emp) + (hasSeparatePayrollEins ? ' across ' + payrollEinCount + ' EINs' : ''));
-      if (tip && tipUnits > 0) features.push('Tip Manager for ' + tipUnits + ' location' + plural(tipUnits));
-      if (task && taskUnits > 0) features.push('Task Manager for ' + taskUnits + ' location' + plural(taskUnits));
-      if (bgQty) features.push(bgQty + ' background check' + plural(bgQty) + ' / month');
-      if (boostQty) features.push(boostQty + ' job post boost' + plural(boostQty) + ' / month');
-      if (haQty) features.push(haQty + ' Hiring Assistant post' + plural(haQty) + ' / month');
-
-      const rows = [...planRows];
-      if (payrollEnabled) rows.push({category:'Payroll', label: payrollLabel, qty: emp, rate: payrollTableRate, amount: payrollMonthly});
-      if (tip && tipUnits > 0) rows.push({category:'Recurring Add-on', label:'Tip Manager', qty: tipUnits, rate:'$25 / loc', amount: tipMonthly});
-      if (task && taskUnits > 0) rows.push({category:'Recurring Add-on', label:'Task Manager', qty: taskUnits, rate:'$13 / loc', amount: taskMonthly});
-      if (bgQty) rows.push({category:'Usage', label:'Background checks', qty: bgQty, rate:'$30 / check', amount: bgMonthly});
-      if (boostQty) rows.push({category:'Usage', label:'Job post boosts', qty: boostQty, rate:'$79 / post', amount: boostsMonthly});
-      if (haQty) rows.push({category:'Usage', label:'Hiring Assistant', qty: haQty, rate:'$30 / post', amount: hiringMonthly});
-
-      return {
-        loc,
-        emp,
-        selectedPlanLines,
-        planSummaryLabel,
-        planSummaryCopy,
-        planMixCompact,
-        planMonthly,
-        tipQty: tipUnits,
-        taskQty: taskUnits,
-        tipMonthly,
-        taskMonthly,
-        payrollMonthly,
-        payrollEinCount,
-        hasSeparatePayrollEins,
-        bgMonthly,
-        boostsMonthly,
-        hiringMonthly,
-        recurringMonthly,
-        usageMonthly,
-        totalMonthly,
-        totalAnnual,
-        payrollPromoSavings,
-        corePromoSavings,
-        firstYearWithPromos,
-        payrollPromoMonths,
-        hasPayrollPromo,
-        hasCorePromo,
-        hasAnyPromo,
-        hasPayroll: payrollEnabled,
-        payrollLabel,
-        payrollRateText,
-        features,
-        rows
-      };
-    }
-
-    function renderPlanUi(calc){
-      const locInput = $('#loc');
-      const locHelp = $('#locHelp');
-      $('#mixPlans').checked = mixPlans;
-      $('#mixPlanBox').hidden = !mixPlans;
-      $('#plan').disabled = mixPlans;
-      locInput.readOnly = mixPlans;
-      locInput.classList.toggle('readonly-field', mixPlans);
-      if (mixPlans){
-        locInput.value = calc.loc ? String(calc.loc) : '';
-        locHelp.textContent = 'Locations are calculated from the plan mix below.';
-        locHelp.style.display = 'block';
-      } else if (locHelp) {
-        locHelp.style.display = 'none';
-        if (document.activeElement !== locInput && locInput.value.trim() === ''){
-          locInput.value = String(locations);
-        }
-      }
-      PLAN_ORDER.forEach(key => {
-        const input = $('#mix_' + key);
-        if (input && document.activeElement !== input){
-          input.value = planMix[key] ? String(planMix[key]) : '';
-        }
-      });
-      $('#plan').value = plan;
-      $('#planNote').textContent = mixPlans
-        ? (calc.selectedPlanLines.length ? 'Plan mix: ' + calc.planMixCompact + '.' : 'Choose how many locations should be on each plan.')
-        : PLANS[plan].n;
-    }
-
-    function renderAddonUi(calc){
-      const maxQty = Math.max(1, calc.loc || 1);
-      const tipInput = $('#tipQty');
-      const taskInput = $('#taskQty');
-      tipInput.disabled = !tip || calc.loc === 0;
-      taskInput.disabled = !task || calc.loc === 0;
-      tipInput.max = String(maxQty);
-      taskInput.max = String(maxQty);
-      if (document.activeElement !== tipInput) tipInput.value = String(Math.max(1, calc.tipQty || 1));
-      if (document.activeElement !== taskInput) taskInput.value = String(Math.max(1, calc.taskQty || 1));
-    }
-
-    function renderEinUi(calc){
-      const section = $('#einSection');
-      const checkbox = $('#separateEins');
-      const qtyWrap = $('#einQtyWrap');
-      const qtyInput = $('#einCount');
-      const help = $('#einHelp');
-      const showSection = calc.hasPayroll && calc.loc > 1;
-      section.hidden = !showSection;
-      if (!showSection){
-        checkbox.checked = false;
-        qtyWrap.hidden = true;
-        return;
-      }
-      checkbox.checked = separateEins;
-      qtyWrap.hidden = !separateEins;
-      qtyInput.max = String(Math.max(2, calc.loc));
-      if (document.activeElement !== qtyInput) qtyInput.value = String(Math.max(2, calc.payrollEinCount || 2));
-      help.textContent = separateEins
-        ? 'Payroll base fees will be billed once per EIN (' + calc.payrollEinCount + ' total).'
-        : 'Payroll base fees will be billed once per EIN if separate EINs are selected.';
-    }
-
-    function renderNotes(calc){
-      const text = getFinePrint(calc.hasPayroll);
-      $('#builderNotes').textContent = text;
-      $('#printFooterNotes').textContent = text;
-    }
-
-    function renderSummary(calc){
-      const badges = [];
-      badges.push(display.billingName + ' pricing');
-      if (mixPlans && calc.selectedPlanLines.length) badges.push('Mixed plans');
-      if (calc.hasPayroll) badges.push(calc.payrollLabel);
-      if (tip) badges.push('Tip Manager - ' + calc.tipQty + ' loc');
-      if (task) badges.push('Task Manager - ' + calc.taskQty + ' loc');
-      if (bg || boosts || ha) badges.push('Usage-based items');
-
-      $('#summary').innerHTML = `
-        <div class="summary-grid">
-          <div class="summary-top">
-            <div class="summary-line"><span>Plan</span><strong>${calc.planSummaryLabel}</strong></div>
-            ${mixPlans && calc.selectedPlanLines.length ? `<div class="summary-line"><span>Plan mix</span><strong>${calc.planMixCompact}</strong></div>` : ''}
-            <div class="summary-line"><span>Billing</span><strong>${display.billingName}</strong></div>
-            <div class="summary-line"><span>Locations</span><strong>${calc.loc}</strong></div>
-            <div class="summary-line"><span>Employees</span><strong>${calc.emp}</strong></div>
-            ${calc.hasSeparatePayrollEins ? `<div class="summary-line"><span>Payroll EINs</span><strong>${calc.payrollEinCount}</strong></div>` : ''}
-          </div>
-
-          <div class="summary-total">
-            <div class="label">Total / month</div>
-            <div class="amount">${currency(calc.totalMonthly)}</div>
-            <div class="sub">Annualized: ${currency(calc.totalAnnual)}</div>
-          </div>
-
-          <div class="summary-badges">${badges.map(b => `<span class="badge">${b}</span>`).join('')}</div>
-
-          <div class="summary-mini">
-            <div class="mini-row"><span>Recurring subtotal</span><span>${currency(calc.recurringMonthly)}</span></div>
-            <div class="mini-row"><span>Usage subtotal</span><span>${currency(calc.usageMonthly)}</span></div>
-            ${showPromoMath && calc.hasAnyPromo ? `<div class="mini-row"><span>First year with promos</span><span>${currency(calc.firstYearWithPromos)}</span></div>` : ''}
-          </div>
-
-          <div class="summary-mode">${showBreakdown ? 'Customer-facing outputs currently include the full line-item breakdown.' : 'Customer-facing outputs are currently summary only.'}</div>
-        </div>
-      `;
-    }
-
-    function renderBreakdown(calc){
-      const card = $('#breakdownCard');
-      card.hidden = !showBreakdown;
-      const tbody = $('#breakdownTable tbody');
-      tbody.innerHTML = '';
-      calc.rows.forEach(row => {
-        const tr = document.createElement('tr');
-        tr.innerHTML = `<td>${row.label}</td><td class="right">${row.qty}</td><td class="right">${row.rate}</td><td class="right">${currency(row.amount)}</td>`;
-        tbody.appendChild(tr);
-      });
-      $('#recSub').textContent = currency(calc.recurringMonthly);
-      $('#useSub').textContent = currency(calc.usageMonthly);
-      $('#usageRow').hidden = calc.usageMonthly <= 0;
-      $('#total').textContent = currency(calc.totalMonthly);
-      const showFirstYear = showPromoMath && calc.hasAnyPromo;
-      $('#fyRow').hidden = !showFirstYear;
-      $('#firstYear').textContent = currency(calc.firstYearWithPromos);
-    }
-
-    function renderPrint(calc){
-      const meta = getMeta();
-      const metaItems = [
-        {k:'Prepared for', v:meta.preparedFor},
-        {k:'Business', v:meta.businessName},
-        {k:'Prepared by', v:meta.preparedBy},
-        {k:'Quote date', v:meta.quoteDate}
-      ];
-      $('#printMeta').innerHTML = metaItems.map(item => `<div class="meta-card"><div class="k">${item.k}</div><div class="v">${item.v}</div></div>`).join('');
-      $('#printPlanName').textContent = calc.planSummaryLabel;
-      $('#printPlanCopy').textContent = calc.planSummaryCopy;
-      $('#printBilling').textContent = display.billingName + (annual ? ' plan rate' : '');
-      $('#printFeatures').innerHTML = calc.features.map(feature => `<div class="quote-feature"><span class="feature-dot"></span><span>${feature}</span></div>`).join('');
-      $('#printMonthlyTotal').textContent = currency(calc.totalMonthly);
-      $('#printRecurring').textContent = currency(calc.recurringMonthly);
-      $('#printUsage').textContent = currency(calc.usageMonthly);
-      $('#printAnnual').textContent = currency(calc.totalAnnual);
-      const promoVisible = showPromoMath && calc.hasAnyPromo;
-      $('#printPromoLine').style.display = promoVisible ? '' : 'none';
-      $('#printFirstYear').textContent = currency(calc.firstYearWithPromos);
-      $('#printMonthlyCopy').textContent = showBreakdown ? 'Includes selected plans, add-ons, and any usage-based items shown below.' : '';
-      $('#printMonthlyCopy').style.display = $('#printMonthlyCopy').textContent ? '' : 'none';
-
-      const promoPieces = [];
-      if (showPromoMath && calc.hasPayrollPromo) promoPieces.push('Payroll promo (' + calc.payrollPromoMonths + ' mo free): ' + currency(calc.payrollPromoSavings));
-      if (showPromoMath && calc.hasCorePromo) promoPieces.push('Core plan promo (' + corePromo + ' mo free): ' + currency(calc.corePromoSavings));
-      const noteText = promoPieces.length ? promoPieces.join(' | ') : '';
-      $('#printNoteBox').textContent = noteText;
-      $('#printNoteBox').style.display = noteText ? '' : 'none';
-
-      const pBody = $('#printBreakdownBody');
-      pBody.innerHTML = '';
-      calc.rows.forEach(row => {
-        const tr = document.createElement('tr');
-        tr.innerHTML = `<td>${row.label}</td><td class="right">${row.qty}</td><td class="right">${row.rate}</td><td class="right">${currency(row.amount)}</td>`;
-        pBody.appendChild(tr);
-      });
-      $('#printBreakdownRecurring').textContent = currency(calc.recurringMonthly);
-      $('#printBreakdownUsage').textContent = currency(calc.usageMonthly);
-      $('#printBreakdownTotal').textContent = currency(calc.totalMonthly);
-      $('#printUsageFoot').style.display = calc.usageMonthly > 0 ? '' : 'none';
-      $('#printBreakdownSection').style.display = showBreakdown ? '' : 'none';
-      $('#printSummaryOnly').style.display = 'none';
-      $('#printFooterMeta').textContent = 'Billing: ' + display.billingName + '. Generated by ' + meta.preparedBy + ' for ' + meta.preparedFor + '.';
-    }
-
-    function render(){
-      const calc = compute();
-      renderPlanUi(calc);
-      renderAddonUi(calc);
-      renderEinUi(calc);
-      renderNotes(calc);
-      renderSummary(calc);
-      renderBreakdown(calc);
-      renderPrint(calc);
-      return calc;
-    }
-
-    function quoteText(calc){
+    function quoteText(calc, timeCalc){
       const meta = getMeta();
       const lines = [];
       lines.push('Homebase Quote');
@@ -1166,13 +1437,12 @@
       lines.push('Prepared by: ' + meta.preparedBy);
       lines.push('Quote date: ' + meta.quoteDate);
       lines.push('');
-      lines.push('Plan: ' + calc.planSummaryLabel + ' (' + display.billingName.toLowerCase() + ' pricing)');
-      if (mixPlans && calc.selectedPlanLines.length) lines.push('Plan mix: ' + calc.planMixCompact);
-      lines.push('Locations: ' + calc.loc);
-      lines.push('Employees: ' + calc.emp);
-      if (calc.hasSeparatePayrollEins) lines.push('Payroll EINs: ' + calc.payrollEinCount);
+      lines.push('Plan: ' + calc.planHeadline + ' (' + (state.annual ? 'annual pricing' : 'monthly pricing') + ')');
+      lines.push('Locations: ' + numberFormat(calc.loc));
+      lines.push('Employees: ' + numberFormat(calc.emp));
+      if (calc.hasSeparatePayrollEins) lines.push('Payroll EINs: ' + numberFormat(calc.payrollEinCount));
       lines.push('Recurring subtotal: ' + currency(calc.recurringMonthly) + '/mo');
-      if (showBreakdown){
+      if (state.showBreakdown){
         lines.push('');
         lines.push('Breakdown (per month):');
         calc.rows.forEach(row => lines.push('- ' + row.label + ': ' + row.rate + ' = ' + currency(row.amount)));
@@ -1180,116 +1450,131 @@
       lines.push('');
       lines.push('Total: ' + currency(calc.totalMonthly) + '/mo');
       lines.push('Annualized: ' + currency(calc.totalAnnual) + '/yr');
-      if (showPromoMath && calc.hasAnyPromo) lines.push('First year with promos: ' + currency(calc.firstYearWithPromos));
+      if (state.showPromoMath && calc.hasAnyPromo) lines.push('First year with promos: ' + currency(calc.firstYearWithPromos));
+      if (state.showTimeTheft) {
+        lines.push('');
+        lines.push('Estimated cost of time theft:');
+        lines.push('- Employees: ' + numberFormat(timeCalc.ee));
+        lines.push('- Average hourly rate: ' + currency(timeCalc.rate));
+        lines.push('- Daily time theft per employee: ' + currency(timeCalc.dailyTimeTheftPerEmployee));
+        lines.push('- Daily time theft for full team: ' + currency(timeCalc.dailyTimeTheftTeam));
+        lines.push('- Weekly time theft for full team: ' + currency(timeCalc.weeklyTimeTheftTeam));
+        lines.push('- Annual team time theft + all taxes: ' + currency(timeCalc.annualTimeTheftTeam));
+        lines.push('- Potential annual savings after Homebase: ' + currency(timeCalc.netAnnualSavings));
+      }
       return lines.join('\n');
     }
 
-    function quoteCSV(calc){
-      const rows = [['Category','Item','Qty','Amount/mo']];
-      calc.rows.forEach(row => rows.push([row.category, row.label, String(row.qty), currency(row.amount)]));
+    function quoteCSV(calc, timeCalc){
+      const rows = [['Category','Item','Qty','Amount']];
+      calc.planRows.forEach(row => rows.push(['Plan', row.label, String(row.qty), currency(row.amount)]));
+      if (state.payroll !== 'none') rows.push(['Plan', calc.payrollLabel, String(calc.emp), currency(calc.payrollMonthly)]);
+      if (state.tip) rows.push(['Recurring Add-on', 'Tip Manager', String(calc.tipQty), currency(calc.tipMonthly)]);
+      if (state.task) rows.push(['Recurring Add-on', 'Task Manager', String(calc.taskQty), currency(calc.taskMonthly)]);
+      if (state.bg) rows.push(['Usage', 'Background checks', String(state.bg), currency(calc.bgMonthly)]);
+      if (state.boosts) rows.push(['Usage', 'Job post boosts', String(state.boosts), currency(calc.boostsMonthly)]);
+      if (state.ha) rows.push(['Usage', 'Hiring Assistant', String(state.ha), currency(calc.hiringMonthly)]);
       rows.push(['', 'Recurring subtotal', '', currency(calc.recurringMonthly)]);
-      if (calc.usageMonthly > 0) rows.push(['', 'Usage subtotal', '', currency(calc.usageMonthly)]);
       rows.push(['', 'Total / month', '', currency(calc.totalMonthly)]);
-      if (showPromoMath && calc.hasAnyPromo) rows.push(['', 'First year with promos', '', currency(calc.firstYearWithPromos)]);
+      if (state.showPromoMath && calc.hasAnyPromo) rows.push(['', 'First year with promos', '', currency(calc.firstYearWithPromos)]);
+      if (state.showTimeTheft) {
+        rows.push(['Time theft', 'Employees', String(timeCalc.ee), '']);
+        rows.push(['Time theft', 'Average hourly rate', '', currency(timeCalc.rate)]);
+        rows.push(['Time theft', 'Daily time theft per employee', '', currency(timeCalc.dailyTimeTheftPerEmployee)]);
+        rows.push(['Time theft', 'Daily time theft for full team', '', currency(timeCalc.dailyTimeTheftTeam)]);
+        rows.push(['Time theft', 'Weekly time theft for full team', '', currency(timeCalc.weeklyTimeTheftTeam)]);
+        rows.push(['Time theft', 'Annual team time theft + all taxes', '', currency(timeCalc.annualTimeTheftTeam)]);
+        rows.push(['Time theft', 'Potential annual savings after Homebase', '', currency(timeCalc.netAnnualSavings)]);
+      }
       return buildCSV(rows);
     }
 
-    function syncStateFromInputs(){
-      const nextMixPlans = $('#mixPlans').checked;
-      if (!nextMixPlans) locations = readInt('loc', locations, 1, 99999);
-      mixPlans = nextMixPlans;
-      employees = readInt('emp', employees, 0, 999999);
-      plan = $('#plan').value;
-      PLAN_ORDER.forEach(key => {
-        planMix[key] = readInt('mix_' + key, planMix[key], 0, 99999);
-      });
-      tip = $('#tip').checked;
-      task = $('#task').checked;
-      tipQty = readInt('tipQty', tipQty, 1, 99999);
-      taskQty = readInt('taskQty', taskQty, 1, 99999);
-      bg = readInt('bg', bg, 0, 999999);
-      boosts = readInt('boosts', boosts, 0, 999999);
-      ha = readInt('ha', ha, 0, 999999);
-      separateEins = $('#separateEins').checked;
-      einCount = readInt('einCount', einCount, 2, 99999);
-      showBreakdown = $('#showBreakdown').checked;
-      showPromoMath = $('#showPromoMath').checked;
-      preparedFor = $('#preparedFor').value;
-      businessName = $('#businessName').value;
-      preparedBy = $('#preparedBy').value;
-      quoteDate = $('#quoteDate').value || todayISO;
+    function render(){
+      renderPlanUi();
+      const calc = compute();
+      renderEinUi(calc);
+      renderAddonUi(calc);
+      const timeCalc = computeTimeTheft(calc);
+      renderSummary(calc, timeCalc);
+      renderBreakdown(calc);
+      renderTimeTheft(calc, timeCalc);
+      renderPrint(calc, timeCalc);
+      return {calc, timeCalc};
     }
 
     function bindInputs(){
-      const handleInput = () => {
-        syncStateFromInputs();
-        render();
-      };
-
       $('#billingSeg').addEventListener('click', (e) => {
         if (e.target.tagName !== 'BUTTON') return;
-        annual = e.target.dataset.val === 'annual';
-        activateSeg('#billingSeg', annual ? 'annual' : 'monthly');
+        state.annual = e.target.dataset.val === 'annual';
+        activateSeg('#billingSeg', state.annual ? 'annual' : 'monthly');
         render();
       });
-      $('#coreSeg').addEventListener('click', (e) => {
-        if (e.target.tagName !== 'BUTTON') return;
-        corePromo = Number(e.target.dataset.val);
-        activateSeg('#coreSeg', corePromo);
-        render();
-      });
+
       $('#payrollSeg').addEventListener('click', (e) => {
         if (e.target.tagName !== 'BUTTON') return;
-        payroll = e.target.dataset.val;
-        activateSeg('#payrollSeg', payroll);
+        state.payroll = e.target.dataset.val;
+        activateSeg('#payrollSeg', state.payroll);
         render();
       });
+
       $('#payrollPromoSeg').addEventListener('click', (e) => {
         if (e.target.tagName !== 'BUTTON') return;
-        payrollPromoMonths = Number(e.target.dataset.val);
-        activateSeg('#payrollPromoSeg', payrollPromoMonths);
+        state.payrollPromoMonths = Number(e.target.dataset.val);
+        activateSeg('#payrollPromoSeg', state.payrollPromoMonths);
         render();
       });
-      $('#mixPlans').addEventListener('change', () => {
-        const turningOn = $('#mixPlans').checked;
-        if (turningOn && !mixPlans){
-          planMix = getMixPlansFromCurrentSelection();
+
+      $('#coreSeg').addEventListener('click', (e) => {
+        if (e.target.tagName !== 'BUTTON') return;
+        state.corePromo = Number(e.target.dataset.val);
+        activateSeg('#coreSeg', state.corePromo);
+        render();
+      });
+
+      $('#mixPlans').addEventListener('change', (e) => {
+        const turningOn = e.target.checked;
+        if (turningOn) {
+          syncStateFromInputs();
+          applySinglePlanToMix();
+          state.mixPlans = true;
+        } else {
+          syncStateFromInputs();
+          state.mixPlans = false;
+          const total = planMixTotal();
+          state.locations = Math.max(1, total || state.locations || 1);
+          $('#loc').value = String(state.locations);
+          const first = ['aio','plus','essentials','basic'].find(key => state.mix[key] > 0);
+          if (first) {
+            state.plan = first;
+            $('#plan').value = first;
+          }
         }
-        if (!turningOn && mixPlans){
-          const total = getPlanMixTotal();
-          if (total > 0) locations = total;
-          const firstSelected = PLAN_ORDER.find(key => planMix[key] > 0);
-          if (firstSelected) plan = firstSelected;
-        }
-        syncStateFromInputs();
         render();
       });
-      $('#tip').addEventListener('change', () => {
-        if ($('#tip').checked && !safeNumber($('#tipQty').value)) $('#tipQty').value = '1';
-        syncStateFromInputs();
-        render();
-      });
-      $('#task').addEventListener('change', () => {
-        if ($('#task').checked && !safeNumber($('#taskQty').value)) $('#taskQty').value = '1';
+
+      $('#ttEmployees').addEventListener('input', () => {
+        state.ttEmployeesTouched = true;
         syncStateFromInputs();
         render();
       });
 
-      ['plan','separateEins','showBreakdown','showPromoMath','quoteDate'].forEach(id => {
-        $('#' + id).addEventListener('change', handleInput);
-      });
-      ['loc','emp','mix_basic','mix_essentials','mix_plus','mix_aio','tipQty','taskQty','bg','boosts','ha','einCount'].forEach(id => {
+      [
+        'loc','emp','empMixed','plan','mix_basic','mix_essentials','mix_plus','mix_aio',
+        'separateEins','einCount','tip','tipQty','task','taskQty','bg','boosts','ha',
+        'showBreakdown','showPromoMath','showTimeTheft','preparedFor','businessName',
+        'preparedBy','quoteDate','ttHourlyRate'
+      ].forEach(id => {
         const el = $('#' + id);
-        el.addEventListener('input', handleInput);
-        el.addEventListener('change', handleInput);
-      });
-      ['preparedFor','businessName','preparedBy'].forEach(id => {
-        $('#' + id).addEventListener('input', handleInput);
+        const evt = (el.type === 'checkbox' || el.tagName === 'SELECT' || el.type === 'date') ? 'change' : 'input';
+        el.addEventListener(evt, () => {
+          syncStateFromInputs();
+          render();
+        });
       });
 
       $('#copyQuote').addEventListener('click', async () => {
-        const calc = render();
-        const text = quoteText(calc);
+        const rendered = render();
+        const text = quoteText(rendered.calc, rendered.timeCalc);
         const ok = await copyToClipboard(text);
         if (ok) {
           setStatus('Quote copied.', 'ok');
@@ -1300,8 +1585,8 @@
       });
 
       $('#copyCSV').addEventListener('click', async () => {
-        const calc = render();
-        const csv = quoteCSV(calc);
+        const rendered = render();
+        const csv = quoteCSV(rendered.calc, rendered.timeCalc);
         const ok = await copyToClipboard(csv);
         if (ok) {
           setStatus('CSV copied.', 'ok');
@@ -1324,10 +1609,11 @@
 
     function init(){
       $('#quoteDate').value = todayISO;
+      $('#empMixed').value = $('#emp').value;
       activateSeg('#billingSeg', 'monthly');
+      activateSeg('#payrollSeg', 'standard');
       activateSeg('#payrollPromoSeg', 0);
       activateSeg('#coreSeg', 0);
-      activateSeg('#payrollSeg', 'standard');
       syncStateFromInputs();
       bindInputs();
       render();
@@ -1335,7 +1621,6 @@
 
     init();
   })();
-</script>
-
+  </script>
 </body>
 </html>
