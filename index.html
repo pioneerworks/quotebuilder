@@ -131,11 +131,11 @@
 
     .time-card[hidden],.breakdown-card[hidden],.mix-plan-fields[hidden],.single-plan-fields[hidden],.addon-qty[hidden],.time-body[hidden],.ein-box[hidden]{display:none !important}
     .time-body{display:grid;gap:14px;margin-top:14px}
-    .metrics-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
-    .metric-card{border:1px solid var(--border);border-radius:16px;padding:18px 20px;background:#FCFBFF;display:grid;gap:8px;align-content:start;min-height:160px}
+    .metrics-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:12px}
+    .metric-card{border:1px solid var(--border);border-radius:16px;padding:14px;background:#FCFBFF;display:grid;gap:4px}
     .metric-label{font-size:12px;color:#64748B;font-weight:700}
-    .metric-value{font-size:clamp(16px,1.8vw,22px);line-height:1.12;font-weight:800;overflow-wrap:anywhere;word-break:break-word;hyphens:auto;max-width:100%}
-    .metric-sub{font-size:12px;color:#64748B;line-height:1.35}
+    .metric-value{font-size:clamp(18px,2vw,22px);line-height:1.05;font-weight:800;overflow-wrap:anywhere;word-break:break-word;hyphens:auto;max-width:100%}
+    .metric-sub{font-size:12px;color:#64748B}
     .roi-grid{display:grid;grid-template-columns:1.15fr .85fr;gap:14px}
     .roi-panel{border:1px solid var(--border);border-radius:18px;padding:16px;background:#fff}
     .roi-panel h3{margin:0 0 10px;font-size:16px;font-weight:800}
@@ -235,8 +235,7 @@
     .quote-metrics{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px}
     .quote-metric{border:1px solid #E7E3EE;border-radius:16px;padding:12px;background:#FCFBFF}
     .quote-metric .k{font-size:11px;color:#64748B;font-weight:800;text-transform:uppercase;letter-spacing:.06em}
-    .quote-metric .v{margin-top:6px;font-size:16px;font-weight:800;line-height:1.15;overflow-wrap:anywhere;word-break:break-word;hyphens:auto}
-    .quote-metric .sub{margin-top:6px;font-size:11px;color:#64748B;line-height:1.35}
+    .quote-metric .v{margin-top:6px;font-size:18px;font-weight:800;line-height:1.1}
     .quote-roi-card{border:1px solid #E7E3EE;border-radius:18px;padding:16px;background:#fff}
     .quote-roi-card h4{margin:0 0 8px;font-size:15px;font-weight:800}
     .quote-stat-stack{display:grid;gap:8px}
@@ -250,7 +249,7 @@
     .quote-footer strong{color:var(--deep)}
 
     @media (max-width:1080px){
-      .metrics-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+      .metrics-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
       .quote-metrics{grid-template-columns:repeat(3,minmax(0,1fr))}
     }
     @media (max-width:980px){
@@ -263,8 +262,7 @@
       .plan-mix-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
     }
     @media (max-width:640px){
-      .metrics-grid{grid-template-columns:1fr}
-      .row,.row-3,.row-2,.addons-grid,.setup-grid,.roi-grid,.quote-roi-grid,.quote-metrics,.plan-mix-grid{grid-template-columns:1fr}
+      .row,.row-3,.row-2,.addons-grid,.setup-grid,.roi-grid,.quote-roi-grid,.metrics-grid,.quote-metrics,.plan-mix-grid{grid-template-columns:1fr}
       .col-span-2{grid-column:span 1}
       .quote-meta,.quote-main,.quote-feature-list{grid-template-columns:1fr}
       .brand-row,.quote-title-row{flex-direction:column}
@@ -312,7 +310,6 @@
       .quote-metric{padding:8px;border-radius:12px}
       .quote-metric .k{font-size:8px}
       .quote-metric .v{font-size:14px;margin-top:4px}
-      .quote-metric .sub{margin-top:4px;font-size:8.8px;line-height:1.3;color:#64748B}
       .quote-roi-card{padding:10px;border-radius:12px}
       .quote-roi-card h4{font-size:12px;margin-bottom:6px}
       .quote-roi-line,.quote-stat{font-size:10px}
@@ -975,7 +972,7 @@
 
       const bgMonthly = 30 * state.bg;
       const boostsMonthly = 79 * state.boosts;
-      const hiringMonthly = 30 * state.ha;
+      const hiringMonthly = 99 * state.ha;
       const recurringMonthly = planMonthly + tipMonthly + taskMonthly + payrollMonthly;
       const usageMonthly = bgMonthly + boostsMonthly + hiringMonthly;
       const totalMonthly = recurringMonthly + usageMonthly;
@@ -1014,7 +1011,7 @@
       if (state.task) features.push('Task Manager for ' + taskQty + ' location' + plural(taskQty, ''));
       if (state.bg) features.push(numberFormat(state.bg) + ' background check' + plural(state.bg, ''));
       if (state.boosts) features.push(numberFormat(state.boosts) + ' job post boost' + plural(state.boosts, ''));
-      if (state.ha) features.push(numberFormat(state.ha) + ' Hiring Assistant post' + plural(state.ha, ''));
+      if (state.ha) features.push(numberFormat(state.ha) + ' Hiring Assistant subscription' + plural(state.ha, ''));
 
       const rows = planRows.slice();
       if (state.payroll !== 'none') rows.push({label: payrollLabel, qty: emp, rate: payrollTableRate, amount: payrollMonthly});
@@ -1022,7 +1019,7 @@
       if (state.task) rows.push({label:'Task Manager', qty:taskQty, rate:'$13 / loc', amount:taskMonthly});
       if (state.bg) rows.push({label:'Background checks', qty:state.bg, rate:'$30 / check', amount:bgMonthly});
       if (state.boosts) rows.push({label:'Job post boosts', qty:state.boosts, rate:'$79 / post', amount:boostsMonthly});
-      if (state.ha) rows.push({label:'Hiring Assistant', qty:state.ha, rate:'$30 / post', amount:hiringMonthly});
+      if (state.ha) rows.push({label:'Hiring Assistant', qty:state.ha, rate:'$99 / mo', amount:hiringMonthly});
 
       const planName = state.mixPlans ? 'Mixed plans' : PLAN_LABELS[state.plan];
       const planHeadline = state.mixPlans ? mixSummaryParts(true).join(' + ') : PLAN_LABELS[state.plan];
@@ -1072,33 +1069,13 @@
     function computeTimeTheft(calc){
       const ee = Math.max(0, Number(state.ttEmployees) || 0);
       const rate = Math.max(0, Number(state.ttHourlyRate) || 0);
-
-      const avgHoursPerWeek = 32;
-      const weeksPerYear = 52;
-      const workDaysPerWeek = 5;
-      const hoursPerDay = avgHoursPerWeek / workDaysPerWeek;
-
-      const dailyBasePerEmployee = rate * hoursPerDay;
-      const weeklyBasePerEmployee = rate * avgHoursPerWeek;
-      const annualBasePerEmployee = rate * avgHoursPerWeek * weeksPerYear;
-
-      const teamDailyWages = dailyBasePerEmployee * ee;
-      const teamWeeklyWages = weeklyBasePerEmployee * ee;
-      const teamAnnualWages = annualBasePerEmployee * ee;
-
-      const ssRate = 0.062;
-      const medicareRate = 0.0145;
-      const payrollTaxRate = ssRate + medicareRate;
-      const theftRate = 0.07;
-      const combinedRate = theftRate + payrollTaxRate;
-
-      const dailyTimeTheftPerEmployee = dailyBasePerEmployee * combinedRate;
-      const dailyTimeTheftTeam = teamDailyWages * combinedRate;
-      const weeklyTimeTheftTeam = teamWeeklyWages * combinedRate;
-      const annualTimeTheftTeam = teamAnnualWages * combinedRate;
-
-      const timeTheftMonthly = annualTimeTheftTeam / 12;
-      const netAnnualSavings = annualTimeTheftTeam - calc.totalAnnual;
+      const hourlyWages = ee * rate * 2080;
+      const socialSecurity = hourlyWages * 0.062;
+      const medicare = hourlyWages * 0.0145;
+      const annualWage = hourlyWages + socialSecurity + medicare;
+      const timeTheftAnnual = annualWage * 0.07;
+      const timeTheftMonthly = timeTheftAnnual / 12;
+      const netAnnualSavings = timeTheftAnnual - calc.totalAnnual;
       const netMonthlyImpact = timeTheftMonthly - calc.totalMonthly;
 
       const selectedPlanParts = [];
@@ -1125,36 +1102,23 @@
           text:'The American Society of Employers estimates that 20% of every dollar earned by a U.S. company is lost to time theft.'
         },
         {
-          title:'Rate used',
-          text:'This model uses a single 14.65% rate: 7% estimated time theft plus 6.2% Social Security and 1.45% Medicare.'
+          title:'What this includes',
+          text:'This estimate includes wages plus employer Social Security and Medicare, not just base pay.'
         },
         {
           title:'Your estimate',
-          text:'Using ' + numberFormat(ee) + ' employees at ' + currency(rate) + '/hr and a 32-hour average workweek, estimated annual team time theft plus taxes is ' + currency(annualTimeTheftTeam) + '.'
+          text:'At ' + numberFormat(ee) + ' employees averaging ' + currency(rate) + ' per hour, a 7% time theft estimate is about ' + currency(timeTheftAnnual) + ' per year.'
         }
       ];
 
       return {
         ee,
         rate,
-        avgHoursPerWeek,
-        hoursPerDay,
-        theftRate,
-        ssRate,
-        medicareRate,
-        payrollTaxRate,
-        combinedRate,
-        dailyBasePerEmployee,
-        weeklyBasePerEmployee,
-        annualBasePerEmployee,
-        teamDailyWages,
-        teamWeeklyWages,
-        teamAnnualWages,
-        dailyTimeTheftPerEmployee,
-        dailyTimeTheftTeam,
-        weeklyTimeTheftTeam,
-        annualTimeTheftTeam,
-        timeTheftAnnual: annualTimeTheftTeam,
+        hourlyWages,
+        socialSecurity,
+        medicare,
+        annualWage,
+        timeTheftAnnual,
         timeTheftMonthly,
         netAnnualSavings,
         netMonthlyImpact,
@@ -1291,28 +1255,12 @@
       $('#timeBody').hidden = !state.showTimeTheft;
       if (!state.showTimeTheft) return;
 
-      const combinedUpliftPct = (timeCalc.combinedRate * 100).toFixed(2) + '%';
       const metrics = [
-        {
-          label:'Daily time theft per employee',
-          value:currency(timeCalc.dailyTimeTheftPerEmployee),
-          sub:currency(timeCalc.rate) + ' x ' + numberFormat(timeCalc.hoursPerDay) + ' hrs/day = ' + currency(timeCalc.dailyBasePerEmployee) + ', then x ' + combinedUpliftPct
-        },
-        {
-          label:'Daily time theft for full team',
-          value:currency(timeCalc.dailyTimeTheftTeam),
-          sub:numberFormat(timeCalc.ee) + ' employees x ' + currency(timeCalc.rate) + '/hr x ' + numberFormat(timeCalc.hoursPerDay) + ' hrs/day, then x ' + combinedUpliftPct
-        },
-        {
-          label:'Weekly time theft for full team',
-          value:currency(timeCalc.weeklyTimeTheftTeam),
-          sub:numberFormat(timeCalc.ee) + ' employees x ' + currency(timeCalc.rate) + '/hr x ' + numberFormat(timeCalc.avgHoursPerWeek) + ' hrs/week, then x ' + combinedUpliftPct
-        },
-        {
-          label:'Annual team time theft + all taxes',
-          value:currency(timeCalc.annualTimeTheftTeam),
-          sub:numberFormat(timeCalc.ee) + ' employees x ' + currency(timeCalc.rate) + '/hr x ' + numberFormat(timeCalc.avgHoursPerWeek * 52) + ' hrs/year, then x ' + combinedUpliftPct
-        }
+        {label:'Employees', value:numberFormat(timeCalc.ee), sub:'Input for the calculator'},
+        {label:'Hourly wages', value:currency(timeCalc.hourlyWages), sub:'Employees x rate x 2,080 hours'},
+        {label:'Social Security', value:currency(timeCalc.socialSecurity), sub:'6.2% employer tax'},
+        {label:'Medicare', value:currency(timeCalc.medicare), sub:'1.45% employer tax'},
+        {label:'Estimated time theft', value:currency(timeCalc.timeTheftAnnual), sub:'7% of annual wages + taxes'}
       ];
       $('#timeMetrics').innerHTML = metrics.map(card => (
         '<div class="metric-card"><div class="metric-label">' + card.label + '</div><div class="metric-value">' + card.value + '</div><div class="metric-sub">' + card.sub + '</div></div>'
@@ -1328,7 +1276,7 @@
         '</tr>'
       )).join('');
 
-      const note = 'This model uses a 32-hour average workweek, 52 weeks per year, and a single 14.65% rate on wages: 7% estimated time theft plus 7.65% employer payroll taxes made up of 6.2% Social Security and 1.45% Medicare. Potential annual savings are measured against the full selected quote, including core plans, add-ons, usage items, and payroll when selected.';
+      const note = 'This model uses 2,080 hours per employee per year, 6.2% employer Social Security, 1.45% Medicare, and a 7% time theft estimate. Potential annual savings are measured against the full selected quote, including core plans, add-ons, usage items, and payroll when selected.';
       $('#roiNote').textContent = note;
       $('#timeStats').innerHTML = timeCalc.stats.map(stat => '<div class="stat-box"><strong>' + stat.title + '</strong><span>' + stat.text + '</span></div>').join('');
     }
@@ -1376,30 +1324,14 @@
 
       $('#printTimeSection').style.display = state.showTimeTheft ? '' : 'none';
       if (state.showTimeTheft) {
-        const combinedUpliftPct = (timeCalc.combinedRate * 100).toFixed(2) + '%';
         const metrics = [
-          {
-            k:'Daily theft / employee',
-            v:currency(timeCalc.dailyTimeTheftPerEmployee),
-            sub:currency(timeCalc.rate) + ' x ' + numberFormat(timeCalc.hoursPerDay) + ' hrs/day = ' + currency(timeCalc.dailyBasePerEmployee) + ', then x ' + combinedUpliftPct
-          },
-          {
-            k:'Daily theft / team',
-            v:currency(timeCalc.dailyTimeTheftTeam),
-            sub:numberFormat(timeCalc.ee) + ' employees x ' + currency(timeCalc.rate) + '/hr x ' + numberFormat(timeCalc.hoursPerDay) + ' hrs/day, then x ' + combinedUpliftPct
-          },
-          {
-            k:'Weekly theft / team',
-            v:currency(timeCalc.weeklyTimeTheftTeam),
-            sub:numberFormat(timeCalc.ee) + ' employees x ' + currency(timeCalc.rate) + '/hr x ' + numberFormat(timeCalc.avgHoursPerWeek) + ' hrs/week, then x ' + combinedUpliftPct
-          },
-          {
-            k:'Annual theft + taxes',
-            v:currency(timeCalc.annualTimeTheftTeam),
-            sub:numberFormat(timeCalc.ee) + ' employees x ' + currency(timeCalc.rate) + '/hr x ' + numberFormat(timeCalc.avgHoursPerWeek * 52) + ' hrs/year, then x ' + combinedUpliftPct
-          }
+          {k:'Employees', v:numberFormat(timeCalc.ee)},
+          {k:'Hourly wages', v:currency(timeCalc.hourlyWages)},
+          {k:'Social Security', v:currency(timeCalc.socialSecurity)},
+          {k:'Medicare', v:currency(timeCalc.medicare)},
+          {k:'Time theft', v:currency(timeCalc.timeTheftAnnual)}
         ];
-        $('#printTimeMetrics').innerHTML = metrics.map(item => '<div class="quote-metric"><div class="k">' + item.k + '</div><div class="v">' + item.v + '</div><div class="sub">' + item.sub + '</div></div>').join('');
+        $('#printTimeMetrics').innerHTML = metrics.map(item => '<div class="quote-metric"><div class="k">' + item.k + '</div><div class="v">' + item.v + '</div></div>').join('');
         const roiLines = [
           {label:timeCalc.selectedRow.label + ' / month', value:currency(calc.totalMonthly)},
           {label:timeCalc.selectedRow.label + ' / year', value:currency(calc.totalAnnual)},
@@ -1477,10 +1409,10 @@
         lines.push('Estimated cost of time theft:');
         lines.push('- Employees: ' + numberFormat(timeCalc.ee));
         lines.push('- Average hourly rate: ' + currency(timeCalc.rate));
-        lines.push('- Daily time theft per employee: ' + currency(timeCalc.dailyTimeTheftPerEmployee));
-        lines.push('- Daily time theft for full team: ' + currency(timeCalc.dailyTimeTheftTeam));
-        lines.push('- Weekly time theft for full team: ' + currency(timeCalc.weeklyTimeTheftTeam));
-        lines.push('- Annual team time theft + all taxes: ' + currency(timeCalc.annualTimeTheftTeam));
+        lines.push('- Hourly wages: ' + currency(timeCalc.hourlyWages));
+        lines.push('- Social Security: ' + currency(timeCalc.socialSecurity));
+        lines.push('- Medicare: ' + currency(timeCalc.medicare));
+        lines.push('- Estimated annual time theft: ' + currency(timeCalc.timeTheftAnnual));
         lines.push('- Potential annual savings after Homebase: ' + currency(timeCalc.netAnnualSavings));
       }
       return lines.join('\n');
@@ -1501,10 +1433,10 @@
       if (state.showTimeTheft) {
         rows.push(['Time theft', 'Employees', String(timeCalc.ee), '']);
         rows.push(['Time theft', 'Average hourly rate', '', currency(timeCalc.rate)]);
-        rows.push(['Time theft', 'Daily time theft per employee', '', currency(timeCalc.dailyTimeTheftPerEmployee)]);
-        rows.push(['Time theft', 'Daily time theft for full team', '', currency(timeCalc.dailyTimeTheftTeam)]);
-        rows.push(['Time theft', 'Weekly time theft for full team', '', currency(timeCalc.weeklyTimeTheftTeam)]);
-        rows.push(['Time theft', 'Annual team time theft + all taxes', '', currency(timeCalc.annualTimeTheftTeam)]);
+        rows.push(['Time theft', 'Hourly wages', '', currency(timeCalc.hourlyWages)]);
+        rows.push(['Time theft', 'Social Security', '', currency(timeCalc.socialSecurity)]);
+        rows.push(['Time theft', 'Medicare', '', currency(timeCalc.medicare)]);
+        rows.push(['Time theft', 'Estimated annual time theft', '', currency(timeCalc.timeTheftAnnual)]);
         rows.push(['Time theft', 'Potential annual savings after Homebase', '', currency(timeCalc.netAnnualSavings)]);
       }
       return buildCSV(rows);
