@@ -109,6 +109,7 @@
     .setup-heading{display:grid;gap:2px}
     .setup-panel .seg{display:flex;flex-wrap:wrap;width:100%;box-shadow:none}
     .setup-panel .seg button{flex:1 1 132px;text-align:center}
+    .payroll-pricing-toggle{display:grid;gap:10px;padding-top:10px;border-top:1px solid var(--border)}
 
     .single-plan-fields,.mix-plan-fields{display:grid;gap:12px}
     .plan-mix-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
@@ -471,8 +472,18 @@
                 </div>
                 <div class="seg" id="payrollSeg">
                   <button type="button" data-val="none">No payroll</button>
-                  <button type="button" data-val="standard" class="active">Standard ($39 + $6/ee)</button>
-                  <button type="button" data-val="nextday">Next Day ($49 + $9/ee)</button>
+                  <button type="button" data-val="standard" id="standardPayrollOption" class="active">Standard ($49 + $6/ee)</button>
+                  <button type="button" data-val="nextday" id="nextdayPayrollOption">Next Day ($59 + $6/ee)</button>
+                </div>
+                <div class="payroll-pricing-toggle">
+                  <div class="setup-heading">
+                    <span class="muted" style="font-weight:800">Payroll pricing model</span>
+                    <div class="muted">Choose the payroll rate card for this quote.</div>
+                  </div>
+                  <div class="seg" id="payrollPricingSeg">
+                    <button type="button" data-val="legacy">Legacy Payroll Pricing</button>
+                    <button type="button" data-val="new" class="active">New Payroll Pricing</button>
+                  </div>
                 </div>
               </div>
               <div class="setup-panel">
@@ -764,6 +775,11 @@
       aio:'All-in-One'
     };
 
+    const PAYROLL_PRICING = {
+      legacy:{standardBase:39, nextdayBase:49, employeeRate:6},
+      new:{standardBase:49, nextdayBase:59, employeeRate:6}
+    };
+
     const todayISO = (() => {
       const d = new Date();
       const month = String(d.getMonth() + 1).padStart(2,'0');
@@ -779,6 +795,7 @@
       mixPlans:false,
       mix:{basic:0, essentials:0, plus:1, aio:0},
       corePromo:0,
+      payrollPricing:'new',
       payroll:'standard',
       payrollPromoMonths:0,
       separateEins:false,
@@ -841,6 +858,10 @@
 
     function activateSeg(selector, value){
       $$(selector + ' button').forEach(btn => btn.classList.toggle('active', btn.dataset.val === String(value)));
+    }
+
+    function currentPayrollPricing(){
+      return PAYROLL_PRICING[state.payrollPricing] || PAYROLL_PRICING.new;
     }
 
     function formatDate(value){
@@ -963,8 +984,9 @@
       const tipMonthly = state.tip ? 25 * tipQty : 0;
       const taskMonthly = state.task ? 13 * taskQty : 0;
 
-      const payrollBase = state.payroll === 'none' ? 0 : (state.payroll === 'nextday' ? 49 : 39);
-      const payrollRate = state.payroll === 'none' ? 0 : (state.payroll === 'nextday' ? 9 : 6);
+      const payrollPricing = currentPayrollPricing();
+      const payrollBase = state.payroll === 'none' ? 0 : (state.payroll === 'nextday' ? payrollPricing.nextdayBase : payrollPricing.standardBase);
+      const payrollRate = state.payroll === 'none' ? 0 : payrollPricing.employeeRate;
       const payrollEinCount = state.payroll === 'none' ? 0 : (state.separateEins && locTotal > 1 ? Math.min(locTotal, Math.max(2, Number(state.einCount) || 2)) : 1);
       const payrollBaseMonthly = payrollBase * payrollEinCount;
       const payrollEmployeeMonthly = payrollRate * emp;
@@ -989,14 +1011,10 @@
       const payrollLabel = hasSeparatePayrollEins ? payrollName + ' - ' + payrollEinCount + ' EINs' : payrollName;
       const payrollRateText = state.payroll === 'none'
         ? ''
-        : (state.payroll === 'nextday'
-          ? (hasSeparatePayrollEins ? '$49 base x ' + payrollEinCount + ' EINs + $9 x ' + emp : '$49 base + $9 x ' + emp)
-          : (hasSeparatePayrollEins ? '$39 base x ' + payrollEinCount + ' EINs + $6 x ' + emp : '$39 base + $6 x ' + emp));
+        : (hasSeparatePayrollEins ? '$' + payrollBase + ' base x ' + payrollEinCount + ' EINs + $' + payrollRate + ' x ' + emp : '$' + payrollBase + ' base + $' + payrollRate + ' x ' + emp);
       const payrollTableRate = state.payroll === 'none'
         ? ''
-        : (state.payroll === 'nextday'
-          ? (hasSeparatePayrollEins ? '$49 base x ' + payrollEinCount + ' EINs + $9/ee' : '$49 base + $9/ee')
-          : (hasSeparatePayrollEins ? '$39 base x ' + payrollEinCount + ' EINs + $6/ee' : '$39 base + $6/ee'));
+        : (hasSeparatePayrollEins ? '$' + payrollBase + ' base x ' + payrollEinCount + ' EINs + $' + payrollRate + '/ee' : '$' + payrollBase + ' base + $' + payrollRate + '/ee');
 
       const features = [];
       if (state.mixPlans) {
@@ -1143,7 +1161,15 @@
       if (state.payroll === 'none') {
         return 'Plan pricing is per location per month. Prices are USD and taxes or third-party fees are not included.';
       }
-      return 'Plan pricing is per location per month. Payroll options: Standard ($39 base + $6/employee/mo) or Next Day ($49 base + $9/employee/mo). When separate EINs are selected, payroll base fees are billed once per EIN. Prices are USD and taxes or third-party fees are not included.';
+      const payrollPricing = currentPayrollPricing();
+      return 'Plan pricing is per location per month. Payroll options: Standard ($' + payrollPricing.standardBase + ' base + $' + payrollPricing.employeeRate + '/employee/mo) or Next Day ($' + payrollPricing.nextdayBase + ' base + $' + payrollPricing.employeeRate + '/employee/mo). When separate EINs are selected, payroll base fees are billed once per EIN. Prices are USD and taxes or third-party fees are not included.';
+    }
+
+    function renderPayrollUi(){
+      const payrollPricing = currentPayrollPricing();
+      $('#standardPayrollOption').textContent = 'Standard ($' + payrollPricing.standardBase + ' + $' + payrollPricing.employeeRate + '/ee)';
+      $('#nextdayPayrollOption').textContent = 'Next Day ($' + payrollPricing.nextdayBase + ' + $' + payrollPricing.employeeRate + '/ee)';
+      activateSeg('#payrollPricingSeg', state.payrollPricing);
     }
 
     function renderPlanUi(){
@@ -1443,6 +1469,7 @@
     }
 
     function render(){
+      renderPayrollUi();
       renderPlanUi();
       const calc = compute();
       renderEinUi(calc);
@@ -1467,6 +1494,13 @@
         if (e.target.tagName !== 'BUTTON') return;
         state.payroll = e.target.dataset.val;
         activateSeg('#payrollSeg', state.payroll);
+        render();
+      });
+
+      $('#payrollPricingSeg').addEventListener('click', (e) => {
+        if (e.target.tagName !== 'BUTTON') return;
+        state.payrollPricing = e.target.dataset.val;
+        activateSeg('#payrollPricingSeg', state.payrollPricing);
         render();
       });
 
@@ -1565,6 +1599,7 @@
       $('#empMixed').value = $('#emp').value;
       activateSeg('#billingSeg', 'monthly');
       activateSeg('#payrollSeg', 'standard');
+      activateSeg('#payrollPricingSeg', 'new');
       activateSeg('#payrollPromoSeg', 0);
       activateSeg('#coreSeg', 0);
       // GTM OS embed prefill: when embedded in the Salesforce workspace, the
