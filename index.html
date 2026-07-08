@@ -1567,6 +1567,19 @@
       activateSeg('#payrollSeg', 'standard');
       activateSeg('#payrollPromoSeg', 0);
       activateSeg('#coreSeg', 0);
+      // GTM OS embed prefill: when embedded in the Salesforce workspace, the
+      // calculator can be launched with identity fields in the query string, e.g.
+      //   ?preparedFor=Jane%20Doe&business=Acme%20Inc&preparedBy=Lee%20Wilson
+      // Populate the inputs before state sync so they flow into the quote + PDF.
+      try {
+        const embedParams = new URLSearchParams(window.location.search);
+        const prefillMap = { preparedFor: 'preparedFor', business: 'businessName', preparedBy: 'preparedBy' };
+        Object.keys(prefillMap).forEach((param) => {
+          const val = embedParams.get(param);
+          const el = document.getElementById(prefillMap[param]);
+          if (val && el) { el.value = val; }
+        });
+      } catch (e) { /* prefill is best-effort; never block init */ }
       syncStateFromInputs();
       bindInputs();
       render();
