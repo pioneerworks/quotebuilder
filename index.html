@@ -110,6 +110,16 @@
     .setup-heading{display:grid;gap:2px}
     .setup-panel .seg{display:flex;flex-wrap:wrap;width:100%;box-shadow:none}
     .setup-panel .seg button{flex:1 1 132px;text-align:center}
+    .plan-team-card.is-disabled{background:#F8FAFC;color:#94A3B8;border-color:#CBD5E1;box-shadow:none}
+    .plan-team-card.is-disabled .switch-row,
+    .plan-team-card.is-disabled .setup-panel,
+    .plan-team-card.is-disabled .plan-mix-card,
+    .plan-team-card.is-disabled .plan-summary,
+    .plan-team-card.is-disabled .plan-mix-total,
+    .plan-team-card.is-disabled .ein-box{background:#F1F5F9;border-color:#CBD5E1}
+    .plan-team-card.is-disabled input,
+    .plan-team-card.is-disabled select,
+    .plan-team-card.is-disabled button{cursor:not-allowed}
 
     .franchise-fields[hidden]{display:none !important}
     .franchise-fields{display:grid;gap:12px;margin-top:12px}
@@ -452,7 +462,7 @@
             </div>
           </section>
 
-          <section class="card">
+          <section class="card plan-team-card" id="planTeamCard">
             <h2 class="card-title">Plan and team</h2>
             <div class="switch-row" style="margin-bottom:14px">
               <div class="switch-copy">
@@ -1524,6 +1534,16 @@
       return false;
     }
 
+    function renderPlanTeamAvailability(){
+      const card = $('#planTeamCard');
+      const disabled = state.franchiseMode;
+      card.classList.toggle('is-disabled', disabled);
+      card.setAttribute('aria-disabled', disabled ? 'true' : 'false');
+      card.querySelectorAll('input, select, button').forEach(control => {
+        control.disabled = disabled;
+      });
+    }
+
     function renderPlanUi(){
       $('#singlePlanFields').hidden = state.mixPlans;
       $('#mixPlanFields').hidden = !state.mixPlans;
@@ -1867,6 +1887,7 @@
       renderPlanUi();
       const calc = compute();
       renderFranchiseUi(calc);
+      renderPlanTeamAvailability();
       renderEinUi(calc);
       renderAddonUi(calc);
       const timeCalc = computeTimeTheft(calc);
