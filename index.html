@@ -473,7 +473,7 @@
                 <div class="seg" id="payrollSeg">
                   <button type="button" data-val="none">No payroll</button>
                   <button type="button" data-val="standard" id="standardPayrollOption" class="active">Standard ($49 + $6/ee)</button>
-                  <button type="button" data-val="nextday" id="nextdayPayrollOption">Next Day ($59 + $6/ee)</button>
+                  <button type="button" data-val="nextday" id="nextdayPayrollOption">Next Day ($59 + $9/ee)</button>
                 </div>
                 <div class="payroll-pricing-toggle">
                   <div class="setup-heading">
@@ -776,8 +776,8 @@
     };
 
     const PAYROLL_PRICING = {
-      legacy:{standardBase:39, nextdayBase:49, employeeRate:6},
-      new:{standardBase:49, nextdayBase:59, employeeRate:6}
+      legacy:{standardBase:39, standardEmployeeRate:6, nextdayBase:49, nextdayEmployeeRate:9},
+      new:{standardBase:49, standardEmployeeRate:6, nextdayBase:59, nextdayEmployeeRate:9}
     };
 
     const todayISO = (() => {
@@ -986,7 +986,7 @@
 
       const payrollPricing = currentPayrollPricing();
       const payrollBase = state.payroll === 'none' ? 0 : (state.payroll === 'nextday' ? payrollPricing.nextdayBase : payrollPricing.standardBase);
-      const payrollRate = state.payroll === 'none' ? 0 : payrollPricing.employeeRate;
+      const payrollRate = state.payroll === 'none' ? 0 : (state.payroll === 'nextday' ? payrollPricing.nextdayEmployeeRate : payrollPricing.standardEmployeeRate);
       const payrollEinCount = state.payroll === 'none' ? 0 : (state.separateEins && locTotal > 1 ? Math.min(locTotal, Math.max(2, Number(state.einCount) || 2)) : 1);
       const payrollBaseMonthly = payrollBase * payrollEinCount;
       const payrollEmployeeMonthly = payrollRate * emp;
@@ -1162,13 +1162,13 @@
         return 'Plan pricing is per location per month. Prices are USD and taxes or third-party fees are not included.';
       }
       const payrollPricing = currentPayrollPricing();
-      return 'Plan pricing is per location per month. Payroll options: Standard ($' + payrollPricing.standardBase + ' base + $' + payrollPricing.employeeRate + '/employee/mo) or Next Day ($' + payrollPricing.nextdayBase + ' base + $' + payrollPricing.employeeRate + '/employee/mo). When separate EINs are selected, payroll base fees are billed once per EIN. Prices are USD and taxes or third-party fees are not included.';
+      return 'Plan pricing is per location per month. Payroll options: Standard ($' + payrollPricing.standardBase + ' base + $' + payrollPricing.standardEmployeeRate + '/employee/mo) or Next Day ($' + payrollPricing.nextdayBase + ' base + $' + payrollPricing.nextdayEmployeeRate + '/employee/mo). When separate EINs are selected, payroll base fees are billed once per EIN. Prices are USD and taxes or third-party fees are not included.';
     }
 
     function renderPayrollUi(){
       const payrollPricing = currentPayrollPricing();
-      $('#standardPayrollOption').textContent = 'Standard ($' + payrollPricing.standardBase + ' + $' + payrollPricing.employeeRate + '/ee)';
-      $('#nextdayPayrollOption').textContent = 'Next Day ($' + payrollPricing.nextdayBase + ' + $' + payrollPricing.employeeRate + '/ee)';
+      $('#standardPayrollOption').textContent = 'Standard ($' + payrollPricing.standardBase + ' + $' + payrollPricing.standardEmployeeRate + '/ee)';
+      $('#nextdayPayrollOption').textContent = 'Next Day ($' + payrollPricing.nextdayBase + ' + $' + payrollPricing.nextdayEmployeeRate + '/ee)';
       activateSeg('#payrollPricingSeg', state.payrollPricing);
     }
 
