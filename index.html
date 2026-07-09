@@ -110,6 +110,18 @@
     .setup-panel .seg{display:flex;flex-wrap:wrap;width:100%;box-shadow:none}
     .setup-panel .seg button{flex:1 1 132px;text-align:center}
 
+    .franchise-fields[hidden]{display:none !important}
+    .franchise-fields{display:grid;gap:12px;margin-top:12px}
+    .partnership-preview{border:1px solid var(--border);border-radius:16px;padding:14px;background:#FCFBFF;display:grid;gap:10px;position:relative;overflow:hidden}
+    .partnership-preview::before{content:"";position:absolute;left:0;top:0;bottom:0;width:6px;background:var(--partner-accent,var(--purple))}
+    .partnership-lockup{display:flex;align-items:center;gap:10px;flex-wrap:wrap;font-weight:800}
+    .partnership-lockup span{display:inline-flex;align-items:center}
+    .partner-plus{color:var(--partner-accent,var(--purple));font-weight:800}
+    .bundle-preview{display:grid;gap:4px;font-size:13px;color:var(--deep);padding-left:2px}
+    .bundle-preview strong{font-size:14px}
+    .bundle-meta{display:flex;gap:8px;flex-wrap:wrap}
+    .bundle-chip{border:1px solid rgba(126,61,212,.16);background:#F5F3FF;border-radius:999px;padding:6px 9px;font-size:12px;font-weight:700;color:var(--deep)}
+
     .single-plan-fields,.mix-plan-fields{display:grid;gap:12px}
     .plan-mix-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
     .plan-mix-card{border:1px solid var(--border);border-radius:16px;padding:14px;background:#FCFBFF;display:grid;gap:8px}
@@ -190,7 +202,9 @@
     #printQuote{display:none;background:#fff;color:var(--deep);padding:0}
     .quote-page{max-width:8.5in;margin:0 auto;padding:.35in;display:grid;gap:16px;color:var(--deep);-webkit-print-color-adjust:exact;print-color-adjust:exact}
     .quote-header{background:var(--deep);color:#fff;border-radius:26px;padding:26px 28px 24px;position:relative;overflow:hidden}
+    .quote-header.partner-quote{background:linear-gradient(135deg,var(--deep) 0%, var(--partner-deep,#2c1458) 100%);border-bottom:7px solid var(--partner-accent,var(--purple))}
     .quote-header::after{content:"";position:absolute;right:-20px;bottom:-28px;width:220px;height:140px;background:rgba(126,61,212,.24);clip-path:polygon(32% 0, 86% 0, 58% 48%, 100% 48%, 26% 100%, 44% 56%, 0 56%);transform:rotate(18deg)}
+    .quote-header.partner-quote::after{background:var(--partner-glow,rgba(126,61,212,.24))}
     .quote-brand{font-size:18px;font-weight:800;letter-spacing:.01em;margin-bottom:10px}
     .quote-title-row{display:flex;align-items:flex-start;justify-content:space-between;gap:20px}
     .quote-title-wrap{display:grid;gap:8px;position:relative;z-index:1}
@@ -391,6 +405,30 @@
                 </div>
                 <input id="showPromoMath" type="checkbox" checked />
               </div>
+            </div>
+          </section>
+
+          <section class="card">
+            <h2 class="card-title">Franchise partnership</h2>
+            <div class="switch-row">
+              <div class="switch-copy">
+                <strong>Franchise Partnership Pricing</strong>
+                <span>Use Homebase partnership bundle pricing and quote branding.</span>
+              </div>
+              <input id="franchiseMode" type="checkbox" />
+            </div>
+            <div class="franchise-fields" id="franchiseFields" hidden>
+              <div class="row-2">
+                <div class="field">
+                  <label for="franchiseSelect">Franchise</label>
+                  <select id="franchiseSelect"></select>
+                </div>
+                <div class="field">
+                  <label for="franchiseBundle">Bundle</label>
+                  <select id="franchiseBundle"></select>
+                </div>
+              </div>
+              <div class="partnership-preview" id="franchisePreview"></div>
             </div>
           </section>
 
@@ -652,10 +690,10 @@
   <section id="printQuote" class="print-only" aria-hidden="true">
     <div class="quote-page">
       <header class="quote-header">
-        <div class="quote-brand">Homebase</div>
+        <div class="quote-brand" id="printBrand">Homebase</div>
         <div class="quote-title-row">
           <div class="quote-title-wrap">
-            <h1 class="quote-title">Pricing quote</h1>
+            <h1 class="quote-title" id="printTitle">Pricing quote</h1>
             <p class="quote-subtitle">It's been a pleasure learning about your business. Please see the details below which reflect everything we discussed. I'm confident Homebase is the right fit for your team and we look forward to serving you.</p>
           </div>
           <div class="quote-bolt" aria-hidden="true">
@@ -764,6 +802,89 @@
       aio:'All-in-One'
     };
 
+    const FRANCHISES = {
+      scooters:{
+        brand:"Scooter's Coffee",
+        website:'https://www.scooterscoffee.com/',
+        landingPage:'https://www.joinhomebase.com/scooterscoffee',
+        supportEmail:'franchise-support@joinhomebase.com',
+        supportPhone:'415-881-7482',
+        pos:'PAR',
+        accent:'#D71920',
+        deep:'#3A1114',
+        glow:'rgba(215,25,32,.26)',
+        bundles:[
+          {id:'bundle-1', name:'Bundle 1', includes:['Essentials', 'Hiring Assistant'], price:'$39/mo', monthlyBase:39, rate:'$39 / mo'},
+          {id:'bundle-2', name:'Bundle 2', includes:['Plus', 'Payroll', 'Hiring', 'Task Manager'], price:'$89/mo', monthlyBase:89, rate:'$89 / mo'},
+          {id:'bundle-3', name:'Bundle 3', includes:['Plus', 'Payroll', 'Hiring', 'Tip Manager', 'Task Manager', 'Background checks'], price:'$125/mo', monthlyBase:125, rate:'$125 / mo'},
+          {id:'incentive-1', name:'Incentive 1', includes:['Task Manager', 'Tip Manager', 'Hiring'], price:'$39/mo', monthlyBase:39, rate:'$39 / mo'},
+          {id:'incentive-2', name:'Incentive 2', includes:['Payroll only'], price:'$0 base + $6/ee/mo', monthlyBase:0, employeeRate:6, rate:'$0 base + $6/ee'}
+        ]
+      },
+      pjs:{
+        brand:"PJ's Coffee",
+        website:'https://www.pjscoffee.com/',
+        landingPage:'',
+        supportEmail:'franchise-support@joinhomebase.com',
+        supportPhone:'415-881-7482',
+        pos:'Square',
+        accent:'#5B2A86',
+        deep:'#2B1744',
+        glow:'rgba(91,42,134,.26)',
+        bundles:[
+          {id:'bundle-1', name:'Bundle 1', includes:['Plus', 'Task Manager', 'Payroll'], price:'$50/mo', monthlyBase:50, rate:'$50 / mo'}
+        ]
+      },
+      rhealana:{
+        brand:"Rhea Lana's",
+        website:'https://www.rhealana.com/',
+        landingPage:'',
+        supportEmail:'franchise-support@joinhomebase.com',
+        supportPhone:'',
+        pos:'Square',
+        accent:'#C83B83',
+        deep:'#3B1730',
+        glow:'rgba(200,59,131,.26)',
+        annualPricing:true,
+        bundles:[
+          {id:'bundle-1', name:'Bundle 1', includes:['Plus', 'Payroll'], price:'$600/yr/loc + $6/ee/mo', annualLocationRate:600, employeeRate:6, rate:'$600 / loc / yr + $6/ee'},
+          {id:'bundle-2', name:'Bundle 2', includes:['All-in-One', 'Payroll'], price:'$1,150/yr/loc + $6/ee/mo', annualLocationRate:1150, employeeRate:6, rate:'$1,150 / loc / yr + $6/ee'}
+        ]
+      },
+      sharetea:{
+        brand:'Sharetea',
+        website:'https://www.1992sharetea.com/',
+        landingPage:'',
+        supportEmail:'franchise-support@joinhomebase.com',
+        supportPhone:'415-881-7482',
+        pos:'ChowBus',
+        accent:'#DD1F26',
+        deep:'#3A1114',
+        glow:'rgba(221,31,38,.24)',
+        bundles:[
+          {id:'bundle-1', name:'Bundle 1', includes:['Plus', 'Payroll'], price:'$60/mo/loc + $6/ee/mo', monthlyLocationRate:60, employeeRate:6, rate:'$60 / loc + $6/ee'},
+          {id:'bundle-2', name:'Bundle 2', includes:['Plus', 'Payroll', 'Tip Manager'], price:'$75/mo/loc + $6/ee/mo', monthlyLocationRate:75, employeeRate:6, rate:'$75 / loc + $6/ee'},
+          {id:'bundle-3', name:'Bundle 3', includes:['Plus', 'Payroll', 'Hiring'], price:'$145/mo/loc + $6/ee/mo', monthlyLocationRate:145, employeeRate:6, rate:'$145 / loc + $6/ee'}
+        ]
+      },
+      ugtea:{
+        brand:'UG Tea',
+        website:'https://www.uniquegreentea.com/',
+        landingPage:'',
+        supportEmail:'franchise-support@joinhomebase.com',
+        supportPhone:'415-881-7482',
+        pos:'ChowBus',
+        accent:'#1F8A43',
+        deep:'#143322',
+        glow:'rgba(31,138,67,.24)',
+        bundles:[
+          {id:'bundle-1', name:'Bundle 1', includes:['Plus', 'Payroll'], price:'$60/mo/loc + $6/ee/mo', monthlyLocationRate:60, employeeRate:6, rate:'$60 / loc + $6/ee'},
+          {id:'bundle-2', name:'Bundle 2', includes:['Plus', 'Payroll', 'Tip Manager'], price:'$75/mo/loc + $6/ee/mo', monthlyLocationRate:75, employeeRate:6, rate:'$75 / loc + $6/ee'},
+          {id:'bundle-3', name:'Bundle 3', includes:['Plus', 'Payroll', 'Hiring'], price:'$145/mo/loc + $6/ee/mo', monthlyLocationRate:145, employeeRate:6, rate:'$145 / loc + $6/ee'}
+        ]
+      }
+    };
+
     const todayISO = (() => {
       const d = new Date();
       const month = String(d.getMonth() + 1).padStart(2,'0');
@@ -779,6 +900,9 @@
       mixPlans:false,
       mix:{basic:0, essentials:0, plus:1, aio:0},
       corePromo:0,
+      franchiseMode:false,
+      franchiseId:'scooters',
+      franchiseBundleId:'bundle-1',
       payroll:'standard',
       payrollPromoMonths:0,
       separateEins:false,
@@ -843,6 +967,60 @@
       $$(selector + ' button').forEach(btn => btn.classList.toggle('active', btn.dataset.val === String(value)));
     }
 
+    function escapeHTML(value){
+      return String(value || '').replace(/[&<>"']/g, (ch) => ({
+        '&':'&amp;',
+        '<':'&lt;',
+        '>':'&gt;',
+        '"':'&quot;',
+        "'":'&#39;'
+      })[ch]);
+    }
+
+    function selectedFranchise(){
+      return FRANCHISES[state.franchiseId] || FRANCHISES.scooters;
+    }
+
+    function selectedBundle(partner){
+      const franchise = partner || selectedFranchise();
+      return franchise.bundles.find(bundle => bundle.id === state.franchiseBundleId) || franchise.bundles[0];
+    }
+
+    function bundleDisplayName(bundle){
+      return bundle.name + ' - ' + bundle.price;
+    }
+
+    function computeFranchiseBundle(partner, bundle, loc, emp){
+      const rows = [];
+      let baseMonthly = 0;
+      let baseAnnual = 0;
+      const label = partner.brand + ' ' + bundle.name;
+
+      if (typeof bundle.monthlyBase === 'number') {
+        baseMonthly = bundle.monthlyBase;
+        baseAnnual = baseMonthly * 12;
+        rows.push({label, qty:1, rate:bundle.monthlyBase === 0 ? '$0 base' : '$' + bundle.monthlyBase + ' / mo', amount:baseMonthly});
+      } else if (typeof bundle.monthlyLocationRate === 'number') {
+        baseMonthly = bundle.monthlyLocationRate * loc;
+        baseAnnual = baseMonthly * 12;
+        rows.push({label, qty:loc, rate:'$' + bundle.monthlyLocationRate + ' / loc', amount:baseMonthly});
+      } else if (typeof bundle.annualLocationRate === 'number') {
+        baseMonthly = (bundle.annualLocationRate * loc) / 12;
+        baseAnnual = bundle.annualLocationRate * loc;
+        rows.push({label:label + ' annual base', qty:loc, rate:'$' + numberFormat(bundle.annualLocationRate) + ' / loc / yr', amount:baseMonthly});
+      }
+
+      const employeeRate = Number(bundle.employeeRate) || 0;
+      const employeeMonthly = employeeRate * emp;
+      if (employeeRate > 0) {
+        rows.push({label:'Payroll employee fees', qty:emp, rate:'$' + employeeRate + '/ee', amount:employeeMonthly});
+      }
+
+      const totalMonthly = baseMonthly + employeeMonthly;
+      const totalAnnual = baseAnnual + (employeeMonthly * 12);
+      return {rows, baseMonthly, employeeMonthly, totalMonthly, totalAnnual};
+    }
+
     function formatDate(value){
       if (!value) return new Date().toLocaleDateString(undefined,{year:'numeric',month:'long',day:'numeric'});
       const date = new Date(value + 'T12:00:00');
@@ -879,6 +1057,13 @@
       state.mix.essentials = getIntInput('mix_essentials', state.mix.essentials || 0, 0);
       state.mix.plus = getIntInput('mix_plus', state.mix.plus || 0, 0);
       state.mix.aio = getIntInput('mix_aio', state.mix.aio || 0, 0);
+      state.franchiseMode = $('#franchiseMode').checked;
+      state.franchiseId = $('#franchiseSelect').value || state.franchiseId;
+      const franchise = selectedFranchise();
+      const selectedBundleId = $('#franchiseBundle').value || state.franchiseBundleId;
+      state.franchiseBundleId = franchise.bundles.some(bundle => bundle.id === selectedBundleId)
+        ? selectedBundleId
+        : franchise.bundles[0].id;
       state.tip = $('#tip').checked;
       state.task = $('#task').checked;
       state.tipQty = getIntInput('tipQty', state.tipQty || 1, 1);
@@ -958,6 +1143,60 @@
 
       const locTotal = loc;
       const emp = Math.max(0, Number(state.employees) || 0);
+      if (state.franchiseMode) {
+        const franchise = selectedFranchise();
+        const bundle = selectedBundle(franchise);
+        const franchiseCalc = computeFranchiseBundle(franchise, bundle, locTotal, emp);
+        const features = [
+          'Homebase + ' + franchise.brand + ' partnership pricing',
+          bundle.name + ': ' + bundle.includes.join(', ')
+        ];
+        if (bundle.employeeRate) features.push('Payroll employee fees for ' + emp + ' employee' + plural(emp, ''));
+        const planCopy = bundle.name + ' includes ' + bundle.includes.join(', ') + '.';
+
+        return {
+          isFranchise:true,
+          franchise,
+          franchiseBundle:bundle,
+          loc:locTotal,
+          emp,
+          rates,
+          mixCounts,
+          planMonthly:franchiseCalc.baseMonthly,
+          eligibleCoreMonthly:0,
+          planRows:franchiseCalc.rows,
+          tipQty:0,
+          taskQty:0,
+          tipMonthly:0,
+          taskMonthly:0,
+          payrollMonthly:franchiseCalc.employeeMonthly,
+          payrollBaseMonthly:franchiseCalc.baseMonthly,
+          payrollEmployeeMonthly:franchiseCalc.employeeMonthly,
+          payrollEinCount:0,
+          hasSeparatePayrollEins:false,
+          bgMonthly:0,
+          boostsMonthly:0,
+          hiringMonthly:0,
+          recurringMonthly:franchiseCalc.totalMonthly,
+          usageMonthly:0,
+          totalMonthly:franchiseCalc.totalMonthly,
+          totalAnnual:franchiseCalc.totalAnnual,
+          payrollPromoSavings:0,
+          corePromoSavings:0,
+          firstYearWithPromos:franchiseCalc.totalAnnual,
+          hasPayrollPromo:false,
+          hasCorePromo:false,
+          hasAnyPromo:false,
+          payrollLabel:'',
+          payrollRateText:'',
+          features,
+          rows:franchiseCalc.rows,
+          planName:franchise.brand + ' partnership',
+          planHeadline:'Homebase + ' + franchise.brand,
+          planCopy,
+          planSingleRate:null
+        };
+      }
       const tipQty = state.tip ? Math.min(locTotal, Math.max(1, Number(state.tipQty) || 1)) : 0;
       const taskQty = state.task ? Math.min(locTotal, Math.max(1, Number(state.taskQty) || 1)) : 0;
       const tipMonthly = state.tip ? 25 * tipQty : 0;
@@ -1129,7 +1368,13 @@
     }
 
     function summaryBadges(calc){
-      const badges = [state.annual ? 'Annual pricing' : 'Monthly pricing'];
+      const badges = [calc.isFranchise ? (calc.franchise.annualPricing ? 'Annual partnership' : 'Monthly partnership') : (state.annual ? 'Annual pricing' : 'Monthly pricing')];
+      if (calc.isFranchise) {
+        badges.push('Franchise partnership');
+        badges.push(calc.franchise.brand);
+        badges.push(calc.franchiseBundle.name);
+        return badges;
+      }
       if (state.mixPlans) badges.push('Mixed core plans');
       if (state.payroll !== 'none') badges.push(calc.payrollLabel);
       if (state.tip) badges.push('Tip Manager');
@@ -1140,10 +1385,65 @@
     }
 
     function buildFinePrint(){
+      if (state.franchiseMode) {
+        const franchise = selectedFranchise();
+        const bundle = selectedBundle(franchise);
+        const annualNote = franchise.annualPricing ? ' This partnership uses annual per-location pricing plus monthly payroll employee fees where listed.' : '';
+        const supportPieces = [franchise.supportEmail, franchise.supportPhone].filter(Boolean);
+        const supportText = supportPieces.length ? ' Franchise support: ' + supportPieces.join(' | ') + '.' : '';
+        return 'Partnership pricing for Homebase + ' + franchise.brand + ': ' + bundle.name + ' (' + bundle.price + ').' + annualNote + supportText + ' Prices are USD and taxes or third-party fees are not included.';
+      }
       if (state.payroll === 'none') {
         return 'Plan pricing is per location per month. Prices are USD and taxes or third-party fees are not included.';
       }
       return 'Plan pricing is per location per month. Payroll options: Standard ($39 base + $6/employee/mo) or Next Day ($49 base + $9/employee/mo). When separate EINs are selected, payroll base fees are billed once per EIN. Prices are USD and taxes or third-party fees are not included.';
+    }
+
+    function populateFranchiseSelectors(){
+      const franchiseSelect = $('#franchiseSelect');
+      franchiseSelect.innerHTML = Object.keys(FRANCHISES).map(key => (
+        '<option value="' + key + '">' + escapeHTML(FRANCHISES[key].brand) + '</option>'
+      )).join('');
+      franchiseSelect.value = state.franchiseId;
+      populateBundleSelector();
+    }
+
+    function populateBundleSelector(){
+      const franchise = selectedFranchise();
+      const bundleSelect = $('#franchiseBundle');
+      if (!franchise.bundles.some(bundle => bundle.id === state.franchiseBundleId)) {
+        state.franchiseBundleId = franchise.bundles[0].id;
+      }
+      bundleSelect.innerHTML = franchise.bundles.map(bundle => (
+        '<option value="' + bundle.id + '">' + escapeHTML(bundleDisplayName(bundle)) + '</option>'
+      )).join('');
+      bundleSelect.value = state.franchiseBundleId;
+    }
+
+    function renderFranchiseUi(calc){
+      const fields = $('#franchiseFields');
+      const preview = $('#franchisePreview');
+      const franchise = selectedFranchise();
+      const bundle = selectedBundle(franchise);
+      fields.hidden = !state.franchiseMode;
+      $('#franchiseMode').checked = state.franchiseMode;
+      if ($('#franchiseSelect').value !== state.franchiseId) $('#franchiseSelect').value = state.franchiseId;
+      if ($('#franchiseBundle').value !== state.franchiseBundleId) populateBundleSelector();
+      preview.style.setProperty('--partner-accent', franchise.accent);
+      preview.innerHTML = [
+        '<div class="partnership-lockup">',
+          '<span>Homebase</span><span class="partner-plus">+</span><span>' + escapeHTML(franchise.brand) + '</span>',
+        '</div>',
+        '<div class="bundle-preview">',
+          '<strong>' + escapeHTML(bundle.name) + ' | ' + escapeHTML(bundle.price) + '</strong>',
+          '<span>' + escapeHTML(bundle.includes.join(', ')) + '</span>',
+        '</div>',
+        '<div class="bundle-meta">',
+          '<span class="bundle-chip">' + escapeHTML(franchise.pos) + '</span>',
+          '<span class="bundle-chip">' + escapeHTML(franchise.supportEmail) + '</span>',
+          (franchise.supportPhone ? '<span class="bundle-chip">' + escapeHTML(franchise.supportPhone) + '</span>' : ''),
+        '</div>'
+      ].join('');
     }
 
     function renderPlanUi(){
@@ -1164,7 +1464,7 @@
       const checkbox = $('#separateEins');
       const qtyInput = $('#einCount');
       const help = $('#einHelp');
-      const showSection = state.payroll !== 'none' && calc.loc > 1;
+      const showSection = !state.franchiseMode && state.payroll !== 'none' && calc.loc > 1;
       section.hidden = !showSection;
       if (!showSection){
         state.separateEins = false;
@@ -1200,12 +1500,17 @@
 
     function renderSummary(calc, timeCalc){
       const badges = summaryBadges(calc);
-      const planLine = state.mixPlans ? calc.planHeadline : calc.planName;
+      const planLine = calc.isFranchise ? calc.planHeadline : (state.mixPlans ? calc.planHeadline : calc.planName);
+      const billingText = calc.isFranchise ? (calc.franchise.annualPricing ? 'Annual partnership' : 'Monthly partnership') : (state.annual ? 'Annual' : 'Monthly');
+      const modeText = calc.isFranchise
+        ? 'Partnership bundle pricing is active for ' + calc.franchise.brand + '.'
+        : (state.showBreakdown ? 'Customer-facing outputs currently include the full line-item breakdown.' : 'Customer-facing outputs are currently summary only.') + (state.showTimeTheft ? ' The time theft ROI section is also on.' : '');
       $('#summary').innerHTML = [
         '<div class="summary-grid">',
           '<div class="summary-top">',
             '<div class="summary-line"><span>Plan</span><strong>' + planLine + '</strong></div>',
-            '<div class="summary-line"><span>Billing</span><strong>' + (state.annual ? 'Annual' : 'Monthly') + '</strong></div>',
+            (calc.isFranchise ? '<div class="summary-line"><span>Bundle</span><strong>' + calc.franchiseBundle.name + '</strong></div>' : ''),
+            '<div class="summary-line"><span>Billing</span><strong>' + billingText + '</strong></div>',
             '<div class="summary-line"><span>Locations</span><strong>' + numberFormat(calc.loc) + '</strong></div>',
             '<div class="summary-line"><span>Employees</span><strong>' + numberFormat(calc.emp) + '</strong></div>',
             (calc.hasSeparatePayrollEins ? '<div class="summary-line"><span>Payroll EINs</span><strong>' + numberFormat(calc.payrollEinCount) + '</strong></div>' : ''),
@@ -1223,7 +1528,7 @@
             (state.showTimeTheft ? '<div class="mini-row"><span>Time theft estimate</span><span>' + currency(timeCalc.timeTheftAnnual) + '/yr</span></div>' : ''),
             (state.showTimeTheft ? '<div class="mini-row"><span>Potential annual savings</span><span class="' + (timeCalc.netAnnualSavings >= 0 ? 'positive' : 'negative') + '">' + currency(timeCalc.netAnnualSavings) + '</span></div>' : ''),
           '</div>',
-          '<div class="summary-mode">' + (state.showBreakdown ? 'Customer-facing outputs currently include the full line-item breakdown.' : 'Customer-facing outputs are currently summary only.') + (state.showTimeTheft ? ' The time theft ROI section is also on.' : '') + '</div>',
+          '<div class="summary-mode">' + modeText + '</div>',
         '</div>'
       ].join('');
     }
@@ -1283,16 +1588,36 @@
 
     function renderPrint(calc, timeCalc){
       const meta = getMeta();
+      const printRoot = $('#printQuote');
+      const printHeader = printRoot.querySelector('.quote-header');
+      printHeader.classList.toggle('partner-quote', !!calc.isFranchise);
+      if (calc.isFranchise) {
+        printRoot.style.setProperty('--partner-accent', calc.franchise.accent);
+        printRoot.style.setProperty('--partner-deep', calc.franchise.deep);
+        printRoot.style.setProperty('--partner-glow', calc.franchise.glow);
+        $('#printBrand').textContent = 'Homebase + ' + calc.franchise.brand;
+        $('#printTitle').textContent = 'Partnership pricing quote';
+      } else {
+        printRoot.style.removeProperty('--partner-accent');
+        printRoot.style.removeProperty('--partner-deep');
+        printRoot.style.removeProperty('--partner-glow');
+        $('#printBrand').textContent = 'Homebase';
+        $('#printTitle').textContent = 'Pricing quote';
+      }
       const metaItems = [
         {k:'Prepared for', v:meta.preparedFor},
         {k:'Business', v:meta.businessName},
         {k:'Prepared by', v:meta.preparedBy},
         {k:'Quote date', v:meta.quoteDate}
       ];
+      if (calc.isFranchise) {
+        metaItems.push({k:'Partnership', v:calc.franchise.brand});
+        metaItems.push({k:'Bundle', v:calc.franchiseBundle.name});
+      }
       $('#printMeta').innerHTML = metaItems.map(item => '<div class="meta-card"><div class="k">' + item.k + '</div><div class="v">' + item.v + '</div></div>').join('');
       $('#printPlanName').textContent = calc.planHeadline;
       $('#printPlanCopy').textContent = calc.planCopy;
-      $('#printBilling').textContent = state.annual ? 'Annual plan rate' : 'Monthly';
+      $('#printBilling').textContent = calc.isFranchise ? (calc.franchise.annualPricing ? 'Annual partnership rate' : 'Partnership rate') : (state.annual ? 'Annual plan rate' : 'Monthly');
       $('#printFeatures').innerHTML = calc.features.map(feature => '<div class="quote-feature"><span class="feature-dot"></span><span>' + feature + '</span></div>').join('');
       $('#printMonthlyTotal').textContent = currency(calc.totalMonthly);
       $('#printRecurring').textContent = currency(calc.recurringMonthly);
@@ -1300,12 +1625,18 @@
       $('#printAnnual').textContent = currency(calc.totalAnnual);
       $('#printPromoLine').style.display = (state.showPromoMath && calc.hasAnyPromo) ? '' : 'none';
       $('#printFirstYear').textContent = currency(calc.firstYearWithPromos);
-      $('#printMonthlyCopy').textContent = state.showBreakdown ? 'Includes selected plans, add-ons, and any usage-based items shown below.' : '';
+      $('#printMonthlyCopy').textContent = calc.isFranchise
+        ? 'Includes the selected partnership bundle and any listed employee fees.'
+        : (state.showBreakdown ? 'Includes selected plans, add-ons, and any usage-based items shown below.' : '');
       $('#printMonthlyCopy').style.display = $('#printMonthlyCopy').textContent ? '' : 'none';
 
       const promoPieces = [];
-      if (state.showPromoMath && calc.hasPayrollPromo) promoPieces.push('Payroll promo (' + state.payrollPromoMonths + ' mo free): ' + currency(calc.payrollPromoSavings));
-      if (state.showPromoMath && calc.hasCorePromo) promoPieces.push('Core plan promo (' + state.corePromo + ' mo free): ' + currency(calc.corePromoSavings));
+      if (calc.isFranchise) {
+        promoPieces.push(calc.franchiseBundle.name + ' partnership package: ' + calc.franchiseBundle.price);
+      } else {
+        if (state.showPromoMath && calc.hasPayrollPromo) promoPieces.push('Payroll promo (' + state.payrollPromoMonths + ' mo free): ' + currency(calc.payrollPromoSavings));
+        if (state.showPromoMath && calc.hasCorePromo) promoPieces.push('Core plan promo (' + state.corePromo + ' mo free): ' + currency(calc.corePromoSavings));
+      }
       $('#printNoteBox').textContent = promoPieces.join(' | ');
       $('#printNoteBox').style.display = promoPieces.length ? '' : 'none';
 
@@ -1342,7 +1673,8 @@
       }
 
       $('#printFooterNotes').innerHTML = '<strong>Notes:</strong> ' + buildFinePrint();
-      $('#printFooterMeta').textContent = 'Billing: ' + (state.annual ? 'Annual' : 'Monthly') + '. Generated by ' + meta.preparedBy + ' for ' + meta.preparedFor + '.';
+      const footerBilling = calc.isFranchise ? (calc.franchise.annualPricing ? 'Annual partnership' : 'Monthly partnership') : (state.annual ? 'Annual' : 'Monthly');
+      $('#printFooterMeta').textContent = 'Billing: ' + footerBilling + '. Generated by ' + meta.preparedBy + ' for ' + meta.preparedFor + '.';
     }
 
     async function copyToClipboard(text){
@@ -1390,7 +1722,13 @@
       lines.push('Prepared by: ' + meta.preparedBy);
       lines.push('Quote date: ' + meta.quoteDate);
       lines.push('');
-      lines.push('Plan: ' + calc.planHeadline + ' (' + (state.annual ? 'annual pricing' : 'monthly pricing') + ')');
+      if (calc.isFranchise) {
+        lines.push('Partnership: Homebase + ' + calc.franchise.brand);
+        lines.push('Bundle: ' + calc.franchiseBundle.name + ' (' + calc.franchiseBundle.price + ')');
+        lines.push('Includes: ' + calc.franchiseBundle.includes.join(', '));
+      } else {
+        lines.push('Plan: ' + calc.planHeadline + ' (' + (state.annual ? 'annual pricing' : 'monthly pricing') + ')');
+      }
       lines.push('Locations: ' + numberFormat(calc.loc));
       lines.push('Employees: ' + numberFormat(calc.emp));
       if (calc.hasSeparatePayrollEins) lines.push('Payroll EINs: ' + numberFormat(calc.payrollEinCount));
@@ -1420,13 +1758,18 @@
 
     function quoteCSV(calc, timeCalc){
       const rows = [['Category','Item','Qty','Amount']];
-      calc.planRows.forEach(row => rows.push(['Plan', row.label, String(row.qty), currency(row.amount)]));
-      if (state.payroll !== 'none') rows.push(['Plan', calc.payrollLabel, String(calc.emp), currency(calc.payrollMonthly)]);
-      if (state.tip) rows.push(['Recurring Add-on', 'Tip Manager', String(calc.tipQty), currency(calc.tipMonthly)]);
-      if (state.task) rows.push(['Recurring Add-on', 'Task Manager', String(calc.taskQty), currency(calc.taskMonthly)]);
-      if (state.bg) rows.push(['Usage', 'Background checks', String(state.bg), currency(calc.bgMonthly)]);
-      if (state.boosts) rows.push(['Usage', 'Job post boosts', String(state.boosts), currency(calc.boostsMonthly)]);
-      if (state.ha) rows.push(['Usage', 'Hiring Assistant', String(state.ha), currency(calc.hiringMonthly)]);
+      if (calc.isFranchise) {
+        rows.push(['Partnership', 'Homebase + ' + calc.franchise.brand, '', calc.franchiseBundle.name + ' (' + calc.franchiseBundle.price + ')']);
+        calc.rows.forEach(row => rows.push(['Partnership Bundle', row.label, String(row.qty), currency(row.amount)]));
+      } else {
+        calc.planRows.forEach(row => rows.push(['Plan', row.label, String(row.qty), currency(row.amount)]));
+        if (state.payroll !== 'none') rows.push(['Plan', calc.payrollLabel, String(calc.emp), currency(calc.payrollMonthly)]);
+        if (state.tip) rows.push(['Recurring Add-on', 'Tip Manager', String(calc.tipQty), currency(calc.tipMonthly)]);
+        if (state.task) rows.push(['Recurring Add-on', 'Task Manager', String(calc.taskQty), currency(calc.taskMonthly)]);
+        if (state.bg) rows.push(['Usage', 'Background checks', String(state.bg), currency(calc.bgMonthly)]);
+        if (state.boosts) rows.push(['Usage', 'Job post boosts', String(state.boosts), currency(calc.boostsMonthly)]);
+        if (state.ha) rows.push(['Usage', 'Hiring Assistant', String(state.ha), currency(calc.hiringMonthly)]);
+      }
       rows.push(['', 'Recurring subtotal', '', currency(calc.recurringMonthly)]);
       rows.push(['', 'Total / month', '', currency(calc.totalMonthly)]);
       if (state.showPromoMath && calc.hasAnyPromo) rows.push(['', 'First year with promos', '', currency(calc.firstYearWithPromos)]);
@@ -1445,6 +1788,7 @@
     function render(){
       renderPlanUi();
       const calc = compute();
+      renderFranchiseUi(calc);
       renderEinUi(calc);
       renderAddonUi(calc);
       const timeCalc = computeTimeTheft(calc);
@@ -1481,6 +1825,25 @@
         if (e.target.tagName !== 'BUTTON') return;
         state.corePromo = Number(e.target.dataset.val);
         activateSeg('#coreSeg', state.corePromo);
+        render();
+      });
+
+      $('#franchiseMode').addEventListener('change', () => {
+        syncStateFromInputs();
+        render();
+      });
+
+      $('#franchiseSelect').addEventListener('change', (e) => {
+        state.franchiseId = e.target.value;
+        state.franchiseBundleId = selectedFranchise().bundles[0].id;
+        populateBundleSelector();
+        syncStateFromInputs();
+        render();
+      });
+
+      $('#franchiseBundle').addEventListener('change', (e) => {
+        state.franchiseBundleId = e.target.value;
+        syncStateFromInputs();
         render();
       });
 
@@ -1567,6 +1930,7 @@
       activateSeg('#payrollSeg', 'standard');
       activateSeg('#payrollPromoSeg', 0);
       activateSeg('#coreSeg', 0);
+      populateFranchiseSelectors();
       // GTM OS embed prefill: when embedded in the Salesforce workspace, the
       // calculator can be launched with identity fields in the query string, e.g.
       //   ?preparedFor=Jane%20Doe&business=Acme%20Inc&preparedBy=Lee%20Wilson
