@@ -1071,9 +1071,10 @@
       const label = partner.brand + ' ' + bundle.name;
 
       if (typeof bundle.monthlyBase === 'number') {
-        baseMonthly = bundle.monthlyBase;
+        const qty = bundle.monthlyBase > 0 ? loc : 1;
+        baseMonthly = bundle.monthlyBase * qty;
         baseAnnual = baseMonthly * 12;
-        rows.push({label, qty:1, rate:bundle.monthlyBase === 0 ? '$0 base' : '$' + bundle.monthlyBase + ' / mo', amount:baseMonthly});
+        rows.push({label, qty, rate:bundle.monthlyBase === 0 ? '$0 base' : '$' + bundle.monthlyBase + ' / loc / mo', amount:baseMonthly});
       } else if (typeof bundle.monthlyLocationRate === 'number') {
         baseMonthly = bundle.monthlyLocationRate * loc;
         baseAnnual = baseMonthly * 12;
