@@ -69,6 +69,7 @@
     .seg button{border:0;background:transparent;padding:9px 14px;border-radius:12px;font-weight:700;color:#334155;cursor:pointer}
     .seg button.active{background:var(--purple);color:#fff;box-shadow:0 3px 10px rgba(126,61,212,.28)}
     .btn{border:0;border-radius:14px;background:var(--purple);color:#fff;padding:10px 14px;font-weight:700;cursor:pointer;box-shadow:0 1px 2px rgba(0,0,0,.08)}
+    .btn:disabled{opacity:.45;cursor:not-allowed}
     .btn.secondary{background:var(--deep)}
 
     .status{min-height:20px;text-align:center;font-size:13px;color:#64748B}
@@ -121,6 +122,10 @@
     .bundle-preview strong{font-size:14px}
     .bundle-meta{display:flex;gap:8px;flex-wrap:wrap}
     .bundle-chip{border:1px solid rgba(126,61,212,.16);background:#F5F3FF;border-radius:999px;padding:6px 9px;font-size:12px;font-weight:700;color:var(--deep)}
+    .franchise-note,.franchise-ack{border:1px solid rgba(146,64,14,.22);border-radius:14px;background:#FFF7ED;color:#7C2D12;padding:12px 14px;font-size:13px}
+    .franchise-note[hidden],.franchise-ack[hidden]{display:none !important}
+    .franchise-ack{display:flex;gap:10px;align-items:flex-start;font-weight:700;cursor:pointer}
+    .franchise-ack input{margin-top:2px;flex:none}
 
     .single-plan-fields,.mix-plan-fields{display:grid;gap:12px}
     .plan-mix-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
@@ -428,6 +433,21 @@
                   <select id="franchiseBundle"></select>
                 </div>
               </div>
+              <div class="row-2">
+                <div class="field">
+                  <label for="partnerLoc">Locations</label>
+                  <input type="number" min="1" id="partnerLoc" value="1" />
+                </div>
+                <div class="field">
+                  <label for="partnerEmp">Employees</label>
+                  <input type="number" min="0" id="partnerEmp" value="10" />
+                </div>
+              </div>
+              <div class="franchise-note" id="scootersBundleNote" hidden>Scooter's bundles are only for net new Scooter's franchisees.</div>
+              <label class="franchise-ack" id="scootersIncentiveAckWrap" for="scootersIncentiveAck" hidden>
+                <input id="scootersIncentiveAck" type="checkbox" />
+                <span>I acknowledge Scooter's incentives are not for net new locations and are only for existing Homebase customers to drive expansion.</span>
+              </label>
               <div class="partnership-preview" id="franchisePreview"></div>
             </div>
           </section>
@@ -903,6 +923,7 @@
       franchiseMode:false,
       franchiseId:'scooters',
       franchiseBundleId:'bundle-1',
+      franchiseIncentiveAck:false,
       payroll:'standard',
       payrollPromoMonths:0,
       separateEins:false,
@@ -942,11 +963,17 @@
       return typeof min === 'number' ? Math.max(min, parsed) : parsed;
     }
 
+    function syncNumberInput(id, value){
+      const el = $('#' + id);
+      if (el && document.activeElement !== el) el.value = String(value);
+    }
+
     function planMixTotal(){
       return ['basic','essentials','plus','aio'].reduce((sum, key) => sum + Math.max(0, Number(state.mix[key]) || 0), 0);
     }
 
     function currentLocationTotal(){
+      if (state.franchiseMode) return Math.max(1, Number(state.locations) || 1);
       return state.mixPlans ? Math.max(1, planMixTotal() || 1) : Math.max(1, Number(state.locations) || 1);
     }
 
@@ -988,6 +1015,22 @@
 
     function bundleDisplayName(bundle){
       return bundle.name + ' - ' + bundle.price;
+    }
+
+    function isScootersBundle(bundle){
+      return state.franchiseMode && state.franchiseId === 'scooters' && bundle && bundle.id.indexOf('bundle-') === 0;
+    }
+
+    function isScootersIncentive(bundle){
+      return state.franchiseMode && state.franchiseId === 'scooters' && bundle && bundle.id.indexOf('incentive-') === 0;
+    }
+
+    function requiresScootersIncentiveAck(){
+      return isScootersIncentive(selectedBundle());
+    }
+
+    function outputBlocked(){
+      return requiresScootersIncentiveAck() && !state.franchiseIncentiveAck;
     }
 
     function computeFranchiseBundle(partner, bundle, loc, emp){
@@ -1048,22 +1091,26 @@
     }
 
     function syncStateFromInputs(){
-      const singleEmployeeSource = !state.mixPlans ? 'emp' : 'empMixed';
-      state.locations = getIntInput('loc', state.locations || 1, 1);
-      state.employees = getIntInput(singleEmployeeSource, state.employees || 0, 0);
+      const franchiseModeInput = $('#franchiseMode').checked;
+      const mixPlansInput = $('#mixPlans').checked;
+      const locationSource = franchiseModeInput ? 'partnerLoc' : 'loc';
+      const employeeSource = franchiseModeInput ? 'partnerEmp' : (!mixPlansInput ? 'emp' : 'empMixed');
+      state.franchiseMode = franchiseModeInput;
+      state.locations = getIntInput(locationSource, state.locations || 1, 1);
+      state.employees = getIntInput(employeeSource, state.employees || 0, 0);
       state.plan = $('#plan').value;
-      state.mixPlans = $('#mixPlans').checked;
+      state.mixPlans = mixPlansInput;
       state.mix.basic = getIntInput('mix_basic', state.mix.basic || 0, 0);
       state.mix.essentials = getIntInput('mix_essentials', state.mix.essentials || 0, 0);
       state.mix.plus = getIntInput('mix_plus', state.mix.plus || 0, 0);
       state.mix.aio = getIntInput('mix_aio', state.mix.aio || 0, 0);
-      state.franchiseMode = $('#franchiseMode').checked;
       state.franchiseId = $('#franchiseSelect').value || state.franchiseId;
       const franchise = selectedFranchise();
       const selectedBundleId = $('#franchiseBundle').value || state.franchiseBundleId;
       state.franchiseBundleId = franchise.bundles.some(bundle => bundle.id === selectedBundleId)
         ? selectedBundleId
         : franchise.bundles[0].id;
+      state.franchiseIncentiveAck = $('#scootersIncentiveAck').checked;
       state.tip = $('#tip').checked;
       state.task = $('#task').checked;
       state.tipQty = getIntInput('tipQty', state.tipQty || 1, 1);
@@ -1090,11 +1137,11 @@
       state.ttEmployees = getIntInput('ttEmployees', state.ttEmployees || state.employees || 0, 0);
       state.ttHourlyRate = getFloatInput('ttHourlyRate', state.ttHourlyRate || 0, 0);
 
-      if (state.mixPlans) {
-        $('#emp').value = String(state.employees);
-      } else {
-        $('#empMixed').value = String(state.employees);
-      }
+      syncNumberInput('loc', state.locations);
+      syncNumberInput('partnerLoc', state.locations);
+      syncNumberInput('emp', state.employees);
+      syncNumberInput('empMixed', state.employees);
+      syncNumberInput('partnerEmp', state.employees);
     }
 
     function getMeta(){
@@ -1423,12 +1470,28 @@
     function renderFranchiseUi(calc){
       const fields = $('#franchiseFields');
       const preview = $('#franchisePreview');
+      const bundleNote = $('#scootersBundleNote');
+      const ackWrap = $('#scootersIncentiveAckWrap');
+      const ackInput = $('#scootersIncentiveAck');
       const franchise = selectedFranchise();
       const bundle = selectedBundle(franchise);
       fields.hidden = !state.franchiseMode;
       $('#franchiseMode').checked = state.franchiseMode;
+      syncNumberInput('partnerLoc', state.locations);
+      syncNumberInput('partnerEmp', state.employees);
       if ($('#franchiseSelect').value !== state.franchiseId) $('#franchiseSelect').value = state.franchiseId;
       if ($('#franchiseBundle').value !== state.franchiseBundleId) populateBundleSelector();
+      const showBundleNote = isScootersBundle(bundle);
+      const showIncentiveAck = isScootersIncentive(bundle);
+      bundleNote.hidden = !showBundleNote;
+      ackWrap.hidden = !showIncentiveAck;
+      ackInput.required = showIncentiveAck;
+      if (!showIncentiveAck) {
+        state.franchiseIncentiveAck = false;
+        ackInput.checked = false;
+      } else if (document.activeElement !== ackInput) {
+        ackInput.checked = state.franchiseIncentiveAck;
+      }
       preview.style.setProperty('--partner-accent', franchise.accent);
       preview.innerHTML = [
         '<div class="partnership-lockup">',
@@ -1444,6 +1507,21 @@
           (franchise.supportPhone ? '<span class="bundle-chip">' + escapeHTML(franchise.supportPhone) + '</span>' : ''),
         '</div>'
       ].join('');
+    }
+
+    function renderActionAvailability(){
+      const blocked = outputBlocked();
+      ['copyQuote','copyCSV','downloadPDF'].forEach(id => {
+        const button = $('#' + id);
+        button.disabled = blocked;
+      });
+    }
+
+    function validateOutputReady(){
+      syncStateFromInputs();
+      if (!outputBlocked()) return true;
+      setStatus("Acknowledge the Scooter's incentive eligibility before generating customer-facing output.", 'error');
+      return false;
     }
 
     function renderPlanUi(){
@@ -1796,6 +1874,7 @@
       renderBreakdown(calc);
       renderTimeTheft(calc, timeCalc);
       renderPrint(calc, timeCalc);
+      renderActionAvailability();
       return {calc, timeCalc};
     }
 
@@ -1836,6 +1915,8 @@
       $('#franchiseSelect').addEventListener('change', (e) => {
         state.franchiseId = e.target.value;
         state.franchiseBundleId = selectedFranchise().bundles[0].id;
+        state.franchiseIncentiveAck = false;
+        $('#scootersIncentiveAck').checked = false;
         populateBundleSelector();
         syncStateFromInputs();
         render();
@@ -1843,6 +1924,8 @@
 
       $('#franchiseBundle').addEventListener('change', (e) => {
         state.franchiseBundleId = e.target.value;
+        state.franchiseIncentiveAck = false;
+        $('#scootersIncentiveAck').checked = false;
         syncStateFromInputs();
         render();
       });
@@ -1875,10 +1958,10 @@
       });
 
       [
-        'loc','emp','empMixed','plan','mix_basic','mix_essentials','mix_plus','mix_aio',
+        'loc','emp','empMixed','partnerLoc','partnerEmp','plan','mix_basic','mix_essentials','mix_plus','mix_aio',
         'separateEins','einCount','tip','tipQty','task','taskQty','bg','boosts','ha',
         'showBreakdown','showPromoMath','showTimeTheft','preparedFor','businessName',
-        'preparedBy','quoteDate','ttHourlyRate'
+        'preparedBy','quoteDate','ttHourlyRate','scootersIncentiveAck'
       ].forEach(id => {
         const el = $('#' + id);
         const evt = (el.type === 'checkbox' || el.tagName === 'SELECT' || el.type === 'date') ? 'change' : 'input';
@@ -1889,6 +1972,7 @@
       });
 
       $('#copyQuote').addEventListener('click', async () => {
+        if (!validateOutputReady()) return;
         const rendered = render();
         const text = quoteText(rendered.calc, rendered.timeCalc);
         const ok = await copyToClipboard(text);
@@ -1901,6 +1985,7 @@
       });
 
       $('#copyCSV').addEventListener('click', async () => {
+        if (!validateOutputReady()) return;
         const rendered = render();
         const csv = quoteCSV(rendered.calc, rendered.timeCalc);
         const ok = await copyToClipboard(csv);
@@ -1913,6 +1998,7 @@
       });
 
       $('#downloadPDF').addEventListener('click', () => {
+        if (!validateOutputReady()) return;
         render();
         setStatus('Print dialog opened. Choose Save as PDF.', 'ok');
         window.print();
@@ -1926,6 +2012,8 @@
     function init(){
       $('#quoteDate').value = todayISO;
       $('#empMixed').value = $('#emp').value;
+      $('#partnerLoc').value = $('#loc').value;
+      $('#partnerEmp').value = $('#emp').value;
       activateSeg('#billingSeg', 'monthly');
       activateSeg('#payrollSeg', 'standard');
       activateSeg('#payrollPromoSeg', 0);
