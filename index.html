@@ -132,6 +132,9 @@
     .bundle-preview strong{font-size:14px}
     .bundle-meta{display:flex;gap:8px;flex-wrap:wrap}
     .bundle-chip{border:1px solid rgba(126,61,212,.16);background:#F5F3FF;border-radius:999px;padding:6px 9px;font-size:12px;font-weight:700;color:var(--deep)}
+    .bundle-chip.pos-supported{border-color:rgba(22,101,52,.24);background:#ECFDF3;color:#166534}
+    .bundle-chip.pos-coming-soon{border-color:rgba(146,64,14,.24);background:#FFF7ED;color:#92400E}
+    .bundle-chip.pos-not-supported{border-color:#CBD5E1;background:#F8FAFC;color:#475569}
     .franchise-note,.franchise-ack{border:1px solid rgba(146,64,14,.22);border-radius:14px;background:#FFF7ED;color:#7C2D12;padding:12px 14px;font-size:13px}
     .franchise-note[hidden],.franchise-ack[hidden]{display:none !important}
     .franchise-ack{display:flex;gap:10px;align-items:flex-start;font-weight:700;cursor:pointer}
@@ -915,6 +918,12 @@
       }
     };
 
+    const POS_INTEGRATIONS = {
+      PAR:{label:'supported', className:'pos-supported'},
+      Square:{label:'supported', className:'pos-supported'},
+      ChowBus:{label:'coming soon!', className:'pos-coming-soon'}
+    };
+
     const todayISO = (() => {
       const d = new Date();
       const month = String(d.getMonth() + 1).padStart(2,'0');
@@ -1021,6 +1030,14 @@
     function selectedBundle(partner){
       const franchise = partner || selectedFranchise();
       return franchise.bundles.find(bundle => bundle.id === state.franchiseBundleId) || franchise.bundles[0];
+    }
+
+    function posIntegrationMeta(pos){
+      const meta = POS_INTEGRATIONS[pos] || {label:'not supported', className:'pos-not-supported'};
+      return {
+        label: pos + ' POS Integration - ' + meta.label,
+        className: meta.className
+      };
     }
 
     function bundleDisplayName(bundle){
@@ -1486,6 +1503,7 @@
       const ackInput = $('#scootersIncentiveAck');
       const franchise = selectedFranchise();
       const bundle = selectedBundle(franchise);
+      const posMeta = posIntegrationMeta(franchise.pos);
       fields.hidden = !state.franchiseMode;
       $('#franchiseMode').checked = state.franchiseMode;
       syncNumberInput('partnerLoc', state.locations);
@@ -1513,7 +1531,7 @@
           '<span>' + escapeHTML(bundle.includes.join(', ')) + '</span>',
         '</div>',
         '<div class="bundle-meta">',
-          '<span class="bundle-chip">' + escapeHTML(franchise.pos) + '</span>',
+          '<span class="bundle-chip ' + posMeta.className + '">' + escapeHTML(posMeta.label) + '</span>',
           '<span class="bundle-chip">' + escapeHTML(franchise.supportEmail) + '</span>',
           (franchise.supportPhone ? '<span class="bundle-chip">' + escapeHTML(franchise.supportPhone) + '</span>' : ''),
         '</div>'
