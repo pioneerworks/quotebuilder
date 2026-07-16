@@ -489,6 +489,7 @@
                 <div class="field col-span-2">
                   <label for="plan">Plan</label>
                   <select id="plan">
+                    <option value="no_core">No Core - payroll only</option>
                     <option value="basic">Basic - $0 / loc / mo</option>
                     <option value="essentials">Essentials - $30 / $24 annual</option>
                     <option value="plus" selected>Plus - $70 / $56 annual</option>
@@ -834,12 +835,14 @@
     const numberFormat = (n) => Number(n || 0).toLocaleString();
 
     const PLANS = {
+      no_core:{m:0,a:0,n:'Removes core plan pricing so the quote focuses on payroll.'},
       basic:{m:0,a:0,n:'For 1 location, up to 10 employees.'},
       essentials:{m:30,a:24,n:'Advanced scheduling and time tracking.'},
       plus:{m:70,a:56,n:'AI scheduling, PTO controls, departments.'},
       aio:{m:120,a:96,n:'Onboarding, labor cost, HR and compliance.'}
     };
     const PLAN_LABELS = {
+      no_core:'Payroll only',
       basic:'Basic',
       essentials:'Essentials',
       plus:'Plus',
@@ -1204,6 +1207,7 @@
 
     function compute(){
       const rates = {
+        no_core: 0,
         basic: state.annual ? PLANS.basic.a : PLANS.basic.m,
         essentials: state.annual ? PLANS.essentials.a : PLANS.essentials.m,
         plus: state.annual ? PLANS.plus.a : PLANS.plus.m,
@@ -1211,6 +1215,7 @@
       };
 
       const loc = currentLocationTotal();
+      const noCoreSelected = !state.mixPlans && state.plan === 'no_core';
       const mixCounts = state.mixPlans
         ? {
             basic: Math.max(0, Number(state.mix.basic) || 0),
@@ -1252,6 +1257,7 @@
 
         return {
           isFranchise:true,
+          noCoreSelected:false,
           franchise,
           franchiseBundle:bundle,
           loc:locTotal,
@@ -1333,7 +1339,7 @@
       const features = [];
       if (state.mixPlans) {
         mixSummaryParts(true).forEach(part => features.push(part + ' location' + (part.startsWith('1 ') ? '' : 's')));
-      } else {
+      } else if (!noCoreSelected) {
         features.push(PLAN_LABELS[state.plan] + ' plan for ' + locTotal + ' location' + plural(locTotal, '')); 
       }
       if (state.payroll !== 'none') {
@@ -1353,11 +1359,14 @@
       if (state.boosts) rows.push({label:'Job post boosts', qty:state.boosts, rate:'$79 / post', amount:boostsMonthly});
       if (state.ha) rows.push({label:'Hiring Assistant', qty:state.ha, rate:'$99 / mo', amount:hiringMonthly});
 
-      const planName = state.mixPlans ? 'Mixed plans' : PLAN_LABELS[state.plan];
-      const planHeadline = state.mixPlans ? mixSummaryParts(true).join(' + ') : PLAN_LABELS[state.plan];
-      const planCopy = state.mixPlans ? mixSummaryParts(true).join(', ') + '.' : PLANS[state.plan].n;
+      const planName = noCoreSelected ? 'Payroll only' : (state.mixPlans ? 'Mixed plans' : PLAN_LABELS[state.plan]);
+      const planHeadline = noCoreSelected ? 'Payroll only' : (state.mixPlans ? mixSummaryParts(true).join(' + ') : PLAN_LABELS[state.plan]);
+      const planCopy = noCoreSelected
+        ? 'Core plan pricing is excluded from this quote.'
+        : (state.mixPlans ? mixSummaryParts(true).join(', ') + '.' : PLANS[state.plan].n);
 
       return {
+        noCoreSelected,
         loc:locTotal,
         emp,
         rates,
@@ -1394,7 +1403,7 @@
         planName,
         planHeadline,
         planCopy,
-        planSingleRate: state.mixPlans ? null : rates[state.plan]
+        planSingleRate: (state.mixPlans || noCoreSelected) ? null : rates[state.plan]
       };
     }
 
@@ -1415,7 +1424,7 @@
         ['essentials','plus','aio','basic'].forEach(key => {
           if (calc.mixCounts[key] > 0) selectedPlanParts.push(PLAN_LABELS[key]);
         });
-      } else {
+      } else if (!calc.noCoreSelected) {
         selectedPlanParts.push(PLAN_LABELS[state.plan]);
       }
       if (state.payroll !== 'none') selectedPlanParts.push(state.payroll === 'nextday' ? 'Next Day payroll' : 'Payroll');
@@ -1468,6 +1477,7 @@
         badges.push(calc.franchiseBundle.name);
         return badges;
       }
+      if (calc.noCoreSelected) badges.push('Payroll only');
       if (state.mixPlans) badges.push('Mixed core plans');
       if (state.payroll !== 'none') badges.push(calc.payrollLabel);
       if (state.tip) badges.push('Tip Manager');
@@ -1486,10 +1496,17 @@
         const supportText = supportPieces.length ? ' Franchise support: ' + supportPieces.join(' | ') + '.' : '';
         return 'Partnership pricing for Homebase + ' + franchise.brand + ': ' + bundle.name + ' (' + bundle.price + ').' + annualNote + supportText + ' Prices are USD and taxes or third-party fees are not included.';
       }
+      const noCoreQuote = state.plan === 'no_core' && !state.mixPlans;
+      if (noCoreQuote && state.payroll === 'none') {
+        return 'Core plan pricing is excluded from this quote. Prices are USD and taxes or third-party fees are not included.';
+      }
       if (state.payroll === 'none') {
         return 'Plan pricing is per location per month. Prices are USD and taxes or third-party fees are not included.';
       }
       const payrollPricing = currentPayrollPricing();
+      if (noCoreQuote) {
+        return 'Payroll options: Standard ($' + payrollPricing.standardBase + ' base + $' + payrollPricing.standardEmployeeRate + '/employee/mo) or Next Day ($' + payrollPricing.nextdayBase + ' base + $' + payrollPricing.nextdayEmployeeRate + '/employee/mo). When separate EINs are selected, payroll base fees are billed once per EIN. Prices are USD and taxes or third-party fees are not included.';
+      }
       return 'Plan pricing is per location per month. Payroll options: Standard ($' + payrollPricing.standardBase + ' base + $' + payrollPricing.standardEmployeeRate + '/employee/mo) or Next Day ($' + payrollPricing.nextdayBase + ' base + $' + payrollPricing.nextdayEmployeeRate + '/employee/mo). When separate EINs are selected, payroll base fees are billed once per EIN. Prices are USD and taxes or third-party fees are not included.';
     }
 
@@ -1770,7 +1787,7 @@
       $('#printFirstYear').textContent = currency(calc.firstYearWithPromos);
       $('#printMonthlyCopy').textContent = calc.isFranchise
         ? 'Includes the selected partnership bundle and any listed employee fees.'
-        : (state.showBreakdown ? 'Includes selected plans, add-ons, and any usage-based items shown below.' : '');
+        : (calc.noCoreSelected ? 'Includes selected payroll services and any usage-based items shown below.' : (state.showBreakdown ? 'Includes selected plans, add-ons, and any usage-based items shown below.' : ''));
       $('#printMonthlyCopy').style.display = $('#printMonthlyCopy').textContent ? '' : 'none';
 
       const promoPieces = [];
@@ -1869,6 +1886,8 @@
         lines.push('Partnership: Homebase + ' + calc.franchise.brand);
         lines.push('Bundle: ' + calc.franchiseBundle.name + ' (' + calc.franchiseBundle.price + ')');
         lines.push('Includes: ' + calc.franchiseBundle.includes.join(', '));
+      } else if (calc.noCoreSelected) {
+        lines.push('Services: Payroll');
       } else {
         lines.push('Plan: ' + calc.planHeadline + ' (' + (state.annual ? 'annual pricing' : 'monthly pricing') + ')');
       }
@@ -1906,7 +1925,7 @@
         calc.rows.forEach(row => rows.push(['Partnership Bundle', row.label, String(row.qty), currency(row.amount)]));
       } else {
         calc.planRows.forEach(row => rows.push(['Plan', row.label, String(row.qty), currency(row.amount)]));
-        if (state.payroll !== 'none') rows.push(['Plan', calc.payrollLabel, String(calc.emp), currency(calc.payrollMonthly)]);
+        if (state.payroll !== 'none') rows.push([calc.noCoreSelected ? 'Payroll' : 'Plan', calc.payrollLabel, String(calc.emp), currency(calc.payrollMonthly)]);
         if (state.tip) rows.push(['Recurring Add-on', 'Tip Manager', String(calc.tipQty), currency(calc.tipMonthly)]);
         if (state.task) rows.push(['Recurring Add-on', 'Task Manager', String(calc.taskQty), currency(calc.taskMonthly)]);
         if (state.bg) rows.push(['Usage', 'Background checks', String(state.bg), currency(calc.bgMonthly)]);
@@ -2008,6 +2027,10 @@
         const turningOn = e.target.checked;
         if (turningOn) {
           syncStateFromInputs();
+          if (state.plan === 'no_core') {
+            state.plan = 'plus';
+            $('#plan').value = state.plan;
+          }
           applySinglePlanToMix();
           state.mixPlans = true;
         } else {
