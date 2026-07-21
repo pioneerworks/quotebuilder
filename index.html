@@ -869,8 +869,9 @@
           {id:'bundle-1', name:'Bundle 1', includes:['Essentials', 'Hiring Assistant'], price:'$39/mo', monthlyBase:39, rate:'$39 / mo'},
           {id:'bundle-2', name:'Bundle 2', includes:['Plus', 'Payroll', 'Hiring', 'Task Manager'], price:'$89/mo', monthlyBase:89, rate:'$89 / mo'},
           {id:'bundle-3', name:'Bundle 3', includes:['Plus', 'Payroll', 'Hiring', 'Tip Manager', 'Task Manager', 'Background checks'], price:'$125/mo', monthlyBase:125, rate:'$125 / mo'},
-          {id:'incentive-1', name:'Incentive 1', includes:['Task Manager', 'Tip Manager', 'Hiring'], price:'$39/mo', monthlyBase:39, rate:'$39 / mo'},
-          {id:'incentive-2', name:'Incentive 2', includes:['Payroll only'], price:'$0 base + $6/ee/mo', monthlyBase:0, employeeRate:6, rate:'$0 base + $6/ee'}
+          {id:'incentive-1', name:'Incentive 1', includes:['Task Manager', 'Tip Manager', 'Hiring'], price:'$39/mo/loc', monthlyLocationRate:39, rate:'$39 / loc / mo'},
+          {id:'incentive-2', name:'Incentive 2', includes:['Payroll only'], price:'$0 base + $6/ee/mo', monthlyBase:0, employeeRate:6, rate:'$0 base + $6/ee'},
+          {id:'incentive-1-2', name:'Incentive 1 + Incentive 2', includes:['Task Manager', 'Tip Manager', 'Hiring', 'Payroll'], price:'$39/mo/loc + $6/ee/mo', components:['incentive-1', 'incentive-2'], rate:'$39 / loc / mo + $6/ee'}
         ]
       },
       pjs:{
@@ -1056,6 +1057,17 @@
       return franchise.bundles.find(bundle => bundle.id === state.franchiseBundleId) || franchise.bundles[0];
     }
 
+    function franchiseBundleComponents(partner, bundle){
+      const franchise = partner || selectedFranchise();
+      if (!Array.isArray(bundle.components)) return [bundle];
+      const components = bundle.components.map(id => franchise.bundles.find(item => item.id === id)).filter(Boolean);
+      return components.length ? components : [bundle];
+    }
+
+    function franchiseBundleHasEmployeeRate(partner, bundle){
+      return franchiseBundleComponents(partner, bundle).some(component => Number(component.employeeRate) > 0);
+    }
+
     function posIntegrationMeta(pos){
       const meta = POS_INTEGRATIONS[pos] || {label:'not supported', className:'pos-not-supported'};
       return {
@@ -1088,28 +1100,36 @@
       const rows = [];
       let baseMonthly = 0;
       let baseAnnual = 0;
-      const label = partner.brand + ' ' + bundle.name;
+      let employeeMonthly = 0;
 
-      if (typeof bundle.monthlyBase === 'number') {
-        const qty = bundle.monthlyBase > 0 ? loc : 1;
-        baseMonthly = bundle.monthlyBase * qty;
-        baseAnnual = baseMonthly * 12;
-        rows.push({label, qty, rate:bundle.monthlyBase === 0 ? '$0 base' : '$' + bundle.monthlyBase + ' / loc / mo', amount:baseMonthly});
-      } else if (typeof bundle.monthlyLocationRate === 'number') {
-        baseMonthly = bundle.monthlyLocationRate * loc;
-        baseAnnual = baseMonthly * 12;
-        rows.push({label, qty:loc, rate:'$' + bundle.monthlyLocationRate + ' / loc', amount:baseMonthly});
-      } else if (typeof bundle.annualLocationRate === 'number') {
-        baseMonthly = (bundle.annualLocationRate * loc) / 12;
-        baseAnnual = bundle.annualLocationRate * loc;
-        rows.push({label:label + ' annual base', qty:loc, rate:'$' + numberFormat(bundle.annualLocationRate) + ' / loc / yr', amount:baseMonthly});
-      }
+      franchiseBundleComponents(partner, bundle).forEach(component => {
+        const label = partner.brand + ' ' + component.name;
 
-      const employeeRate = Number(bundle.employeeRate) || 0;
-      const employeeMonthly = employeeRate * emp;
-      if (employeeRate > 0) {
-        rows.push({label:'Payroll employee fees', qty:emp, rate:'$' + employeeRate + '/ee', amount:employeeMonthly});
-      }
+        if (typeof component.monthlyBase === 'number') {
+          const qty = component.monthlyBase > 0 ? loc : 1;
+          const amount = component.monthlyBase * qty;
+          baseMonthly += amount;
+          baseAnnual += amount * 12;
+          rows.push({label, qty, rate:component.monthlyBase === 0 ? '$0 base' : '$' + component.monthlyBase + ' / loc / mo', amount});
+        } else if (typeof component.monthlyLocationRate === 'number') {
+          const amount = component.monthlyLocationRate * loc;
+          baseMonthly += amount;
+          baseAnnual += amount * 12;
+          rows.push({label, qty:loc, rate:'$' + component.monthlyLocationRate + ' / loc / mo', amount});
+        } else if (typeof component.annualLocationRate === 'number') {
+          const amount = (component.annualLocationRate * loc) / 12;
+          baseMonthly += amount;
+          baseAnnual += component.annualLocationRate * loc;
+          rows.push({label:label + ' annual base', qty:loc, rate:'$' + numberFormat(component.annualLocationRate) + ' / loc / yr', amount});
+        }
+
+        const employeeRate = Number(component.employeeRate) || 0;
+        const employeeAmount = employeeRate * emp;
+        employeeMonthly += employeeAmount;
+        if (employeeRate > 0) {
+          rows.push({label:'Payroll employee fees', qty:emp, rate:'$' + employeeRate + '/ee', amount:employeeAmount});
+        }
+      });
 
       const totalMonthly = baseMonthly + employeeMonthly;
       const totalAnnual = baseAnnual + (employeeMonthly * 12);
@@ -1252,7 +1272,7 @@
           'Homebase + ' + franchise.brand + ' partnership pricing',
           bundle.name + ': ' + bundle.includes.join(', ')
         ];
-        if (bundle.employeeRate) features.push('Payroll employee fees for ' + emp + ' employee' + plural(emp, ''));
+        if (franchiseBundleHasEmployeeRate(franchise, bundle)) features.push('Payroll employee fees for ' + emp + ' employee' + plural(emp, ''));
         const planCopy = bundle.name + ' includes ' + bundle.includes.join(', ') + '.';
 
         return {
